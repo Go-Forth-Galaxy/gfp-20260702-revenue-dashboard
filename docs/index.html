@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Go-Forth Pest Control — 2026 Revenue Dashboard</title>
+<meta name="description" content="Go-Forth Pest Control 2026 monthly revenue dashboard with trendlines. Restricted to go-forth.com." />
+<link rel="stylesheet" href="styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- ================= LOGIN GATE ================= -->
+  <div id="gate">
+    <div class="gate-card">
+      <div class="gate-logo">GF</div>
+      <h1>Go-Forth Pest Control</h1>
+      <p class="sub">2026 Revenue Dashboard — secure access</p>
+
+      <div id="gsi-button"></div>
+      <div id="auth-error"></div>
+
+      <div id="config-warn" class="gate-config-warn hidden">
+        <strong>Setup required:</strong> a Google OAuth Client ID for this site’s origin
+        has not been configured yet in <code>config.js</code>. The sign-in button needs it to
+        authenticate. See the README for the 5-minute Google Cloud step.
+      </div>
+
+      <p class="gate-note">
+        Access is restricted to <strong>@go-forth.com</strong> Google Workspace accounts.
+        Revenue data is stored <strong>AES-256-GCM encrypted at rest</strong> and is only
+        decrypted in your browser after sign-in.
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= APP ================= -->
+  <div id="app" class="hidden">
+    <header class="appbar">
+      <div class="brand">
+        <div class="logo">GF</div>
+        <div>
+          <h1>Go-Forth Pest Control — 2026 Revenue</h1>
+          <div class="tag">Monthly revenue &amp; trend analysis</div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="user">
+        <img id="user-avatar" alt="" />
+        <span id="user-email"></span>
+        <button class="btn-out" id="logout">Sign out</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="notice" id="cutoff-note"></div>
+
+      <section class="kpis" id="kpis"></section>
+
+      <div class="panel">
+        <h2>Monthly Revenue with Trendlines</h2>
+        <p class="hint">Actual &amp; forecast monthly revenue (bars) with a 3-month moving average and a linear regression line of best fit.</p>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+        <div class="legend">
+          <span><i style="background:#1f8a4c"></i>Monthly revenue (Jan–Jun booked)</span>
+          <span><i style="background:#9fd3b4"></i>Monthly revenue (Jul–Dec forecast)</span>
+          <span><i style="background:#0e4d92"></i>3-month moving average</span>
+          <span><i style="background:#c77d0a"></i>Linear regression (trend)</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Monthly Detail</h2>
+        <p class="hint">Source: <span id="src-name"></span></p>
+        <table id="detail">
+          <thead><tr><th>Month</th><th>Days</th><th>Revenue</th><th>3-mo Avg</th><th>MoM %</th></tr></thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+    </main>
+    <footer id="foot"></footer>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
