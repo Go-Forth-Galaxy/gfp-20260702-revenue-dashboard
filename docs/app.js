@@ -1,0 +1,255 @@
+/* ============================================================
+   Go-Forth Pest Control — 2026 Revenue Dashboard
+   Auth gate (Google Identity Services, @go-forth.com only)
+   + in-browser AES-256-GCM decryption + charts.
+   Math & crypto are exposed on window.GFP for headless testing.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var COLORS = {
+    green: "#1f8a4c", greenSoft: "#9fd3b4", blue: "#0e4d92",
+    amber: "#c77d0a", ink: "#12303f", grid: "#e2e8ee"
+  };
+
+  // ---------- number helpers ----------
+  function money(n) {
+    return "$" + Math.round(n).toLocaleString("en-US");
+  }
+  function pct(n) {
+    return (n >= 0 ? "+" : "") + n.toFixed(1) + "%";
+  }
+
+  // ---------- trend math (pure) ----------
+  function linearRegression(ys) {
+    var n = ys.length, sx = 0, sy = 0, sxy = 0, sxx = 0;
+    for (var i = 0; i < n; i++) { sx += i; sy += ys[i]; sxy += i * ys[i]; sxx += i * i; }
+    var denom = (n * sxx - sx * sx) || 1;
+    var slope = (n * sxy - sx * sy) / denom;
+    var intercept = (sy - slope * sx) / n;
+    return { slope: slope, intercept: intercept, points: ys.map(function (_, i) { return slope * i + intercept; }) };
+  }
+  function movingAverage(ys, w) {
+    w = w || 3;
+    return ys.map(function (_, i) {
+      if (i < w - 1) return null;
+      var s = 0;
+      for (var j = i - w + 1; j <= i; j++) s += ys[j];
+      return s / w;
+    });
+  }
+  function computeKPIs(months) {
+    var revs = months.map(function (m) { return m.revenue; });
+    var total = revs.reduce(function (a, b) { return a + b; }, 0);
+    var best = months[0], worst = months[0];
+    months.forEach(function (m) {
+      if (m.revenue > best.revenue) best = m;
+      if (m.revenue < worst.revenue) worst = m;
+    });
+    var mom = [];
+    for (var i = 1; i < revs.length; i++) mom.push((revs[i] - revs[i - 1]) / revs[i - 1] * 100);
+    var avgMoM = mom.length ? mom.reduce(function (a, b) { return a + b; }, 0) / mom.length : 0;
+    var latestMoM = mom.length ? mom[mom.length - 1] : 0;
+    return { total: total, best: best, worst: worst, avgMoM: avgMoM, latestMoM: latestMoM };
+  }
+
+  // ---------- crypto (pure) ----------
+  function b64ToBytes(s) {
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  async function decryptData(enc, passphrase) {
+    var subtle = (self.crypto || crypto).subtle;
+    var salt = b64ToBytes(enc.salt_b64), iv = b64ToBytes(enc.iv_b64), ct = b64ToBytes(enc.ct_b64);
+    var baseKey = await subtle.importKey("raw", new TextEncoder().encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+    var key = await subtle.deriveKey(
+      { name: "PBKDF2", salt: salt, iterations: enc.iter, hash: "SHA-256" },
+      baseKey, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    var plain = await subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct);
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  // ---------- auth ----------
+  function decodeJwt(token) {
+    var part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    var json = decodeURIComponent(atob(part).split("").map(function (c) {
+      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(""));
+    return JSON.parse(json);
+  }
+  function authError(msg) {
+    var el = document.getElementById("auth-error");
+    if (el) el.textContent = msg || "";
+  }
+
+  var CONFIG;
+
+  function handleCredential(resp) {
+    var claims;
+    try { claims = decodeJwt(resp.credential); }
+    catch (e) { authError("Could not read Google sign-in response."); return; }
+    var email = (claims.email || "").toLowerCase();
+    var domain = (claims.hd || email.split("@")[1] || "").toLowerCase();
+    if (!claims.email_verified || domain !== CONFIG.ALLOWED_DOMAIN) {
+      authError("Access is restricted to @" + CONFIG.ALLOWED_DOMAIN + " accounts. You signed in as " + (email || "an outside account") + ".");
+      if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
+      return;
+    }
+    authError("");
+    startApp(claims);
+  }
+
+  function initGsi() {
+    google.accounts.id.initialize({
+      client_id: CONFIG.GOOGLE_CLIENT_ID,
+      callback: handleCredential,
+      hd: CONFIG.ALLOWED_DOMAIN,
+      auto_select: false,
+      cancel_on_tap_outside: true
+    });
+    google.accounts.id.renderButton(document.getElementById("gsi-button"),
+      { theme: "filled_blue", size: "large", shape: "pill", text: "signin_with", width: 300 });
+  }
+
+  // ---------- app ----------
+  async function startApp(claims) {
+    document.getElementById("gate").classList.add("hidden");
+    var app = document.getElementById("app");
+    app.classList.remove("hidden");
+
+    var av = document.getElementById("user-avatar");
+    if (claims.picture) { av.src = claims.picture; } else { av.style.display = "none"; }
+    document.getElementById("user-email").textContent = claims.email || "";
+    document.getElementById("logout").onclick = function () {
+      if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
+      location.reload();
+    };
+
+    var enc = await fetch(CONFIG.DATA_URL, { cache: "no-store" }).then(function (r) { return r.json(); });
+    var data = await decryptData(enc, CONFIG.DECRYPT_PASSPHRASE);
+    render(data);
+  }
+
+  function render(data) {
+    var months = data.months;
+    var revs = months.map(function (m) { return m.revenue; });
+    var ma = movingAverage(revs, 3);
+    var reg = linearRegression(revs).points;
+    var k = computeKPIs(months);
+
+    document.getElementById("cutoff-note").innerHTML =
+      "<strong>Note:</strong> " + data.cutoff_note;
+    document.getElementById("src-name").textContent = data.source;
+    document.getElementById("foot").innerHTML =
+      "Source: " + data.source + " &nbsp;•&nbsp; Generated " + data.generated +
+      " &nbsp;•&nbsp; Data AES-256-GCM encrypted at rest &nbsp;•&nbsp; Go-Forth Pest Control";
+
+    // KPI cards
+    var kpis = [
+      { label: "Total 2026 Revenue", value: money(k.total), meta: "12 months (incl. Jul–Dec forecast)" },
+      { label: "Best Month", value: money(k.best.revenue), meta: k.best.label + (k.best.forecast ? " (forecast)" : " (booked)") },
+      { label: "Worst Month", value: money(k.worst.revenue), meta: k.worst.label + (k.worst.forecast ? " (forecast)" : " (booked)") },
+      { label: "Avg MoM Growth", value: pct(k.avgMoM), meta: "Latest MoM " + pct(k.latestMoM), cls: k.avgMoM >= 0 ? "up" : "down" }
+    ];
+    document.getElementById("kpis").innerHTML = kpis.map(function (c) {
+      return '<div class="kpi"><div class="label">' + c.label + '</div>' +
+        '<div class="value ' + (c.cls || "") + '">' + c.value + '</div>' +
+        '<div class="meta">' + c.meta + "</div></div>";
+    }).join("");
+
+    // Detail table
+    var tbody = "", prev = null;
+    months.forEach(function (m, i) {
+      var momTxt = prev == null ? "—" : pct((m.revenue - prev) / prev * 100);
+      tbody += "<tr><td>" + m.label +
+        '<span class="badge ' + (m.forecast ? "forecast" : "actual") + '">' + (m.forecast ? "forecast" : "booked") + "</span></td>" +
+        "<td>" + m.days + "</td><td>" + money(m.revenue) + "</td>" +
+        "<td>" + (ma[i] == null ? "—" : money(ma[i])) + "</td>" +
+        "<td>" + momTxt + "</td></tr>";
+      prev = m.revenue;
+    });
+    document.querySelector("#detail tbody").innerHTML = tbody;
+    document.querySelector("#detail tfoot").innerHTML =
+      "<tr><td>Total</td><td></td><td>" + money(k.total) + "</td><td></td><td></td></tr>";
+
+    // Chart
+    if (typeof Chart === "undefined") return;
+    var ctx = document.getElementById("revChart").getContext("2d");
+    new Chart(ctx, {
+      data: {
+        labels: months.map(function (m) { return m.key; }),
+        datasets: [
+          {
+            type: "bar", label: "Monthly Revenue",
+            data: revs, order: 3,
+            backgroundColor: months.map(function (m) { return m.forecast ? COLORS.greenSoft : COLORS.green; }),
+            borderRadius: 4, maxBarThickness: 46
+          },
+          {
+            type: "line", label: "3-mo Moving Avg",
+            data: ma, order: 1, borderColor: COLORS.blue, backgroundColor: COLORS.blue,
+            borderWidth: 2.5, pointRadius: 2, tension: .35, spanGaps: true
+          },
+          {
+            type: "line", label: "Linear Trend",
+            data: reg, order: 2, borderColor: COLORS.amber, backgroundColor: COLORS.amber,
+            borderWidth: 2, borderDash: [7, 5], pointRadius: 0, tension: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (c) { return c.dataset.label + ": " + money(c.parsed.y); }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            grid: { color: COLORS.grid },
+            ticks: { callback: function (v) { return "$" + (v / 1000) + "k"; } }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // ---------- boot ----------
+  function boot() {
+    CONFIG = window.GFP_CONFIG;
+    if (!CONFIG || !CONFIG.GOOGLE_CLIENT_ID) {
+      var warn = document.getElementById("config-warn");
+      if (warn) warn.classList.remove("hidden");
+      return; // no client id -> cannot authenticate; gate stays closed
+    }
+    var tries = 0;
+    var t = setInterval(function () {
+      tries++;
+      if (window.google && google.accounts && google.accounts.id) {
+        clearInterval(t); initGsi();
+      } else if (tries > 50) {
+        clearInterval(t); authError("Could not load Google Sign-In. Check your connection.");
+      }
+    }, 150);
+  }
+
+  if (typeof document !== "undefined" && document.getElementById) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+    else boot();
+  }
+
+  // expose pure fns for headless verification
+  window.GFP = {
+    linearRegression: linearRegression, movingAverage: movingAverage,
+    computeKPIs: computeKPIs, decryptData: decryptData, decodeJwt: decodeJwt,
+    render: render, handleCredential: handleCredential,
+    _setConfig: function (c) { CONFIG = c; }
+  };
+})();
