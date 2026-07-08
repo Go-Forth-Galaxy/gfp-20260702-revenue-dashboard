@@ -30,11 +30,12 @@
 
       <div class="panel">
         <h2>Monthly Revenue with Trendlines</h2>
-        <p class="hint">Actual &amp; forecast monthly revenue (bars) with a 3-month moving average and a linear regression line of best fit.</p>
+        <p class="hint">Actual &amp; forecast monthly revenue (bars) with a 3-month moving average and a linear regression line of best fit. The red line is a <strong>conservative scenario</strong> that applies a −5% haircut to the <strong>Jul–Dec forecast only</strong> — actual (Jan–Jun) months are unchanged.</p>
         <div class="chart-wrap"><canvas id="revChart"></canvas></div>
         <div class="legend">
           <span><i style="background:#1f8a4c"></i>Monthly revenue (Jan–Jun booked)</span>
           <span><i style="background:#9fd3b4"></i>Monthly revenue (Jul–Dec forecast)</span>
+          <span><i style="background:#b3261e"></i>Conservative view (−5% on Jul–Dec forecast)</span>
           <span><i style="background:#0e4d92"></i>3-month moving average</span>
           <span><i style="background:#c77d0a"></i>Linear regression (trend)</span>
         </div>
