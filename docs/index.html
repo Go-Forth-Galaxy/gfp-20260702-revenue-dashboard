@@ -4,39 +4,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Go-Forth Pest Control — 2026 Revenue Dashboard</title>
-<meta name="description" content="Go-Forth Pest Control 2026 monthly revenue dashboard with trendlines. Restricted to go-forth.com." />
+<meta name="description" content="Go-Forth Pest Control 2026 monthly revenue dashboard with trendlines." />
 <link rel="stylesheet" href="styles.css" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
-  <!-- ================= LOGIN GATE ================= -->
-  <div id="gate">
-    <div class="gate-card">
-      <div class="gate-logo">GF</div>
-      <h1>Go-Forth Pest Control</h1>
-      <p class="sub">2026 Revenue Dashboard — secure access</p>
-
-      <div id="gsi-button"></div>
-      <div id="auth-error"></div>
-
-      <div id="config-warn" class="gate-config-warn hidden">
-        <strong>Setup required:</strong> a Google OAuth Client ID for this site’s origin
-        has not been configured yet in <code>config.js</code>. The sign-in button needs it to
-        authenticate. See the README for the 5-minute Google Cloud step.
-      </div>
-
-      <p class="gate-note">
-        Access is restricted to <strong>@go-forth.com</strong> Google Workspace accounts.
-        Revenue data is stored <strong>AES-256-GCM encrypted at rest</strong> and is only
-        decrypted in your browser after sign-in.
-      </p>
-    </div>
-  </div>
-
   <!-- ================= APP ================= -->
-  <div id="app" class="hidden">
+  <div id="app">
     <header class="appbar">
       <div class="brand">
         <div class="logo">GF</div>
@@ -46,11 +21,6 @@
         </div>
       </div>
       <div class="spacer"></div>
-      <div class="user">
-        <img id="user-avatar" alt="" />
-        <span id="user-email"></span>
-        <button class="btn-out" id="logout">Sign out</button>
-      </div>
     </header>
 
     <main>
