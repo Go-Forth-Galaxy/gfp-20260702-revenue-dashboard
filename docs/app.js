@@ -1,7 +1,6 @@
 /* ============================================================
    Go-Forth Pest Control — 2026 Revenue Dashboard
-   Auth gate (Google Identity Services, @go-forth.com only)
-   + in-browser AES-256-GCM decryption + charts.
+   Public dashboard: in-browser AES-256-GCM decryption + charts.
    Math & crypto are exposed on window.GFP for headless testing.
    ============================================================ */
 (function () {
@@ -70,62 +69,15 @@
     return JSON.parse(new TextDecoder().decode(plain));
   }
 
-  // ---------- auth ----------
-  function decodeJwt(token) {
-    var part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-    var json = decodeURIComponent(atob(part).split("").map(function (c) {
-      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(""));
-    return JSON.parse(json);
-  }
-  function authError(msg) {
-    var el = document.getElementById("auth-error");
-    if (el) el.textContent = msg || "";
-  }
-
   var CONFIG;
 
-  function handleCredential(resp) {
-    var claims;
-    try { claims = decodeJwt(resp.credential); }
-    catch (e) { authError("Could not read Google sign-in response."); return; }
-    var email = (claims.email || "").toLowerCase();
-    var domain = (claims.hd || email.split("@")[1] || "").toLowerCase();
-    if (!claims.email_verified || domain !== CONFIG.ALLOWED_DOMAIN) {
-      authError("Access is restricted to @" + CONFIG.ALLOWED_DOMAIN + " accounts. You signed in as " + (email || "an outside account") + ".");
-      if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
-      return;
-    }
-    authError("");
-    startApp(claims);
-  }
-
-  function initGsi() {
-    google.accounts.id.initialize({
-      client_id: CONFIG.GOOGLE_CLIENT_ID,
-      callback: handleCredential,
-      hd: CONFIG.ALLOWED_DOMAIN,
-      auto_select: false,
-      cancel_on_tap_outside: true
-    });
-    google.accounts.id.renderButton(document.getElementById("gsi-button"),
-      { theme: "filled_blue", size: "large", shape: "pill", text: "signin_with", width: 300 });
-  }
-
   // ---------- app ----------
-  async function startApp(claims) {
-    document.getElementById("gate").classList.add("hidden");
-    var app = document.getElementById("app");
-    app.classList.remove("hidden");
+  function showLoadError(msg) {
+    var note = document.getElementById("cutoff-note");
+    if (note) note.innerHTML = "<strong>Could not load dashboard data:</strong> " + msg;
+  }
 
-    var av = document.getElementById("user-avatar");
-    if (claims.picture) { av.src = claims.picture; } else { av.style.display = "none"; }
-    document.getElementById("user-email").textContent = claims.email || "";
-    document.getElementById("logout").onclick = function () {
-      if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
-      location.reload();
-    };
-
+  async function loadAndRender() {
     var enc = await fetch(CONFIG.DATA_URL, { cache: "no-store" }).then(function (r) { return r.json(); });
     var data = await decryptData(enc, CONFIG.DECRYPT_PASSPHRASE);
     render(data);
@@ -224,20 +176,13 @@
   // ---------- boot ----------
   function boot() {
     CONFIG = window.GFP_CONFIG;
-    if (!CONFIG || !CONFIG.GOOGLE_CLIENT_ID) {
-      var warn = document.getElementById("config-warn");
-      if (warn) warn.classList.remove("hidden");
-      return; // no client id -> cannot authenticate; gate stays closed
+    if (!CONFIG || !CONFIG.DATA_URL || !CONFIG.DECRYPT_PASSPHRASE) {
+      showLoadError("configuration missing in config.js (DATA_URL / DECRYPT_PASSPHRASE).");
+      return;
     }
-    var tries = 0;
-    var t = setInterval(function () {
-      tries++;
-      if (window.google && google.accounts && google.accounts.id) {
-        clearInterval(t); initGsi();
-      } else if (tries > 50) {
-        clearInterval(t); authError("Could not load Google Sign-In. Check your connection.");
-      }
-    }, 150);
+    loadAndRender().catch(function (e) {
+      showLoadError((e && e.message) ? e.message : String(e));
+    });
   }
 
   if (typeof document !== "undefined" && document.getElementById) {
@@ -248,8 +193,8 @@
   // expose pure fns for headless verification
   window.GFP = {
     linearRegression: linearRegression, movingAverage: movingAverage,
-    computeKPIs: computeKPIs, decryptData: decryptData, decodeJwt: decodeJwt,
-    render: render, handleCredential: handleCredential,
+    computeKPIs: computeKPIs, decryptData: decryptData,
+    render: render, loadAndRender: loadAndRender,
     _setConfig: function (c) { CONFIG = c; }
   };
 })();
