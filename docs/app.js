@@ -1,5 +1,5 @@
 /* ============================================================
-   Go-Forth Pest Control — 2026 Revenue Dashboard
+   Carolina Core Wellness — 2026 Revenue Dashboard
    Public dashboard: in-browser AES-256-GCM decryption + charts.
    Math & crypto are exposed on window.GFP for headless testing.
    ============================================================ */
@@ -8,8 +8,11 @@
 
   var COLORS = {
     green: "#1f8a4c", greenSoft: "#9fd3b4", blue: "#0e4d92",
-    amber: "#c77d0a", ink: "#12303f", grid: "#e2e8ee"
+    amber: "#c77d0a", red: "#b3261e", ink: "#12303f", grid: "#e2e8ee"
   };
+
+  // Conservative view: -5% haircut applied to UPCOMING (forecast) months ONLY.
+  var CONS_FACTOR = 0.95;
 
   // ---------- number helpers ----------
   function money(n) {
@@ -51,6 +54,21 @@
     var latestMoM = mom.length ? mom[mom.length - 1] : 0;
     return { total: total, best: best, worst: worst, avgMoM: avgMoM, latestMoM: latestMoM };
   }
+  // Conservative series: -5% on forecast months only; actuals unchanged.
+  // Line is anchored at the last actual month so it forks cleanly from the AOP line.
+  function computeConservative(months) {
+    var lastActualIdx = -1;
+    months.forEach(function (m, i) { if (!m.forecast) lastActualIdx = i; });
+    var line = months.map(function (m, i) {
+      if (m.forecast) return m.revenue * CONS_FACTOR;   // upcoming month -> haircut
+      if (i === lastActualIdx) return m.revenue;        // anchor at last actual
+      return null;                                      // don't draw over actuals
+    });
+    var total = months.reduce(function (a, m) {
+      return a + (m.forecast ? m.revenue * CONS_FACTOR : m.revenue);
+    }, 0);
+    return { line: line, total: total, lastActualIdx: lastActualIdx };
+  }
 
   // ---------- crypto (pure) ----------
   function b64ToBytes(s) {
@@ -89,6 +107,7 @@
     var ma = movingAverage(revs, 3);
     var reg = linearRegression(revs).points;
     var k = computeKPIs(months);
+    var cons = computeConservative(months);
 
     document.getElementById("cutoff-note").innerHTML =
       "<strong>Note:</strong> " + data.cutoff_note;
@@ -99,7 +118,7 @@
 
     // KPI cards
     var kpis = [
-      { label: "Total 2026 Revenue", value: money(k.total), meta: "12 months (incl. Jul–Dec forecast)" },
+      { label: "Total 2026 Revenue (AOP)", value: money(k.total), meta: "Conservative: " + money(cons.total) + " (−5% Jul–Dec)" },
       { label: "Best Month", value: money(k.best.revenue), meta: k.best.label + (k.best.forecast ? " (forecast)" : " (booked)") },
       { label: "Worst Month", value: money(k.worst.revenue), meta: k.worst.label + (k.worst.forecast ? " (forecast)" : " (booked)") },
       { label: "Avg MoM Growth", value: pct(k.avgMoM), meta: "Latest MoM " + pct(k.latestMoM), cls: k.avgMoM >= 0 ? "up" : "down" }
@@ -133,19 +152,25 @@
         labels: months.map(function (m) { return m.key; }),
         datasets: [
           {
-            type: "bar", label: "Monthly Revenue",
-            data: revs, order: 3,
+            type: "bar", label: "Monthly Revenue (AOP)",
+            data: revs, order: 4,
             backgroundColor: months.map(function (m) { return m.forecast ? COLORS.greenSoft : COLORS.green; }),
             borderRadius: 4, maxBarThickness: 46
           },
           {
+            type: "line", label: "Conservative (−5%, Jul–Dec)",
+            data: cons.line, order: 0,
+            borderColor: COLORS.red, backgroundColor: COLORS.red,
+            borderWidth: 2.5, pointRadius: 3, pointStyle: "rectRot", tension: .3, spanGaps: false
+          },
+          {
             type: "line", label: "3-mo Moving Avg",
-            data: ma, order: 1, borderColor: COLORS.blue, backgroundColor: COLORS.blue,
+            data: ma, order: 2, borderColor: COLORS.blue, backgroundColor: COLORS.blue,
             borderWidth: 2.5, pointRadius: 2, tension: .35, spanGaps: true
           },
           {
             type: "line", label: "Linear Trend",
-            data: reg, order: 2, borderColor: COLORS.amber, backgroundColor: COLORS.amber,
+            data: reg, order: 3, borderColor: COLORS.amber, backgroundColor: COLORS.amber,
             borderWidth: 2, borderDash: [7, 5], pointRadius: 0, tension: 0
           }
         ]
@@ -193,7 +218,7 @@
   // expose pure fns for headless verification
   window.GFP = {
     linearRegression: linearRegression, movingAverage: movingAverage,
-    computeKPIs: computeKPIs, decryptData: decryptData,
+    computeKPIs: computeKPIs, computeConservative: computeConservative, decryptData: decryptData,
     render: render, loadAndRender: loadAndRender,
     _setConfig: function (c) { CONFIG = c; }
   };
