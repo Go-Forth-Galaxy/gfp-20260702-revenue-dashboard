@@ -1,26 +1,24 @@
 /* ============================================================
    Carolina Core Wellness — 2026 Revenue Dashboard
+   3 tabs: Overall (company-wide, 4 streams) · Coffee · Events
    Public dashboard: in-browser AES-256-GCM decryption + charts.
-   Math & crypto are exposed on window.GFP for headless testing.
+   Pure math/crypto exposed on window.GFP for headless testing.
    ============================================================ */
 (function () {
   "use strict";
 
   var COLORS = {
-    green: "#1f8a4c", greenSoft: "#9fd3b4", blue: "#0e4d92",
-    amber: "#c77d0a", red: "#b3261e", ink: "#12303f", grid: "#e2e8ee"
+    green: "#1f8a4c", greenSoft: "#9fd3b4", blue: "#0e4d92", blueSoft: "#9db8d6",
+    amber: "#c77d0a", red: "#b3261e", ink: "#12303f", grid: "#e2e8ee",
+    coffee: "#6f4e37", apparel: "#c77d0a", alcohol: "#8e44ad"
   };
-
-  // Conservative view: -5% haircut applied to UPCOMING (forecast) months ONLY.
   var CONS_FACTOR = 0.95;
 
   // ---------- number helpers ----------
-  function money(n) {
-    return "$" + Math.round(n).toLocaleString("en-US");
-  }
-  function pct(n) {
-    return (n >= 0 ? "+" : "") + n.toFixed(1) + "%";
-  }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+  function money2(n) { return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function pct(n) { return (n >= 0 ? "+" : "") + n.toFixed(1) + "%"; }
+  function pct0(n) { return n.toFixed(1) + "%"; }
 
   // ---------- trend math (pure) ----------
   function linearRegression(ys) {
@@ -35,38 +33,38 @@
     w = w || 3;
     return ys.map(function (_, i) {
       if (i < w - 1) return null;
-      var s = 0;
-      for (var j = i - w + 1; j <= i; j++) s += ys[j];
+      var s = 0; for (var j = i - w + 1; j <= i; j++) s += ys[j];
       return s / w;
     });
   }
-  function computeKPIs(months) {
-    var revs = months.map(function (m) { return m.revenue; });
-    var total = revs.reduce(function (a, b) { return a + b; }, 0);
-    var best = months[0], worst = months[0];
-    months.forEach(function (m) {
-      if (m.revenue > best.revenue) best = m;
-      if (m.revenue < worst.revenue) worst = m;
-    });
+  // MoM computed on ACTUAL (booked) months only — per requirement "actuals not projection".
+  function momActuals(months) {
+    var acts = months.filter(function (m) { return !m.forecast; }).map(function (m) { return m.revenue; });
     var mom = [];
-    for (var i = 1; i < revs.length; i++) mom.push((revs[i] - revs[i - 1]) / revs[i - 1] * 100);
-    var avgMoM = mom.length ? mom.reduce(function (a, b) { return a + b; }, 0) / mom.length : 0;
-    var latestMoM = mom.length ? mom[mom.length - 1] : 0;
-    return { total: total, best: best, worst: worst, avgMoM: avgMoM, latestMoM: latestMoM };
+    for (var i = 1; i < acts.length; i++) mom.push((acts[i] - acts[i - 1]) / acts[i - 1] * 100);
+    return {
+      series: mom,
+      avg: mom.length ? mom.reduce(function (a, b) { return a + b; }, 0) / mom.length : 0,
+      latest: mom.length ? mom[mom.length - 1] : 0
+    };
   }
-  // Conservative series: -5% on forecast months only; actuals unchanged.
-  // Line is anchored at the last actual month so it forks cleanly from the AOP line.
+  // Lowest / highest among ACTUAL months (booked) — "Lowest Month" replaces "Worst Month".
+  function extremesActual(months) {
+    var acts = months.filter(function (m) { return !m.forecast; });
+    if (!acts.length) acts = months;
+    var lo = acts[0], hi = acts[0];
+    acts.forEach(function (m) { if (m.revenue < lo.revenue) lo = m; if (m.revenue > hi.revenue) hi = m; });
+    return { lowest: lo, highest: hi };
+  }
   function computeConservative(months) {
     var lastActualIdx = -1;
     months.forEach(function (m, i) { if (!m.forecast) lastActualIdx = i; });
     var line = months.map(function (m, i) {
-      if (m.forecast) return m.revenue * CONS_FACTOR;   // upcoming month -> haircut
-      if (i === lastActualIdx) return m.revenue;        // anchor at last actual
-      return null;                                      // don't draw over actuals
+      if (m.forecast) return m.revenue * CONS_FACTOR;
+      if (i === lastActualIdx) return m.revenue;
+      return null;
     });
-    var total = months.reduce(function (a, m) {
-      return a + (m.forecast ? m.revenue * CONS_FACTOR : m.revenue);
-    }, 0);
+    var total = months.reduce(function (a, m) { return a + (m.forecast ? m.revenue * CONS_FACTOR : m.revenue); }, 0);
     return { line: line, total: total, lastActualIdx: lastActualIdx };
   }
 
@@ -87,12 +85,247 @@
     return JSON.parse(new TextDecoder().decode(plain));
   }
 
-  var CONFIG;
+  var CONFIG, DATA, CHARTS = {};
 
-  // ---------- app ----------
   function showLoadError(msg) {
-    var note = document.getElementById("cutoff-note");
+    var note = document.getElementById("load-note");
     if (note) note.innerHTML = "<strong>Could not load dashboard data:</strong> " + msg;
+  }
+  function kpiCard(c) {
+    return '<div class="kpi"><div class="label">' + c.label + '</div>' +
+      '<div class="value ' + (c.cls || "") + '">' + c.value + '</div>' +
+      '<div class="meta">' + (c.meta || "") + "</div></div>";
+  }
+
+  // ===================== OVERALL =====================
+  function renderOverall(o) {
+    var months = o.months;
+    var revs = months.map(function (m) { return m.revenue; });
+    var ma = movingAverage(revs, 3);
+    var reg = linearRegression(revs).points;
+    var mom = momActuals(months);
+    var ext = extremesActual(months);
+    var cons = computeConservative(months);
+
+    var realized = o.realized;
+    var target = o.denominator;
+    var projectedFull = revs.reduce(function (a, b) { return a + b; }, 0); // actuals + forward budget
+    var progress = realized / target * 100;
+
+    document.getElementById("ov-forward").innerHTML =
+      "<strong>Forward progress:</strong> " + money(realized) + " of the " + money(target) +
+      " annual plan is booked (" + pct0(progress) + "). Strong start — but we can't stop: " +
+      money(target - realized) + " remains across the back half of the year.";
+
+    document.getElementById("ov-kpis").innerHTML = [
+      { label: "Realized Revenue (Jan–Jun booked)", value: money(realized), meta: pct0(progress) + " of annual plan" },
+      { label: "Projected Full-Year", value: money(projectedFull), meta: "Actuals + Jul–Dec budget · Conservative " + money(cons.total) },
+      { label: "Overall Annual Plan (AOP)", value: money(target), meta: "All four revenue streams" },
+      { label: "Lowest Month", value: money(ext.lowest.revenue), meta: ext.lowest.label + " (booked)" },
+      { label: "Highest Month", value: money(ext.highest.revenue), meta: ext.highest.label + " (booked)" },
+      { label: "Avg MoM Growth (actuals)", value: pct(mom.avg), meta: "Latest MoM " + pct(mom.latest), cls: mom.avg >= 0 ? "up" : "down" }
+    ].map(kpiCard).join("");
+
+    // progress bar
+    var bar = document.getElementById("ov-bar");
+    bar.style.width = Math.max(2, Math.min(100, progress)).toFixed(1) + "%";
+    bar.textContent = pct0(progress);
+    document.getElementById("ov-bar-left").textContent = "Realized " + money(realized);
+    document.getElementById("ov-bar-right").textContent = "Target " + money(target);
+    document.getElementById("ov-progress-hint").textContent =
+      "Realized revenue as a percent of the overall yearly projection (all four streams). " +
+      "Denominator = " + money(target) + " four-stream AOP plan.";
+
+    // detail table (MoM on actuals; forecast rows show "—" for MoM)
+    var tbody = "", prevAct = null;
+    months.forEach(function (m, i) {
+      var momTxt;
+      if (m.forecast) { momTxt = '<span class="subtle">— (forecast)</span>'; }
+      else { momTxt = prevAct == null ? "—" : pct((m.revenue - prevAct) / prevAct * 100); prevAct = m.revenue; }
+      tbody += "<tr><td>" + m.label +
+        ' <span class="badge ' + (m.forecast ? "forecast" : "actual") + '">' + (m.forecast ? "budget" : "booked") + "</span></td>" +
+        "<td>" + money(m.revenue) + "</td>" +
+        "<td>" + (ma[i] == null ? "—" : money(ma[i])) + "</td>" +
+        "<td>" + momTxt + "</td></tr>";
+    });
+    document.querySelector("#ov-detail tbody").innerHTML = tbody;
+    document.querySelector("#ov-detail tfoot").innerHTML =
+      "<tr><td>Full-Year (proj.)</td><td>" + money(projectedFull) + "</td><td></td><td></td></tr>";
+
+    CHARTS.overall = function () {
+      if (typeof Chart === "undefined") return;
+      new Chart(document.getElementById("ov-chart").getContext("2d"), {
+        data: {
+          labels: months.map(function (m) { return m.key; }),
+          datasets: [
+            { type: "bar", label: "Monthly Revenue", data: revs, order: 4,
+              backgroundColor: months.map(function (m) { return m.forecast ? COLORS.greenSoft : COLORS.green; }),
+              borderRadius: 4, maxBarThickness: 46 },
+            { type: "line", label: "Conservative (−5%, Jul–Dec)", data: cons.line, order: 0,
+              borderColor: COLORS.red, backgroundColor: COLORS.red, borderWidth: 2.5, pointRadius: 3, pointStyle: "rectRot", tension: .3, spanGaps: false },
+            { type: "line", label: "3-mo Moving Avg", data: ma, order: 2,
+              borderColor: COLORS.blue, backgroundColor: COLORS.blue, borderWidth: 2.5, pointRadius: 2, tension: .35, spanGaps: true },
+            { type: "line", label: "Linear Trend", data: reg, order: 3,
+              borderColor: COLORS.amber, backgroundColor: COLORS.amber, borderWidth: 2, borderDash: [7, 5], pointRadius: 0, tension: 0 }
+          ]
+        },
+        options: baseChartOpts()
+      });
+    };
+  }
+
+  // ===================== COFFEE =====================
+  function renderCoffee(c) {
+    var mtdPct = c.mtdRealized / c.mtdBudget * 100;
+    var coffeeRealizedYTD = c.realizedJanJun + c.mtdRealized;   // Jan–Jun + Jul MTD
+    var annualPctBudget = coffeeRealizedYTD / c.annualBudget * 100;
+    var overallProjPct = coffeeRealizedYTD / (DATA.overall.denominator) * 100;
+    var wk = c.currentWeek;
+    var wkPctToDate = wk.realized / wk.goalToDate * 100;
+
+    document.getElementById("cf-kpis").innerHTML = [
+      { label: "Coffee Realized (Jan–Jun + Jul MTD)", value: money(coffeeRealizedYTD), meta: pct0(annualPctBudget) + " of " + money(c.annualBudget) + " coffee plan" },
+      { label: "July MTD (1–15)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
+      { label: "% of Overall Yearly Projection", value: pct0(overallProjPct), meta: "Coffee YTD ÷ " + money(DATA.overall.denominator) + " company plan" },
+      { label: "Projected Coffee (full year)", value: money(c.annualBudget), meta: "AOP coffee plan" },
+      { label: "Current Week vs. Goal", value: pct0(wkPctToDate), meta: wk.label },
+      { label: "Last Complete Week", value: money(c.lastWeek.realized), meta: c.lastWeek.label + " vs " + money(c.lastWeek.goal) + " goal" }
+    ].map(kpiCard).join("");
+
+    // current week bar (week-to-date vs goal-to-date)
+    document.getElementById("cf-week-hint").textContent =
+      wk.label + ": " + money2(wk.realized) + " booked vs " + money(wk.goalToDate) +
+      " goal-to-date (full-week goal " + money(wk.fullGoal) + ").";
+    var wb = document.getElementById("cf-week-bar");
+    wb.style.width = Math.max(2, Math.min(100, wkPctToDate)).toFixed(1) + "%";
+    wb.textContent = pct0(wkPctToDate);
+    document.getElementById("cf-week-left").textContent = "Week-to-date " + money(wk.realized);
+    document.getElementById("cf-week-right").textContent = "Goal-to-date " + money(wk.goalToDate);
+
+    // category list
+    var cats = c.byCategory;
+    var catTotal = Object.keys(cats).reduce(function (a, k) { return a + cats[k]; }, 0);
+    var order = ["Coffee", "Apparel", "Alcohol"];
+    document.getElementById("cf-cat-list").innerHTML = order.map(function (k) {
+      var v = cats[k] || 0;
+      return '<div class="catrow"><span>' + k + '</span><span><b>' + money2(v) + "</b> &nbsp;<span class='subtle'>" +
+        pct0(v / catTotal * 100) + "</span></span></div>";
+    }).join("") + '<div class="catrow"><span><b>Total</b></span><span><b>' + money2(catTotal) + "</b></span></div>";
+    document.getElementById("cf-cat-note").textContent =
+      "Apparel and alcohol are a tiny share of July sales so far (" + money2((cats.Apparel || 0) + (cats.Alcohol || 0)) +
+      " combined) — the store is overwhelmingly coffee/food.";
+
+    CHARTS.coffee = function () {
+      if (typeof Chart === "undefined") return;
+      // daily lookout
+      new Chart(document.getElementById("cf-chart").getContext("2d"), {
+        data: {
+          labels: c.daily.map(function (d) { return d.date.slice(5) + " " + d.dow; }),
+          datasets: [
+            { type: "bar", label: "Daily Revenue", data: c.daily.map(function (d) { return d.revenue; }),
+              backgroundColor: COLORS.coffee, borderRadius: 4, maxBarThickness: 34, order: 2 },
+            { type: "line", label: "Daily Goal", data: c.daily.map(function (d) { return d.goal; }),
+              borderColor: COLORS.amber, backgroundColor: COLORS.amber, borderWidth: 2, borderDash: [6, 4], pointRadius: 0, tension: 0, order: 1 }
+          ]
+        },
+        options: baseChartOpts(true)
+      });
+      // category doughnut
+      new Chart(document.getElementById("cf-cat-chart").getContext("2d"), {
+        type: "doughnut",
+        data: {
+          labels: ["Coffee", "Apparel", "Alcohol"],
+          datasets: [{ data: [cats.Coffee || 0, cats.Apparel || 0, cats.Alcohol || 0],
+            backgroundColor: [COLORS.coffee, COLORS.apparel, COLORS.alcohol], borderWidth: 2, borderColor: "#fff" }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: "58%",
+          plugins: { legend: { position: "bottom" },
+            tooltip: { callbacks: { label: function (x) { return x.label + ": " + money2(x.parsed); } } } }
+        }
+      });
+    };
+  }
+
+  // ===================== EVENTS =====================
+  function renderEvents(e) {
+    var months = e.months;
+    var revs = months.map(function (m) { return m.revenue; });
+    document.getElementById("ev-kpis").innerHTML = [
+      { label: "Event Room Realized (Jan–Jun)", value: money2(e.realizedJanJun), meta: "Booked actuals, AOP Class view" },
+      { label: "Run-Rate (per month)", value: money2(e.runRateMonthly), meta: "Jan–Jun monthly average" },
+      { label: "Projected Annual", value: money(e.projectedAnnual), meta: "Actuals + Jul–Dec run-rate" }
+    ].map(kpiCard).join("");
+
+    var tbody = "";
+    months.forEach(function (m) {
+      tbody += "<tr><td>" + m.label + "</td><td>" + money2(m.revenue) + "</td><td>" +
+        (m.forecast ? '<span class="badge forecast">run-rate proj.</span>' : '<span class="badge actual">booked</span>') + "</td></tr>";
+    });
+    document.querySelector("#ev-detail tbody").innerHTML = tbody;
+    document.querySelector("#ev-detail tfoot").innerHTML =
+      "<tr><td>Projected Annual</td><td>" + money2(e.projectedAnnual) + "</td><td></td></tr>";
+    document.getElementById("ev-note").textContent = e.note;
+
+    CHARTS.events = function () {
+      if (typeof Chart === "undefined") return;
+      new Chart(document.getElementById("ev-chart").getContext("2d"), {
+        data: {
+          labels: months.map(function (m) { return m.key; }),
+          datasets: [{ type: "bar", label: "Event Room Revenue", data: revs,
+            backgroundColor: months.map(function (m) { return m.forecast ? COLORS.blueSoft : COLORS.blue; }),
+            borderRadius: 4, maxBarThickness: 46 }]
+        },
+        options: baseChartOpts()
+      });
+    };
+  }
+
+  function baseChartOpts(currency2) {
+    return {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function (x) { return x.dataset.label + ": " + (currency2 ? money2(x.parsed.y) : money(x.parsed.y)); } } }
+      },
+      scales: {
+        y: { beginAtZero: false, grid: { color: COLORS.grid }, ticks: { callback: function (v) { return "$" + (v / 1000) + "k"; } } },
+        x: { grid: { display: false } }
+      }
+    };
+  }
+
+  // ---------- tabs ----------
+  var built = {};
+  function showTab(name) {
+    ["overall", "coffee", "events"].forEach(function (t) {
+      var panel = document.getElementById("tab-" + t);
+      var btn = document.querySelector('.tabbtn[data-tab="' + t + '"]');
+      if (panel) panel.classList.toggle("active", t === name);
+      if (btn) btn.classList.toggle("active", t === name);
+    });
+    // lazy-build the chart for a tab the first time it becomes visible (avoids hidden-canvas sizing bug)
+    if (!built[name] && CHARTS[name]) { CHARTS[name](); built[name] = true; }
+  }
+  function wireTabs() {
+    var btns = document.querySelectorAll(".tabbtn");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function () { showTab(this.getAttribute("data-tab")); });
+    }
+  }
+
+  function render(data) {
+    DATA = data;
+    document.getElementById("load-note").innerHTML = "<strong>Note:</strong> " + data.overall.cutoff_note;
+    document.getElementById("foot").innerHTML =
+      "Source: " + data.source + " &nbsp;•&nbsp; Generated " + data.generated +
+      " &nbsp;•&nbsp; Data AES-256-GCM encrypted at rest &nbsp;•&nbsp; Carolina Core Wellness";
+    renderOverall(data.overall);
+    renderCoffee(data.coffee);
+    renderEvents(data.events);
+    wireTabs();
+    showTab("overall"); // builds the overall chart while its panel is visible
   }
 
   async function loadAndRender() {
@@ -101,113 +334,12 @@
     render(data);
   }
 
-  function render(data) {
-    var months = data.months;
-    var revs = months.map(function (m) { return m.revenue; });
-    var ma = movingAverage(revs, 3);
-    var reg = linearRegression(revs).points;
-    var k = computeKPIs(months);
-    var cons = computeConservative(months);
-
-    document.getElementById("cutoff-note").innerHTML =
-      "<strong>Note:</strong> " + data.cutoff_note;
-    document.getElementById("src-name").textContent = data.source;
-    document.getElementById("foot").innerHTML =
-      "Source: " + data.source + " &nbsp;•&nbsp; Generated " + data.generated +
-      " &nbsp;•&nbsp; Data AES-256-GCM encrypted at rest &nbsp;•&nbsp; Go-Forth Pest Control";
-
-    // KPI cards
-    var kpis = [
-      { label: "Total 2026 Revenue (AOP)", value: money(k.total), meta: "Conservative: " + money(cons.total) + " (−5% Jul–Dec)" },
-      { label: "Best Month", value: money(k.best.revenue), meta: k.best.label + (k.best.forecast ? " (forecast)" : " (booked)") },
-      { label: "Worst Month", value: money(k.worst.revenue), meta: k.worst.label + (k.worst.forecast ? " (forecast)" : " (booked)") },
-      { label: "Avg MoM Growth", value: pct(k.avgMoM), meta: "Latest MoM " + pct(k.latestMoM), cls: k.avgMoM >= 0 ? "up" : "down" }
-    ];
-    document.getElementById("kpis").innerHTML = kpis.map(function (c) {
-      return '<div class="kpi"><div class="label">' + c.label + '</div>' +
-        '<div class="value ' + (c.cls || "") + '">' + c.value + '</div>' +
-        '<div class="meta">' + c.meta + "</div></div>";
-    }).join("");
-
-    // Detail table
-    var tbody = "", prev = null;
-    months.forEach(function (m, i) {
-      var momTxt = prev == null ? "—" : pct((m.revenue - prev) / prev * 100);
-      tbody += "<tr><td>" + m.label +
-        '<span class="badge ' + (m.forecast ? "forecast" : "actual") + '">' + (m.forecast ? "forecast" : "booked") + "</span></td>" +
-        "<td>" + m.days + "</td><td>" + money(m.revenue) + "</td>" +
-        "<td>" + (ma[i] == null ? "—" : money(ma[i])) + "</td>" +
-        "<td>" + momTxt + "</td></tr>";
-      prev = m.revenue;
-    });
-    document.querySelector("#detail tbody").innerHTML = tbody;
-    document.querySelector("#detail tfoot").innerHTML =
-      "<tr><td>Total</td><td></td><td>" + money(k.total) + "</td><td></td><td></td></tr>";
-
-    // Chart
-    if (typeof Chart === "undefined") return;
-    var ctx = document.getElementById("revChart").getContext("2d");
-    new Chart(ctx, {
-      data: {
-        labels: months.map(function (m) { return m.key; }),
-        datasets: [
-          {
-            type: "bar", label: "Monthly Revenue (AOP)",
-            data: revs, order: 4,
-            backgroundColor: months.map(function (m) { return m.forecast ? COLORS.greenSoft : COLORS.green; }),
-            borderRadius: 4, maxBarThickness: 46
-          },
-          {
-            type: "line", label: "Conservative (−5%, Jul–Dec)",
-            data: cons.line, order: 0,
-            borderColor: COLORS.red, backgroundColor: COLORS.red,
-            borderWidth: 2.5, pointRadius: 3, pointStyle: "rectRot", tension: .3, spanGaps: false
-          },
-          {
-            type: "line", label: "3-mo Moving Avg",
-            data: ma, order: 2, borderColor: COLORS.blue, backgroundColor: COLORS.blue,
-            borderWidth: 2.5, pointRadius: 2, tension: .35, spanGaps: true
-          },
-          {
-            type: "line", label: "Linear Trend",
-            data: reg, order: 3, borderColor: COLORS.amber, backgroundColor: COLORS.amber,
-            borderWidth: 2, borderDash: [7, 5], pointRadius: 0, tension: 0
-          }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        interaction: { mode: "index", intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (c) { return c.dataset.label + ": " + money(c.parsed.y); }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: false,
-            grid: { color: COLORS.grid },
-            ticks: { callback: function (v) { return "$" + (v / 1000) + "k"; } }
-          },
-          x: { grid: { display: false } }
-        }
-      }
-    });
-  }
-
-  // ---------- boot ----------
   function boot() {
     CONFIG = window.GFP_CONFIG;
     if (!CONFIG || !CONFIG.DATA_URL || !CONFIG.DECRYPT_PASSPHRASE) {
-      showLoadError("configuration missing in config.js (DATA_URL / DECRYPT_PASSPHRASE).");
-      return;
+      showLoadError("configuration missing in config.js (DATA_URL / DECRYPT_PASSPHRASE)."); return;
     }
-    loadAndRender().catch(function (e) {
-      showLoadError((e && e.message) ? e.message : String(e));
-    });
+    loadAndRender().catch(function (e) { showLoadError((e && e.message) ? e.message : String(e)); });
   }
 
   if (typeof document !== "undefined" && document.getElementById) {
@@ -215,11 +347,10 @@
     else boot();
   }
 
-  // expose pure fns for headless verification
   window.GFP = {
-    linearRegression: linearRegression, movingAverage: movingAverage,
-    computeKPIs: computeKPIs, computeConservative: computeConservative, decryptData: decryptData,
-    render: render, loadAndRender: loadAndRender,
+    linearRegression: linearRegression, movingAverage: movingAverage, momActuals: momActuals,
+    extremesActual: extremesActual, computeConservative: computeConservative, decryptData: decryptData,
+    render: render, loadAndRender: loadAndRender, showTab: showTab,
     _setConfig: function (c) { CONFIG = c; }
   };
 })();
