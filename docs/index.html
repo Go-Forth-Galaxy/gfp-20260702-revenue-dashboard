@@ -4,52 +4,149 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Carolina Core Wellness — 2026 Revenue Dashboard</title>
-<meta name="description" content="Carolina Core Wellness 2026 monthly revenue dashboard with trendlines." />
+<meta name="description" content="Carolina Core Wellness 2026 revenue dashboard — company-wide overall view plus Coffee and Events drill-downs." />
 <link rel="stylesheet" href="styles.css" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  /* ---- tab-specific supplemental styles (reuse existing .kpi/.panel/etc.) ---- */
+  .tabs{display:flex;gap:6px;margin:4px 0 18px;border-bottom:2px solid #e2e8ee;flex-wrap:wrap}
+  .tabbtn{appearance:none;border:none;background:transparent;padding:11px 20px;font-size:15px;
+    font-weight:600;color:#5b6b78;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;border-radius:6px 6px 0 0}
+  .tabbtn:hover{color:#12303f;background:#f2f6f9}
+  .tabbtn.active{color:#1f8a4c;border-bottom-color:#1f8a4c}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block}
+  .progress-wrap{margin:6px 0 2px}
+  .progress{height:26px;background:#eef2f5;border-radius:14px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
+  .progress .bar{height:100%;background:linear-gradient(90deg,#1f8a4c,#33b06a);border-radius:14px;
+    display:flex;align-items:center;justify-content:flex-end;color:#fff;font-weight:700;font-size:13px;padding-right:10px;min-width:42px;transition:width .6s ease}
+  .progress-meta{display:flex;justify-content:space-between;font-size:13px;color:#5b6b78;margin-top:6px}
+  .forward-note{font-size:13.5px;color:#12303f;background:#eaf6ef;border-left:4px solid #1f8a4c;
+    padding:9px 13px;border-radius:6px;margin:12px 0 2px}
+  .split-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start}
+  @media(max-width:780px){.split-grid{grid-template-columns:1fr}}
+  .catrow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eef2f5;font-size:14px}
+  .catrow b{color:#12303f}
+  .subtle{color:#5b6b78;font-size:12.5px}
+</style>
 </head>
 <body>
 
-  <!-- ================= APP ================= -->
   <div id="app">
     <header class="appbar">
       <div class="brand">
-        <div class="logo">GF</div>
+        <div class="logo">CCW</div>
         <div>
           <h1>Carolina Core Wellness — 2026 Revenue</h1>
-          <div class="tag">Monthly revenue &amp; trend analysis</div>
+          <div class="tag">Company-wide overall view · Coffee &amp; Events drill-downs</div>
         </div>
       </div>
       <div class="spacer"></div>
     </header>
 
     <main>
-      <div class="notice" id="cutoff-note"></div>
+      <div class="notice" id="load-note"></div>
 
-      <section class="kpis" id="kpis"></section>
+      <nav class="tabs" id="tabs">
+        <button class="tabbtn active" data-tab="overall">Overall</button>
+        <button class="tabbtn" data-tab="coffee">Coffee</button>
+        <button class="tabbtn" data-tab="events">Events</button>
+      </nav>
 
-      <div class="panel">
-        <h2>Monthly Revenue with Trendlines</h2>
-        <p class="hint">Actual &amp; forecast monthly revenue (bars) with a 3-month moving average and a linear regression line of best fit. The red line is a <strong>conservative scenario</strong> that applies a −5% haircut to the <strong>Jul–Dec forecast only</strong> — actual (Jan–Jun) months are unchanged.</p>
-        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
-        <div class="legend">
-          <span><i style="background:#1f8a4c"></i>Monthly revenue (Jan–Jun booked)</span>
-          <span><i style="background:#9fd3b4"></i>Monthly revenue (Jul–Dec forecast)</span>
-          <span><i style="background:#b3261e"></i>Conservative view (−5% on Jul–Dec forecast)</span>
-          <span><i style="background:#0e4d92"></i>3-month moving average</span>
-          <span><i style="background:#c77d0a"></i>Linear regression (trend)</span>
+      <!-- ===================== OVERALL ===================== -->
+      <section class="tabpanel active" id="tab-overall">
+        <div class="forward-note" id="ov-forward"></div>
+        <section class="kpis" id="ov-kpis"></section>
+
+        <div class="panel">
+          <h2>Annual Progress — Realized vs. Overall Yearly Projection</h2>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="ov-bar">0%</div></div>
+            <div class="progress-meta"><span id="ov-bar-left"></span><span id="ov-bar-right"></span></div>
+          </div>
+          <p class="hint" id="ov-progress-hint"></p>
         </div>
-      </div>
 
-      <div class="panel">
-        <h2>Monthly Detail</h2>
-        <p class="hint">Source: <span id="src-name"></span></p>
-        <table id="detail">
-          <thead><tr><th>Month</th><th>Days</th><th>Revenue</th><th>3-mo Avg</th><th>MoM %</th></tr></thead>
-          <tbody></tbody>
-          <tfoot></tfoot>
-        </table>
-      </div>
+        <div class="panel">
+          <h2>Monthly Revenue — Actuals &amp; Forward Budget</h2>
+          <p class="hint">Jan–Jun are <strong>booked actuals</strong> (all four revenue streams). Jul–Dec are the <strong>AOP forward budget</strong>. The red line is a <strong>conservative view</strong> (−5% on the Jul–Dec forecast only).</p>
+          <div class="chart-wrap"><canvas id="ov-chart"></canvas></div>
+          <div class="legend">
+            <span><i style="background:#1f8a4c"></i>Monthly revenue (Jan–Jun booked)</span>
+            <span><i style="background:#9fd3b4"></i>Monthly revenue (Jul–Dec budget)</span>
+            <span><i style="background:#b3261e"></i>Conservative (−5% on Jul–Dec)</span>
+            <span><i style="background:#0e4d92"></i>3-month moving average</span>
+            <span><i style="background:#c77d0a"></i>Linear trend</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Monthly Detail</h2>
+          <p class="hint">Month-over-month growth is computed on <strong>booked actuals</strong> (Jan–Jun); forecast months are labeled.</p>
+          <table id="ov-detail">
+            <thead><tr><th>Month</th><th>Revenue</th><th>3-mo Avg</th><th>MoM %</th></tr></thead>
+            <tbody></tbody><tfoot></tfoot>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===================== COFFEE ===================== -->
+      <section class="tabpanel" id="tab-coffee">
+        <section class="kpis" id="cf-kpis"></section>
+
+        <div class="panel">
+          <h2>Current Week vs. Goal</h2>
+          <p class="hint" id="cf-week-hint"></p>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="cf-week-bar">0%</div></div>
+            <div class="progress-meta"><span id="cf-week-left"></span><span id="cf-week-right"></span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Daily Lookout — July 1–15</h2>
+          <p class="hint">Daily coffee-store revenue (bars) against the AOP daily goal line ($1,200 weekday · $600 Sat · $450 Sun).</p>
+          <div class="chart-wrap"><canvas id="cf-chart"></canvas></div>
+        </div>
+
+        <div class="split-grid">
+          <div class="panel">
+            <h2>Revenue Mix — Coffee / Apparel / Alcohol</h2>
+            <p class="hint">July 1–15 sales by category (deduped across both QB-sync files).</p>
+            <div class="chart-wrap" style="max-height:260px"><canvas id="cf-cat-chart"></canvas></div>
+          </div>
+          <div class="panel">
+            <h2>Category Detail</h2>
+            <div id="cf-cat-list"></div>
+            <p class="subtle" id="cf-cat-note"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== EVENTS ===================== -->
+      <section class="tabpanel" id="tab-events">
+        <section class="kpis" id="ev-kpis"></section>
+
+        <div class="panel">
+          <h2>Event Room Revenue — Actuals &amp; Run-Rate Projection</h2>
+          <p class="hint">Jan–Jun are <strong>booked Event Room actuals</strong> (AOP Class view). Jul–Dec are a <strong>run-rate projection</strong> (Jan–Jun monthly average).</p>
+          <div class="chart-wrap"><canvas id="ev-chart"></canvas></div>
+          <div class="legend">
+            <span><i style="background:#0e4d92"></i>Event Room (Jan–Jun booked)</span>
+            <span><i style="background:#9db8d6"></i>Event Room (Jul–Dec run-rate projection)</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Monthly Detail</h2>
+          <table id="ev-detail">
+            <thead><tr><th>Month</th><th>Revenue</th><th>Basis</th></tr></thead>
+            <tbody></tbody><tfoot></tfoot>
+          </table>
+          <p class="subtle" id="ev-note"></p>
+        </div>
+      </section>
+
     </main>
     <footer id="foot"></footer>
   </div>
