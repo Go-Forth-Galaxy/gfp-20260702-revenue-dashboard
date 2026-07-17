@@ -6,7 +6,10 @@
 <title>Carolina Core Wellness — 2026 Revenue Dashboard</title>
 <meta name="description" content="Carolina Core Wellness 2026 revenue dashboard — company-wide overall view plus Coffee and Events drill-downs." />
 <link rel="stylesheet" href="styles.css" />
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- Chart.js from CDN, with an automatic fallback to a second CDN if the first is blocked.
+     If both fail, the dashboard still renders every figure in tables/cards (charts degrade gracefully). -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+        onerror="this.onerror=null;var s=document.createElement('script');s.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.min.js';document.head.appendChild(s);"></script>
 <style>
   /* ---- tab-specific supplemental styles (reuse existing .kpi/.panel/etc.) ---- */
   .tabs{display:flex;gap:6px;margin:4px 0 18px;border-bottom:2px solid #e2e8ee;flex-wrap:wrap}
