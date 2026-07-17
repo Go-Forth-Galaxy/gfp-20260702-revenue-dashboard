@@ -12,13 +12,42 @@
     amber: "#c77d0a", red: "#b3261e", ink: "#12303f", grid: "#e2e8ee",
     coffee: "#6f4e37", apparel: "#c77d0a", alcohol: "#8e44ad"
   };
+  var CAT_COLORS = { Coffee: COLORS.coffee, Apparel: COLORS.apparel, Alcohol: COLORS.alcohol };
   var CONS_FACTOR = 0.95;
 
   // ---------- number helpers ----------
   function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
   function money2(n) { return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function num(n) { return Number(n).toLocaleString("en-US"); }
   function pct(n) { return (n >= 0 ? "+" : "") + n.toFixed(1) + "%"; }
   function pct0(n) { return n.toFixed(1) + "%"; }
+
+  // ---------- pace / time-of-year (pure, date-driven) ----------
+  // Fraction of the calendar year elapsed as of `now` (defaults to today in the browser).
+  function yearElapsedFraction(now) {
+    now = now || new Date();
+    var y = now.getFullYear();
+    var start = new Date(y, 0, 1).getTime();
+    var end = new Date(y + 1, 0, 1).getTime();
+    return (now.getTime() - start) / (end - start);
+  }
+  // Red / yellow / green driven by realized-% vs. how far through the year we are.
+  function paceStatus(realized, target, now) {
+    var realizedPct = target > 0 ? realized / target : 0;
+    var elapsed = yearElapsedFraction(now);
+    var ratio = elapsed > 0 ? realizedPct / elapsed : 1;
+    var level = ratio >= 0.98 ? "green" : ratio >= 0.90 ? "yellow" : "red";
+    return {
+      realizedPct: realizedPct * 100,
+      elapsedPct: elapsed * 100,
+      ratio: ratio,
+      level: level,
+      gapPts: (realizedPct - elapsed) * 100
+    };
+  }
+  function paceLabel(level) {
+    return level === "green" ? "On track" : level === "yellow" ? "Slightly behind" : "Behind pace";
+  }
 
   // ---------- trend math (pure) ----------
   function linearRegression(ys) {
@@ -111,30 +140,49 @@
     var target = o.denominator;
     var projectedFull = revs.reduce(function (a, b) { return a + b; }, 0); // actuals + forward budget
     var progress = realized / target * 100;
+    var pace = o.pace || {};
+    var ps = paceStatus(realized, target);
 
-    document.getElementById("ov-forward").innerHTML =
-      "<strong>Forward progress:</strong> " + money(realized) + " of the " + money(target) +
-      " annual plan is booked (" + pct0(progress) + "). Strong start — but we can't stop: " +
-      money(target - realized) + " remains across the back half of the year.";
-
-    document.getElementById("ov-kpis").innerHTML = [
-      { label: "Realized Revenue (Jan–Jun booked)", value: money(realized), meta: pct0(progress) + " of annual plan" },
-      { label: "Projected Full-Year", value: money(projectedFull), meta: "Actuals + Jul–Dec budget · Conservative " + money(cons.total) },
-      { label: "Overall Annual Plan (AOP)", value: money(target), meta: "All four revenue streams" },
-      { label: "Lowest Month", value: money(ext.lowest.revenue), meta: ext.lowest.label + " (booked)" },
-      { label: "Highest Month", value: money(ext.highest.revenue), meta: ext.highest.label + " (booked)" },
-      { label: "Avg MoM Growth (actuals)", value: pct(mom.avg), meta: "Latest MoM " + pct(mom.latest), cls: mom.avg >= 0 ? "up" : "down" }
-    ].map(kpiCard).join("");
-
-    // progress bar
+    // ----- progress bar (ON TOP) with red/yellow/green pace color -----
     var bar = document.getElementById("ov-bar");
+    bar.className = "bar " + ps.level;
     bar.style.width = Math.max(2, Math.min(100, progress)).toFixed(1) + "%";
     bar.textContent = pct0(progress);
     document.getElementById("ov-bar-left").textContent = "Realized " + money(realized);
     document.getElementById("ov-bar-right").textContent = "Target " + money(target);
     document.getElementById("ov-progress-hint").textContent =
       "Realized revenue as a percent of the overall yearly projection (all four streams). " +
-      "Denominator = " + money(target) + " four-stream AOP plan.";
+      "Denominator = " + money(target) + " four-stream AOP plan. Realized reflects booked actuals through Jun 30.";
+
+    // ----- pace + catch-up block -----
+    var gapTxt = ps.gapPts < 0
+      ? " — behind by " + Math.abs(ps.gapPts).toFixed(1) + " pts"
+      : " — ahead by " + ps.gapPts.toFixed(1) + " pts";
+    document.getElementById("ov-pace").innerHTML =
+      '<div class="pace pace-' + ps.level + '">' +
+        '<div class="pace-head">' + paceLabel(ps.level) + ": " + pct0(ps.realizedPct) +
+          " realized vs " + pct0(ps.elapsedPct) + " of the year elapsed" + gapTxt + ".</div>" +
+        '<div class="pace-sub">To make it up and still hit ' + money(target) +
+          ', revenue needs to average <b>' + money(pace.perMonth) + "/mo</b> · <b>" +
+          money(pace.perWeek) + "/wk</b> · <b>" + money(pace.perDay) + "/day</b> across the remaining " +
+          (pace.remMonths || 6) + " months (Jul–Dec) — up from the current " +
+          money(pace.currentRunRateMonthly) + "/mo run-rate (<b>+" + (pace.upliftPct != null ? pace.upliftPct.toFixed(1) : "0.0") +
+          "%</b>, +" + money(pace.upliftMonthly) + "/mo).</div>" +
+      "</div>";
+
+    document.getElementById("ov-forward").innerHTML =
+      "<strong>Forward progress:</strong> " + money(realized) + " of the " + money(target) +
+      " annual plan is booked (" + pct0(progress) + "). We've made real progress — but we can't stop: " +
+      money(target - realized) + " remains across the back half of the year.";
+
+    document.getElementById("ov-kpis").innerHTML = [
+      { label: "Realized Revenue (Jan–Jun booked)", value: money(realized), meta: pct0(progress) + " of annual plan" },
+      { label: "Revised Full Year", value: money(projectedFull), meta: "Actuals + Jul–Dec budget · Conservative " + money(cons.total) },
+      { label: "Overall Annual Plan (AOP)", value: money(target), meta: "All four revenue streams" },
+      { label: "Monthly Avg to Hit Target", value: money(pace.perMonth), meta: "Needed Jul–Dec vs " + money(pace.currentRunRateMonthly) + "/mo now" },
+      { label: "Lowest Month", value: money(ext.lowest.revenue), meta: ext.lowest.label + " (booked)" },
+      { label: "Avg MoM Growth (actuals)", value: pct(mom.avg), meta: "Latest MoM " + pct(mom.latest), cls: mom.avg >= 0 ? "up" : "down" }
+    ].map(kpiCard).join("");
 
     // detail table (MoM on actuals; forecast rows show "—" for MoM)
     var tbody = "", prevAct = null;
@@ -150,7 +198,7 @@
     });
     document.querySelector("#ov-detail tbody").innerHTML = tbody;
     document.querySelector("#ov-detail tfoot").innerHTML =
-      "<tr><td>Full-Year (proj.)</td><td>" + money(projectedFull) + "</td><td></td><td></td></tr>";
+      "<tr><td>Revised Full Year</td><td>" + money(projectedFull) + "</td><td></td><td></td></tr>";
 
     CHARTS.overall = function () {
       if (typeof Chart === "undefined") return;
@@ -177,55 +225,62 @@
   // ===================== COFFEE =====================
   function renderCoffee(c) {
     var mtdPct = c.mtdRealized / c.mtdBudget * 100;
-    var coffeeRealizedYTD = c.realizedJanJun + c.mtdRealized;   // Jan–Jun + Jul MTD
-    var annualPctBudget = coffeeRealizedYTD / c.annualBudget * 100;
-    var overallProjPct = coffeeRealizedYTD / (DATA.overall.denominator) * 100;
     var wk = c.currentWeek;
     var wkPctToDate = wk.realized / wk.goalToDate * 100;
+    var units = c.units || { total: 0, byCategory: {} };
 
-    document.getElementById("cf-kpis").innerHTML = [
-      { label: "Coffee Realized (Jan–Jun + Jul MTD)", value: money(coffeeRealizedYTD), meta: pct0(annualPctBudget) + " of " + money(c.annualBudget) + " coffee plan" },
-      { label: "July MTD (1–15)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
-      { label: "% of Overall Yearly Projection", value: pct0(overallProjPct), meta: "Coffee YTD ÷ " + money(DATA.overall.denominator) + " company plan" },
-      { label: "Projected Coffee (full year)", value: money(c.annualBudget), meta: "AOP coffee plan" },
-      { label: "Current Week vs. Goal", value: pct0(wkPctToDate), meta: wk.label },
-      { label: "Last Complete Week", value: money(c.lastWeek.realized), meta: c.lastWeek.label + " vs " + money(c.lastWeek.goal) + " goal" }
-    ].map(kpiCard).join("");
-
-    // current week bar (week-to-date vs goal-to-date)
+    // ----- current-week progress bar (ON TOP) with color code -----
     document.getElementById("cf-week-hint").textContent =
       wk.label + ": " + money2(wk.realized) + " booked vs " + money(wk.goalToDate) +
       " goal-to-date (full-week goal " + money(wk.fullGoal) + ").";
     var wb = document.getElementById("cf-week-bar");
+    var wl = wkPctToDate >= 98 ? "green" : wkPctToDate >= 80 ? "yellow" : "red";
+    wb.className = "bar " + wl;
     wb.style.width = Math.max(2, Math.min(100, wkPctToDate)).toFixed(1) + "%";
     wb.textContent = pct0(wkPctToDate);
     document.getElementById("cf-week-left").textContent = "Week-to-date " + money(wk.realized);
     document.getElementById("cf-week-right").textContent = "Goal-to-date " + money(wk.goalToDate);
 
-    // category list
+    // ----- KPIs (removed: coffee realized YTD, % of overall yearly projection, projected coffee) -----
+    document.getElementById("cf-kpis").innerHTML = [
+      { label: "July MTD (1–15)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
+      { label: "Current Week vs. Goal", value: pct0(wkPctToDate), meta: wk.label },
+      { label: "Last Complete Week", value: money(c.lastWeek.realized), meta: c.lastWeek.label + " vs " + money(c.lastWeek.goal) + " goal" },
+      { label: "Products Sold (Jul 1–15)", value: num(units.total),
+        meta: "Coffee " + num(units.byCategory.Coffee || 0) + " · Apparel " + num(units.byCategory.Apparel || 0) + " · Alcohol " + num(units.byCategory.Alcohol || 0) }
+    ].map(kpiCard).join("");
+
+    // ----- category list with color chips + units sold -----
     var cats = c.byCategory;
     var catTotal = Object.keys(cats).reduce(function (a, k) { return a + cats[k]; }, 0);
     var order = ["Coffee", "Apparel", "Alcohol"];
     document.getElementById("cf-cat-list").innerHTML = order.map(function (k) {
-      var v = cats[k] || 0;
-      return '<div class="catrow"><span>' + k + '</span><span><b>' + money2(v) + "</b> &nbsp;<span class='subtle'>" +
-        pct0(v / catTotal * 100) + "</span></span></div>";
-    }).join("") + '<div class="catrow"><span><b>Total</b></span><span><b>' + money2(catTotal) + "</b></span></div>";
+      var v = cats[k] || 0, u = (units.byCategory[k] || 0);
+      return '<div class="catrow"><span><i class="sw" style="background:' + CAT_COLORS[k] + '"></i>' + k + "</span>" +
+        "<span><b>" + money2(v) + "</b> &nbsp;<span class='subtle'>" + pct0(v / catTotal * 100) + " · " + num(u) + " sold</span></span></div>";
+    }).join("") +
+      '<div class="catrow"><span><b>Total</b></span><span><b>' + money2(catTotal) + "</b> &nbsp;<span class='subtle'>" + num(units.total) + " sold</span></span></div>";
     document.getElementById("cf-cat-note").textContent =
       "Apparel and alcohol are a tiny share of July sales so far (" + money2((cats.Apparel || 0) + (cats.Alcohol || 0)) +
-      " combined) — the store is overwhelmingly coffee/food.";
+      " combined, " + num((units.byCategory.Apparel || 0) + (units.byCategory.Alcohol || 0)) +
+      " items) — the store is overwhelmingly coffee.";
 
     CHARTS.coffee = function () {
       if (typeof Chart === "undefined") return;
-      // daily lookout
+      // daily lookout — bars color-coded vs the daily goal
       new Chart(document.getElementById("cf-chart").getContext("2d"), {
         data: {
           labels: c.daily.map(function (d) { return d.date.slice(5) + " " + d.dow; }),
           datasets: [
-            { type: "bar", label: "Daily Revenue", data: c.daily.map(function (d) { return d.revenue; }),
-              backgroundColor: COLORS.coffee, borderRadius: 4, maxBarThickness: 34, order: 2 },
+            { type: "bar", label: "Daily Revenue",
+              data: c.daily.map(function (d) { return d.revenue; }),
+              backgroundColor: c.daily.map(function (d) {
+                var r = d.goal > 0 ? d.revenue / d.goal : 0;
+                return r >= 1 ? COLORS.green : r >= 0.7 ? COLORS.amber : COLORS.red;
+              }),
+              borderRadius: 4, maxBarThickness: 34, order: 2 },
             { type: "line", label: "Daily Goal", data: c.daily.map(function (d) { return d.goal; }),
-              borderColor: COLORS.amber, backgroundColor: COLORS.amber, borderWidth: 2, borderDash: [6, 4], pointRadius: 0, tension: 0, order: 1 }
+              borderColor: COLORS.ink, backgroundColor: COLORS.ink, borderWidth: 2, borderDash: [6, 4], pointRadius: 0, tension: 0, order: 1 }
           ]
         },
         options: baseChartOpts(true)
@@ -350,6 +405,7 @@
   window.GFP = {
     linearRegression: linearRegression, movingAverage: movingAverage, momActuals: momActuals,
     extremesActual: extremesActual, computeConservative: computeConservative, decryptData: decryptData,
+    yearElapsedFraction: yearElapsedFraction, paceStatus: paceStatus,
     render: render, loadAndRender: loadAndRender, showTab: showTab,
     _setConfig: function (c) { CONFIG = c; }
   };
