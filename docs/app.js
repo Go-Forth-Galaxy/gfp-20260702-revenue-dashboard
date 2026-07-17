@@ -1,8 +1,10 @@
 /* ============================================================
    Carolina Core Wellness — 2026 Revenue Dashboard
    3 tabs: Overall (company-wide, 4 streams) · Coffee · Events
-   Public dashboard: in-browser AES-256-GCM decryption + charts.
-   Pure math/crypto exposed on window.GFP for headless testing.
+   Public dashboard: plain-JSON data + charts.
+   Loads in EVERY context (HTTPS, HTTP, file://, in-app browsers) —
+   no Web Crypto / secure-context dependency.
+   Pure math exposed on window.GFP for headless testing.
    ============================================================ */
 (function () {
   "use strict";
@@ -15,6 +17,8 @@
   var CAT_COLORS = { Coffee: COLORS.coffee, Apparel: COLORS.apparel, Alcohol: COLORS.alcohol };
   var CONS_FACTOR = 0.95;
 
+  function chartReady() { return typeof Chart !== "undefined"; }
+
   // ---------- number helpers ----------
   function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
   function money2(n) { return "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -23,7 +27,6 @@
   function pct0(n) { return n.toFixed(1) + "%"; }
 
   // ---------- pace / time-of-year (pure, date-driven) ----------
-  // Fraction of the calendar year elapsed as of `now` (defaults to today in the browser).
   function yearElapsedFraction(now) {
     now = now || new Date();
     var y = now.getFullYear();
@@ -31,7 +34,6 @@
     var end = new Date(y + 1, 0, 1).getTime();
     return (now.getTime() - start) / (end - start);
   }
-  // Red / yellow / green driven by realized-% vs. how far through the year we are.
   function paceStatus(realized, target, now) {
     var realizedPct = target > 0 ? realized / target : 0;
     var elapsed = yearElapsedFraction(now);
@@ -66,7 +68,6 @@
       return s / w;
     });
   }
-  // MoM computed on ACTUAL (booked) months only — per requirement "actuals not projection".
   function momActuals(months) {
     var acts = months.filter(function (m) { return !m.forecast; }).map(function (m) { return m.revenue; });
     var mom = [];
@@ -77,7 +78,6 @@
       latest: mom.length ? mom[mom.length - 1] : 0
     };
   }
-  // Lowest / highest among ACTUAL months (booked) — "Lowest Month" replaces "Worst Month".
   function extremesActual(months) {
     var acts = months.filter(function (m) { return !m.forecast; });
     if (!acts.length) acts = months;
@@ -97,28 +97,20 @@
     return { line: line, total: total, lastActualIdx: lastActualIdx };
   }
 
-  // ---------- crypto (pure) ----------
-  function b64ToBytes(s) {
-    var bin = atob(s), out = new Uint8Array(bin.length);
-    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-    return out;
-  }
-  async function decryptData(enc, passphrase) {
-    var subtle = (self.crypto || crypto).subtle;
-    var salt = b64ToBytes(enc.salt_b64), iv = b64ToBytes(enc.iv_b64), ct = b64ToBytes(enc.ct_b64);
-    var baseKey = await subtle.importKey("raw", new TextEncoder().encode(passphrase), "PBKDF2", false, ["deriveKey"]);
-    var key = await subtle.deriveKey(
-      { name: "PBKDF2", salt: salt, iterations: enc.iter, hash: "SHA-256" },
-      baseKey, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
-    var plain = await subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct);
-    return JSON.parse(new TextDecoder().decode(plain));
-  }
-
   var CONFIG, DATA, CHARTS = {};
 
   function showLoadError(msg) {
     var note = document.getElementById("load-note");
     if (note) note.innerHTML = "<strong>Could not load dashboard data:</strong> " + msg;
+  }
+  // If the Chart.js CDN is blocked/unavailable, replace each canvas with a small note
+  // so the page still shows all numbers instead of an empty chart box.
+  function noteChartsUnavailable() {
+    if (chartReady()) return;
+    var wraps = document.querySelectorAll(".chart-wrap");
+    for (var i = 0; i < wraps.length; i++) {
+      wraps[i].innerHTML = '<p class="hint" style="padding:18px 4px">Charts unavailable (the chart library didn\u2019t load) — all figures are shown in the tables and cards above.</p>';
+    }
   }
   function kpiCard(c) {
     return '<div class="kpi"><div class="label">' + c.label + '</div>' +
@@ -138,12 +130,11 @@
 
     var realized = o.realized;
     var target = o.denominator;
-    var projectedFull = revs.reduce(function (a, b) { return a + b; }, 0); // actuals + forward budget
+    var projectedFull = revs.reduce(function (a, b) { return a + b; }, 0);
     var progress = realized / target * 100;
     var pace = o.pace || {};
     var ps = paceStatus(realized, target);
 
-    // ----- progress bar (ON TOP) with red/yellow/green pace color -----
     var bar = document.getElementById("ov-bar");
     bar.className = "bar " + ps.level;
     bar.style.width = Math.max(2, Math.min(100, progress)).toFixed(1) + "%";
@@ -154,7 +145,6 @@
       "Realized revenue as a percent of the overall yearly projection (all four streams). " +
       "Denominator = " + money(target) + " four-stream AOP plan. Realized reflects booked actuals through Jun 30.";
 
-    // ----- pace + catch-up block -----
     var gapTxt = ps.gapPts < 0
       ? " — behind by " + Math.abs(ps.gapPts).toFixed(1) + " pts"
       : " — ahead by " + ps.gapPts.toFixed(1) + " pts";
@@ -184,7 +174,6 @@
       { label: "Avg MoM Growth (actuals)", value: pct(mom.avg), meta: "Latest MoM " + pct(mom.latest), cls: mom.avg >= 0 ? "up" : "down" }
     ].map(kpiCard).join("");
 
-    // detail table (MoM on actuals; forecast rows show "—" for MoM)
     var tbody = "", prevAct = null;
     months.forEach(function (m, i) {
       var momTxt;
@@ -201,7 +190,7 @@
       "<tr><td>Revised Full Year</td><td>" + money(projectedFull) + "</td><td></td><td></td></tr>";
 
     CHARTS.overall = function () {
-      if (typeof Chart === "undefined") return;
+      if (!chartReady()) return;
       new Chart(document.getElementById("ov-chart").getContext("2d"), {
         data: {
           labels: months.map(function (m) { return m.key; }),
@@ -229,7 +218,6 @@
     var wkPctToDate = wk.realized / wk.goalToDate * 100;
     var units = c.units || { total: 0, byCategory: {} };
 
-    // ----- current-week progress bar (ON TOP) with color code -----
     document.getElementById("cf-week-hint").textContent =
       wk.label + ": " + money2(wk.realized) + " booked vs " + money(wk.goalToDate) +
       " goal-to-date (full-week goal " + money(wk.fullGoal) + ").";
@@ -241,7 +229,6 @@
     document.getElementById("cf-week-left").textContent = "Week-to-date " + money(wk.realized);
     document.getElementById("cf-week-right").textContent = "Goal-to-date " + money(wk.goalToDate);
 
-    // ----- KPIs (removed: coffee realized YTD, % of overall yearly projection, projected coffee) -----
     document.getElementById("cf-kpis").innerHTML = [
       { label: "July MTD (1–15)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
       { label: "Current Week vs. Goal", value: pct0(wkPctToDate), meta: wk.label },
@@ -250,7 +237,6 @@
         meta: "Coffee " + num(units.byCategory.Coffee || 0) + " · Apparel " + num(units.byCategory.Apparel || 0) + " · Alcohol " + num(units.byCategory.Alcohol || 0) }
     ].map(kpiCard).join("");
 
-    // ----- category list with color chips + units sold -----
     var cats = c.byCategory;
     var catTotal = Object.keys(cats).reduce(function (a, k) { return a + cats[k]; }, 0);
     var order = ["Coffee", "Apparel", "Alcohol"];
@@ -266,8 +252,7 @@
       " items) — the store is overwhelmingly coffee.";
 
     CHARTS.coffee = function () {
-      if (typeof Chart === "undefined") return;
-      // daily lookout — bars color-coded vs the daily goal
+      if (!chartReady()) return;
       new Chart(document.getElementById("cf-chart").getContext("2d"), {
         data: {
           labels: c.daily.map(function (d) { return d.date.slice(5) + " " + d.dow; }),
@@ -285,7 +270,6 @@
         },
         options: baseChartOpts(true)
       });
-      // category doughnut
       new Chart(document.getElementById("cf-cat-chart").getContext("2d"), {
         type: "doughnut",
         data: {
@@ -323,7 +307,7 @@
     document.getElementById("ev-note").textContent = e.note;
 
     CHARTS.events = function () {
-      if (typeof Chart === "undefined") return;
+      if (!chartReady()) return;
       new Chart(document.getElementById("ev-chart").getContext("2d"), {
         data: {
           labels: months.map(function (m) { return m.key; }),
@@ -360,7 +344,6 @@
       if (panel) panel.classList.toggle("active", t === name);
       if (btn) btn.classList.toggle("active", t === name);
     });
-    // lazy-build the chart for a tab the first time it becomes visible (avoids hidden-canvas sizing bug)
     if (!built[name] && CHARTS[name]) { CHARTS[name](); built[name] = true; }
   }
   function wireTabs() {
@@ -375,25 +358,26 @@
     document.getElementById("load-note").innerHTML = "<strong>Note:</strong> " + data.overall.cutoff_note;
     document.getElementById("foot").innerHTML =
       "Source: " + data.source + " &nbsp;•&nbsp; Generated " + data.generated +
-      " &nbsp;•&nbsp; Data AES-256-GCM encrypted at rest &nbsp;•&nbsp; Carolina Core Wellness";
+      " &nbsp;•&nbsp; Carolina Core Wellness";
     renderOverall(data.overall);
     renderCoffee(data.coffee);
     renderEvents(data.events);
     wireTabs();
-    showTab("overall"); // builds the overall chart while its panel is visible
+    showTab("overall");
+    noteChartsUnavailable();
   }
 
   async function loadAndRender() {
-    var enc = await fetch(CONFIG.DATA_URL, { cache: "no-store" }).then(function (r) { return r.json(); });
-    var data = await decryptData(enc, CONFIG.DECRYPT_PASSPHRASE);
+    var data = await fetch(CONFIG.DATA_URL, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status + " fetching " + CONFIG.DATA_URL);
+      return r.json();
+    });
     render(data);
   }
 
   function boot() {
-    CONFIG = window.GFP_CONFIG;
-    if (!CONFIG || !CONFIG.DATA_URL || !CONFIG.DECRYPT_PASSPHRASE) {
-      showLoadError("configuration missing in config.js (DATA_URL / DECRYPT_PASSPHRASE)."); return;
-    }
+    CONFIG = window.GFP_CONFIG || {};
+    if (!CONFIG.DATA_URL) CONFIG.DATA_URL = "data.json";
     loadAndRender().catch(function (e) { showLoadError((e && e.message) ? e.message : String(e)); });
   }
 
@@ -404,7 +388,7 @@
 
   window.GFP = {
     linearRegression: linearRegression, movingAverage: movingAverage, momActuals: momActuals,
-    extremesActual: extremesActual, computeConservative: computeConservative, decryptData: decryptData,
+    extremesActual: extremesActual, computeConservative: computeConservative,
     yearElapsedFraction: yearElapsedFraction, paceStatus: paceStatus,
     render: render, loadAndRender: loadAndRender, showTab: showTab,
     _setConfig: function (c) { CONFIG = c; }
