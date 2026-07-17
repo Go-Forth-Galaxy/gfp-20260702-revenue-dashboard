@@ -1,0 +1,112 @@
+{
+  "generated": "2026-07-17",
+  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) · CCW QB Sync Part 1 & 2 (coffee Jul 1–15, 1,448 receipts)",
+  "overall": {
+    "denominator": 783074.13,
+    "realized": 338136.57,
+    "realizedPct": 43.2,
+    "months": [
+      { "key": "Jan", "label": "January", "days": 31, "revenue": 53261.22, "forecast": false },
+      { "key": "Feb", "label": "February", "days": 28, "revenue": 55518.17, "forecast": false },
+      { "key": "Mar", "label": "March", "days": 31, "revenue": 61241.17, "forecast": false },
+      { "key": "Apr", "label": "April", "days": 30, "revenue": 59197.01, "forecast": false },
+      { "key": "May", "label": "May", "days": 31, "revenue": 58648.82, "forecast": false },
+      { "key": "Jun", "label": "June", "days": 30, "revenue": 50270.18, "forecast": false },
+      { "key": "Jul", "label": "July", "days": 31, "revenue": 72166.16, "forecast": true },
+      { "key": "Aug", "label": "August", "days": 31, "revenue": 70185.42, "forecast": true },
+      { "key": "Sep", "label": "September", "days": 30, "revenue": 71377.84, "forecast": true },
+      { "key": "Oct", "label": "October", "days": 31, "revenue": 73029.88, "forecast": true },
+      { "key": "Nov", "label": "November", "days": 30, "revenue": 72742.03, "forecast": true },
+      { "key": "Dec", "label": "December", "days": 31, "revenue": 74914.78, "forecast": true }
+    ],
+    "streamsRealized": {
+      "Coffee": 144093.49,
+      "Event Room": 20302.32,
+      "Wellness": 60000,
+      "Monthly Leasing": 115857.01,
+      "Discounts": -2116.25
+    },
+    "streamsAnnual": {
+      "Coffee": 334236.06,
+      "Event Room+Monthly Leasing": 328838.07,
+      "Wellness": 120000
+    },
+    "cutoff_note": "Jan–Jun are booked actuals (AOP Class view, all four revenue streams). Jul–Dec are AOP forward budget. The annual target ($783,074) is the four-stream AOP plan; realized is booked Jan–Jun.",
+    "pace": {
+      "realizedThrough": "2026-06-30",
+      "remaining": 444937.56,
+      "remMonths": 6,
+      "remWeeks": 26.2857,
+      "remDays": 184,
+      "perMonth": 74156.26,
+      "perWeek": 16926.97,
+      "perDay": 2418.14,
+      "currentRunRateMonthly": 56356.1,
+      "upliftMonthly": 17800.16,
+      "upliftPct": 31.6,
+      "basis": "Realized is booked Jan–Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul–Dec) to reach the $783,074 four-stream AOP target."
+    }
+  },
+  "coffee": {
+    "daily": [
+      { "date": "2026-07-01", "dow": "Wed", "revenue": 908.25, "goal": 1200 },
+      { "date": "2026-07-02", "dow": "Thu", "revenue": 845, "goal": 1200 },
+      { "date": "2026-07-03", "dow": "Fri", "revenue": 424.2, "goal": 1200 },
+      { "date": "2026-07-04", "dow": "Sat", "revenue": 236.5, "goal": 600 },
+      { "date": "2026-07-05", "dow": "Sun", "revenue": 396.75, "goal": 450 },
+      { "date": "2026-07-06", "dow": "Mon", "revenue": 873, "goal": 1200 },
+      { "date": "2026-07-07", "dow": "Tue", "revenue": 913, "goal": 1200 },
+      { "date": "2026-07-08", "dow": "Wed", "revenue": 991.25, "goal": 1200 },
+      { "date": "2026-07-09", "dow": "Thu", "revenue": 926.45, "goal": 1200 },
+      { "date": "2026-07-10", "dow": "Fri", "revenue": 894.5, "goal": 1200 },
+      { "date": "2026-07-11", "dow": "Sat", "revenue": 609.25, "goal": 600 },
+      { "date": "2026-07-12", "dow": "Sun", "revenue": 580.5, "goal": 450 },
+      { "date": "2026-07-13", "dow": "Mon", "revenue": 1076.5, "goal": 1200 },
+      { "date": "2026-07-14", "dow": "Tue", "revenue": 917.95, "goal": 1200 },
+      { "date": "2026-07-15", "dow": "Wed", "revenue": 962.75, "goal": 1200 }
+    ],
+    "byCategory": { "Coffee": 11445.85, "Apparel": 103, "Alcohol": 7 },
+    "mtdRealized": 11555.85,
+    "mtdBudget": 15300,
+    "weeklyGoal": 7050,
+    "dailyGoal": { "weekday": 1200, "sat": 600, "sun": 450 },
+    "currentWeek": {
+      "label": "Jul 13–15 (partial, through Wed)",
+      "realized": 2957.2,
+      "goalToDate": 3600,
+      "fullGoal": 7050
+    },
+    "lastWeek": { "label": "Jul 6–12 (complete)", "realized": 5787.95, "goal": 7050 },
+    "annualBudget": 334236.06,
+    "realizedJanJun": 144093.49,
+    "monthlyActual": [
+      { "key": "Jan", "revenue": 21215.69 },
+      { "key": "Feb", "revenue": 21396.5 },
+      { "key": "Mar", "revenue": 28790.39 },
+      { "key": "Apr", "revenue": 26642.91 },
+      { "key": "May", "revenue": 25856.82 },
+      { "key": "Jun", "revenue": 20191.18 }
+    ],
+    "units": { "total": 1448, "byCategory": { "Coffee": 1445, "Apparel": 2, "Alcohol": 1 } }
+  },
+  "events": {
+    "months": [
+      { "key": "Jan", "label": "January", "revenue": 1786.72, "forecast": false },
+      { "key": "Feb", "label": "February", "revenue": 4613.85, "forecast": false },
+      { "key": "Mar", "label": "March", "revenue": 3886.65, "forecast": false },
+      { "key": "Apr", "label": "April", "revenue": 4930.1, "forecast": false },
+      { "key": "May", "label": "May", "revenue": 2175, "forecast": false },
+      { "key": "Jun", "label": "June", "revenue": 2910, "forecast": false },
+      { "key": "Jul", "label": "July", "revenue": 3383.72, "forecast": true },
+      { "key": "Aug", "label": "August", "revenue": 3383.72, "forecast": true },
+      { "key": "Sep", "label": "September", "revenue": 3383.72, "forecast": true },
+      { "key": "Oct", "label": "October", "revenue": 3383.72, "forecast": true },
+      { "key": "Nov", "label": "November", "revenue": 3383.72, "forecast": true },
+      { "key": "Dec", "label": "December", "revenue": 3383.72, "forecast": true }
+    ],
+    "realizedJanJun": 20302.32,
+    "runRateMonthly": 3383.72,
+    "projectedAnnual": 40604.64,
+    "note": "Event Room actuals Jan–Jun are from the AOP Class view. The AOP budgets Event Room together with Monthly Leasing, so Jul–Dec here is a clearly-labeled run-rate projection (Jan–Jun average), not a separate AOP budget line."
+  }
+}
