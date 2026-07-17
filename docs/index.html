@@ -20,14 +20,27 @@
   .progress{height:26px;background:#eef2f5;border-radius:14px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.08)}
   .progress .bar{height:100%;background:linear-gradient(90deg,#1f8a4c,#33b06a);border-radius:14px;
     display:flex;align-items:center;justify-content:flex-end;color:#fff;font-weight:700;font-size:13px;padding-right:10px;min-width:42px;transition:width .6s ease}
+  /* red / yellow / green pace coloring (set dynamically in app.js) */
+  .progress .bar.green{background:linear-gradient(90deg,#1f8a4c,#33b06a)}
+  .progress .bar.yellow{background:linear-gradient(90deg,#c77d0a,#e0a53a);color:#3d2905}
+  .progress .bar.red{background:linear-gradient(90deg,#b3261e,#d9534f)}
   .progress-meta{display:flex;justify-content:space-between;font-size:13px;color:#5b6b78;margin-top:6px}
   .forward-note{font-size:13.5px;color:#12303f;background:#eaf6ef;border-left:4px solid #1f8a4c;
     padding:9px 13px;border-radius:6px;margin:12px 0 2px}
+  /* pace / catch-up callout */
+  .pace{margin-top:12px;padding:11px 14px;border-radius:8px;font-size:13.5px;border-left:4px solid;line-height:1.5}
+  .pace-green{background:#eaf6ef;border-color:#1f8a4c;color:#12303f}
+  .pace-yellow{background:#fdf4e6;border-color:#c77d0a;color:#5a3d0a}
+  .pace-red{background:#fbeceb;border-color:#b3261e;color:#7a1a15}
+  .pace-head{font-weight:700;margin-bottom:3px}
   .split-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start}
   @media(max-width:780px){.split-grid{grid-template-columns:1fr}}
   .catrow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eef2f5;font-size:14px}
   .catrow b{color:#12303f}
   .subtle{color:#5b6b78;font-size:12.5px}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .daily-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:#5b6b78;margin-top:8px}
+  .daily-legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -55,9 +68,7 @@
 
       <!-- ===================== OVERALL ===================== -->
       <section class="tabpanel active" id="tab-overall">
-        <div class="forward-note" id="ov-forward"></div>
-        <section class="kpis" id="ov-kpis"></section>
-
+        <!-- annual progress bar ON TOP -->
         <div class="panel">
           <h2>Annual Progress — Realized vs. Overall Yearly Projection</h2>
           <div class="progress-wrap">
@@ -65,7 +76,11 @@
             <div class="progress-meta"><span id="ov-bar-left"></span><span id="ov-bar-right"></span></div>
           </div>
           <p class="hint" id="ov-progress-hint"></p>
+          <div id="ov-pace"></div>
         </div>
+
+        <div class="forward-note" id="ov-forward"></div>
+        <section class="kpis" id="ov-kpis"></section>
 
         <div class="panel">
           <h2>Monthly Revenue — Actuals &amp; Forward Budget</h2>
@@ -92,8 +107,7 @@
 
       <!-- ===================== COFFEE ===================== -->
       <section class="tabpanel" id="tab-coffee">
-        <section class="kpis" id="cf-kpis"></section>
-
+        <!-- current-week progress bar ON TOP -->
         <div class="panel">
           <h2>Current Week vs. Goal</h2>
           <p class="hint" id="cf-week-hint"></p>
@@ -103,20 +117,28 @@
           </div>
         </div>
 
+        <section class="kpis" id="cf-kpis"></section>
+
         <div class="panel">
           <h2>Daily Lookout — July 1–15</h2>
-          <p class="hint">Daily coffee-store revenue (bars) against the AOP daily goal line ($1,200 weekday · $600 Sat · $450 Sun).</p>
+          <p class="hint">Daily coffee-store revenue against the AOP daily goal line ($1,200 weekday · $600 Sat · $450 Sun). Bars are color-coded by goal attainment.</p>
           <div class="chart-wrap"><canvas id="cf-chart"></canvas></div>
+          <div class="daily-legend">
+            <span><i style="background:#1f8a4c"></i>At / above goal</span>
+            <span><i style="background:#c77d0a"></i>70–99% of goal</span>
+            <span><i style="background:#b3261e"></i>Below 70% of goal</span>
+            <span><i style="background:#12303f"></i>Daily goal line</span>
+          </div>
         </div>
 
         <div class="split-grid">
           <div class="panel">
             <h2>Revenue Mix — Coffee / Apparel / Alcohol</h2>
-            <p class="hint">July 1–15 sales by category (deduped across both QB-sync files).</p>
+            <p class="hint">July 1–15 sales by category (additive across both QB-sync files — no overlap).</p>
             <div class="chart-wrap" style="max-height:260px"><canvas id="cf-cat-chart"></canvas></div>
           </div>
           <div class="panel">
-            <h2>Category Detail</h2>
+            <h2>Category Detail &amp; Products Sold</h2>
             <div id="cf-cat-list"></div>
             <p class="subtle" id="cf-cat-note"></p>
           </div>
