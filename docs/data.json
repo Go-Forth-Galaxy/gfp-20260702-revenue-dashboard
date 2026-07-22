@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-17",
-  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 CCW QB Sync Part 1 & 2 (coffee Jul 1\u201315, 1,448 receipts) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun)",
+  "generated": "2026-07-22",
+  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Sales Receipts - Square Import (July 1\u201321 2026) v2 (item-level coffee-store sales, 2,066 lines, incl. Food breakdown) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun)",
   "overall": {
     "denominator": 783074.13,
     "realized": 338136.57,
@@ -117,6 +117,15 @@
       "upliftMonthly": 17800.16,
       "upliftPct": 31.6,
       "basis": "Realized is booked Jan\u2013Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul\u2013Dec) to reach the $783,074 four-stream AOP target."
+    },
+    "julyCallout": {
+      "label": "July-to-date (Jul 1\u201321, coffee store)",
+      "total": 16333.85,
+      "coffee": 12884.1,
+      "food": 3319.75,
+      "apparel": 123.0,
+      "alcohol": 7.0,
+      "note": "Shown for visibility only \u2014 it is NOT included in the 43.2% headline above, which is Jan\u2013Jun booked actuals across all four revenue streams. July actuals for Wellness, Monthly Leasing and Event Room aren't in yet, so folding one stream's partial month into the four-stream pace would understate true progress."
     }
   },
   "coffee": {
@@ -130,7 +139,7 @@
       {
         "date": "2026-07-02",
         "dow": "Thu",
-        "revenue": 845,
+        "revenue": 845.0,
         "goal": 1200
       },
       {
@@ -154,13 +163,13 @@
       {
         "date": "2026-07-06",
         "dow": "Mon",
-        "revenue": 873,
+        "revenue": 873.0,
         "goal": 1200
       },
       {
         "date": "2026-07-07",
         "dow": "Tue",
-        "revenue": 913,
+        "revenue": 913.0,
         "goal": 1200
       },
       {
@@ -210,15 +219,52 @@
         "dow": "Wed",
         "revenue": 962.75,
         "goal": 1200
+      },
+      {
+        "date": "2026-07-16",
+        "dow": "Thu",
+        "revenue": 984.25,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-17",
+        "dow": "Fri",
+        "revenue": 819.9,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-18",
+        "dow": "Sat",
+        "revenue": 472.6,
+        "goal": 600
+      },
+      {
+        "date": "2026-07-19",
+        "dow": "Sun",
+        "revenue": 591.75,
+        "goal": 450
+      },
+      {
+        "date": "2026-07-20",
+        "dow": "Mon",
+        "revenue": 977.25,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-21",
+        "dow": "Tue",
+        "revenue": 932.25,
+        "goal": 1200
       }
     ],
     "byCategory": {
-      "Coffee": 11445.85,
-      "Apparel": 103,
-      "Alcohol": 7
+      "Coffee": 12884.1,
+      "Food": 3319.75,
+      "Apparel": 123.0,
+      "Alcohol": 7.0
     },
-    "mtdRealized": 11555.85,
-    "mtdBudget": 15300,
+    "mtdRealized": 16333.85,
+    "mtdBudget": 21150,
     "weeklyGoal": 7050,
     "dailyGoal": {
       "weekday": 1200,
@@ -226,14 +272,14 @@
       "sun": 450
     },
     "currentWeek": {
-      "label": "Jul 13\u201315 (partial, through Wed)",
-      "realized": 2957.2,
-      "goalToDate": 3600,
+      "label": "Jul 20\u201321 (partial, through Tue)",
+      "realized": 1909.5,
+      "goalToDate": 2400,
       "fullGoal": 7050
     },
     "lastWeek": {
-      "label": "Jul 6\u201312 (complete)",
-      "realized": 5787.95,
+      "label": "Jul 13\u201319 (complete)",
+      "realized": 5825.7,
       "goal": 7050
     },
     "annualBudget": 334236.06,
@@ -265,13 +311,15 @@
       }
     ],
     "units": {
-      "total": 1448,
+      "total": 2066,
       "byCategory": {
-        "Coffee": 1445,
-        "Apparel": 2,
+        "Coffee": 1645,
+        "Food": 417,
+        "Apparel": 3,
         "Alcohol": 1
       }
-    }
+    },
+    "windowNote": "Refreshed to the Jul 1\u201321 window from the Square item-level import (v2). Food is now a distinct 4th category; previously it was folded into Coffee."
   },
   "events": {
     "months": [
