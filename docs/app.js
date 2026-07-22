@@ -336,16 +336,17 @@
     var tbody = "";
     months.forEach(function (m) {
       var margin = m.revenue > 0 ? m.netIncome / m.revenue * 100 : 0;
+      var expPct = m.revenue > 0 ? m.totalExpense / m.revenue * 100 : 0;
       tbody += "<tr><td>" + m.label + "</td><td>" + money2(m.revenue) + "</td><td>" + money2(m.cogs) +
         "</td><td>" + money2(m.opex) + "</td><td>" + money2(m.totalExpense) +
-        "</td><td class='" + (m.netIncome >= 0 ? "up" : "down") + "'>" + money2(m.netIncome) +
+        "</td><td>" + pct0(expPct) + "</td><td class='" + (m.netIncome >= 0 ? "up" : "down") + "'>" + money2(m.netIncome) +
         "</td><td>" + pct0(margin) + "</td></tr>";
     });
     document.querySelector("#ex-detail tbody").innerHTML = tbody;
     document.querySelector("#ex-detail tfoot").innerHTML =
       "<tr><td><b>Total (Jan\u2013Jun)</b></td><td><b>" + money2(t.revenue) + "</b></td><td><b>" + money2(t.cogs) +
       "</b></td><td><b>" + money2(t.opex) + "</b></td><td><b>" + money2(t.totalExpense) +
-      "</b></td><td><b>" + money2(t.netIncome) + "</b></td><td><b>" + pct0(t.netMarginPct) + "</b></td></tr>";
+      "</b></td><td><b>" + pct0(t.totalExpense / t.revenue * 100) + "</b></td><td><b>" + money2(t.netIncome) + "</b></td><td><b>" + pct0(t.netMarginPct) + "</b></td></tr>";
 
     document.getElementById("ex-cat-list").innerHTML = cats.map(function (c) {
       var sum = Object.keys(c.monthly).reduce(function (a, k) { return a + c.monthly[k]; }, 0);
@@ -373,9 +374,14 @@
           data: months.map(function (m) { return c.monthly[m.key]; }),
           backgroundColor: EXP_COLORS[c.key] || "#888", borderWidth: 0, maxBarThickness: 46 };
       });
-      ds.push({ type: "line", label: "Net Revenue", yAxisID: "y1", order: 0,
+      ds.push({ type: "line", label: "Net Revenue (sales)", yAxisID: "y", order: 0,
         data: months.map(function (m) { return m.revenue; }),
         borderColor: COLORS.ink, backgroundColor: COLORS.ink, borderWidth: 2.5, pointRadius: 3, tension: .3 });
+      var pctData = months.map(function (m) { return m.revenue > 0 ? m.totalExpense / m.revenue * 100 : 0; });
+      var maxPct = Math.max(120, Math.max.apply(null, pctData) * 1.1);
+      ds.push({ type: "line", label: "Expense % of sales", yAxisID: "yPct", order: -1,
+        data: pctData,
+        borderColor: COLORS.red, backgroundColor: COLORS.red, borderWidth: 2, borderDash: [6, 4], pointRadius: 3, tension: .3 });
       new Chart(document.getElementById("ex-chart").getContext("2d"), {
         data: { labels: months.map(function (m) { return m.key; }), datasets: ds },
         options: {
@@ -383,12 +389,17 @@
           interaction: { mode: "index", intersect: false },
           plugins: {
             legend: { display: true, position: "bottom" },
-            tooltip: { callbacks: { label: function (xx) { return xx.dataset.label + ": " + money2(xx.parsed.y); } } }
+            tooltip: { callbacks: { label: function (xx) {
+              return xx.dataset.yAxisID === "yPct"
+                ? xx.dataset.label + ": " + pct0(xx.parsed.y)
+                : xx.dataset.label + ": " + money2(xx.parsed.y);
+            } } }
           },
           scales: {
             y: { stacked: true, beginAtZero: true, suggestedMax: maxV, position: "left",
                  grid: { color: COLORS.grid }, ticks: { callback: function (v) { return "$" + (v / 1000) + "k"; } } },
-            y1: { stacked: false, beginAtZero: true, suggestedMax: maxV, position: "right", display: false },
+            yPct: { stacked: false, beginAtZero: true, suggestedMax: maxPct, position: "right",
+                 grid: { display: false }, ticks: { callback: function (v) { return v + "%"; } } },
             x: { stacked: true, grid: { display: false } }
           }
         }
