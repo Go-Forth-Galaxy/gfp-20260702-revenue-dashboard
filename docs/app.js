@@ -1,8 +1,8 @@
 /* ============================================================
-   Carolina Core Wellness — 2026 Revenue Dashboard
-   3 tabs: Overall (company-wide, 4 streams) · Coffee · Events
+   Carolina Core Wellness \u2014 2026 Revenue Dashboard
+   3 tabs: Overall (company-wide, 4 streams) \u00b7 Coffee \u00b7 Events
    Public dashboard: plain-JSON data + charts.
-   Loads in EVERY context (HTTPS, HTTP, file://, in-app browsers) —
+   Loads in EVERY context (HTTPS, HTTP, file://, in-app browsers) \u2014
    no Web Crypto / secure-context dependency.
    Pure math exposed on window.GFP for headless testing.
    ============================================================ */
@@ -109,7 +109,7 @@
     if (chartReady()) return;
     var wraps = document.querySelectorAll(".chart-wrap");
     for (var i = 0; i < wraps.length; i++) {
-      wraps[i].innerHTML = '<p class="hint" style="padding:18px 4px">Charts unavailable (the chart library didn\u2019t load) — all figures are shown in the tables and cards above.</p>';
+      wraps[i].innerHTML = '<p class="hint" style="padding:18px 4px">Charts unavailable (the chart library didn\u2019t load) \u2014 all figures are shown in the tables and cards above.</p>';
     }
   }
   function kpiCard(c) {
@@ -146,30 +146,30 @@
       "Denominator = " + money(target) + " four-stream AOP plan. Realized reflects booked actuals through Jun 30.";
 
     var gapTxt = ps.gapPts < 0
-      ? " — behind by " + Math.abs(ps.gapPts).toFixed(1) + " pts"
-      : " — ahead by " + ps.gapPts.toFixed(1) + " pts";
+      ? " \u2014 behind by " + Math.abs(ps.gapPts).toFixed(1) + " pts"
+      : " \u2014 ahead by " + ps.gapPts.toFixed(1) + " pts";
     document.getElementById("ov-pace").innerHTML =
       '<div class="pace pace-' + ps.level + '">' +
         '<div class="pace-head">' + paceLabel(ps.level) + ": " + pct0(ps.realizedPct) +
           " realized vs " + pct0(ps.elapsedPct) + " of the year elapsed" + gapTxt + ".</div>" +
         '<div class="pace-sub">To make it up and still hit ' + money(target) +
-          ', revenue needs to average <b>' + money(pace.perMonth) + "/mo</b> · <b>" +
-          money(pace.perWeek) + "/wk</b> · <b>" + money(pace.perDay) + "/day</b> across the remaining " +
-          (pace.remMonths || 6) + " months (Jul–Dec) — up from the current " +
+          ', revenue needs to average <b>' + money(pace.perMonth) + "/mo</b> \u00b7 <b>" +
+          money(pace.perWeek) + "/wk</b> \u00b7 <b>" + money(pace.perDay) + "/day</b> across the remaining " +
+          (pace.remMonths || 6) + " months (Jul\u2013Dec) \u2014 up from the current " +
           money(pace.currentRunRateMonthly) + "/mo run-rate (<b>+" + (pace.upliftPct != null ? pace.upliftPct.toFixed(1) : "0.0") +
           "%</b>, +" + money(pace.upliftMonthly) + "/mo).</div>" +
       "</div>";
 
     document.getElementById("ov-forward").innerHTML =
       "<strong>Forward progress:</strong> " + money(realized) + " of the " + money(target) +
-      " annual plan is booked (" + pct0(progress) + "). We've made real progress — but we can't stop: " +
+      " annual plan is booked (" + pct0(progress) + "). We've made real progress \u2014 but we can't stop: " +
       money(target - realized) + " remains across the back half of the year.";
 
     document.getElementById("ov-kpis").innerHTML = [
-      { label: "Realized Revenue (Jan–Jun booked)", value: money(realized), meta: pct0(progress) + " of annual plan" },
-      { label: "Revised Full Year", value: money(projectedFull), meta: "Actuals + Jul–Dec budget · Conservative " + money(cons.total) },
+      { label: "Realized Revenue (Jan\u2013Jun booked)", value: money(realized), meta: pct0(progress) + " of annual plan" },
+      { label: "Revised Full Year", value: money(projectedFull), meta: "Actuals + Jul\u2013Dec budget \u00b7 Conservative " + money(cons.total) },
       { label: "Overall Annual Plan (AOP)", value: money(target), meta: "All four revenue streams" },
-      { label: "Monthly Avg to Hit Target", value: money(pace.perMonth), meta: "Needed Jul–Dec vs " + money(pace.currentRunRateMonthly) + "/mo now" },
+      { label: "Monthly Avg to Hit Target", value: money(pace.perMonth), meta: "Needed Jul\u2013Dec vs " + money(pace.currentRunRateMonthly) + "/mo now" },
       { label: "Lowest Month", value: money(ext.lowest.revenue), meta: ext.lowest.label + " (booked)" },
       { label: "Avg MoM Growth (actuals)", value: pct(mom.avg), meta: "Latest MoM " + pct(mom.latest), cls: mom.avg >= 0 ? "up" : "down" }
     ].map(kpiCard).join("");
@@ -177,12 +177,12 @@
     var tbody = "", prevAct = null;
     months.forEach(function (m, i) {
       var momTxt;
-      if (m.forecast) { momTxt = '<span class="subtle">— (forecast)</span>'; }
-      else { momTxt = prevAct == null ? "—" : pct((m.revenue - prevAct) / prevAct * 100); prevAct = m.revenue; }
+      if (m.forecast) { momTxt = '<span class="subtle">\u2014 (forecast)</span>'; }
+      else { momTxt = prevAct == null ? "\u2014" : pct((m.revenue - prevAct) / prevAct * 100); prevAct = m.revenue; }
       tbody += "<tr><td>" + m.label +
         ' <span class="badge ' + (m.forecast ? "forecast" : "actual") + '">' + (m.forecast ? "budget" : "booked") + "</span></td>" +
         "<td>" + money(m.revenue) + "</td>" +
-        "<td>" + (ma[i] == null ? "—" : money(ma[i])) + "</td>" +
+        "<td>" + (ma[i] == null ? "\u2014" : money(ma[i])) + "</td>" +
         "<td>" + momTxt + "</td></tr>";
     });
     document.querySelector("#ov-detail tbody").innerHTML = tbody;
@@ -198,7 +198,7 @@
             { type: "bar", label: "Monthly Revenue", data: revs, order: 4,
               backgroundColor: months.map(function (m) { return m.forecast ? COLORS.greenSoft : COLORS.green; }),
               borderRadius: 4, maxBarThickness: 46 },
-            { type: "line", label: "Conservative (−5%, Jul–Dec)", data: cons.line, order: 0,
+            { type: "line", label: "Conservative (\u22125%, Jul\u2013Dec)", data: cons.line, order: 0,
               borderColor: COLORS.red, backgroundColor: COLORS.red, borderWidth: 2.5, pointRadius: 3, pointStyle: "rectRot", tension: .3, spanGaps: false },
             { type: "line", label: "3-mo Moving Avg", data: ma, order: 2,
               borderColor: COLORS.blue, backgroundColor: COLORS.blue, borderWidth: 2.5, pointRadius: 2, tension: .35, spanGaps: true },
@@ -230,11 +230,11 @@
     document.getElementById("cf-week-right").textContent = "Goal-to-date " + money(wk.goalToDate);
 
     document.getElementById("cf-kpis").innerHTML = [
-      { label: "July MTD (1–15)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
+      { label: "July MTD (1\u201315)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
       { label: "Current Week vs. Goal", value: pct0(wkPctToDate), meta: wk.label },
       { label: "Last Complete Week", value: money(c.lastWeek.realized), meta: c.lastWeek.label + " vs " + money(c.lastWeek.goal) + " goal" },
-      { label: "Products Sold (Jul 1–15)", value: num(units.total),
-        meta: "Coffee " + num(units.byCategory.Coffee || 0) + " · Apparel " + num(units.byCategory.Apparel || 0) + " · Alcohol " + num(units.byCategory.Alcohol || 0) }
+      { label: "Products Sold (Jul 1\u201315)", value: num(units.total),
+        meta: "Coffee " + num(units.byCategory.Coffee || 0) + " \u00b7 Apparel " + num(units.byCategory.Apparel || 0) + " \u00b7 Alcohol " + num(units.byCategory.Alcohol || 0) }
     ].map(kpiCard).join("");
 
     var cats = c.byCategory;
@@ -243,13 +243,13 @@
     document.getElementById("cf-cat-list").innerHTML = order.map(function (k) {
       var v = cats[k] || 0, u = (units.byCategory[k] || 0);
       return '<div class="catrow"><span><i class="sw" style="background:' + CAT_COLORS[k] + '"></i>' + k + "</span>" +
-        "<span><b>" + money2(v) + "</b> &nbsp;<span class='subtle'>" + pct0(v / catTotal * 100) + " · " + num(u) + " sold</span></span></div>";
+        "<span><b>" + money2(v) + "</b> &nbsp;<span class='subtle'>" + pct0(v / catTotal * 100) + " \u00b7 " + num(u) + " sold</span></span></div>";
     }).join("") +
       '<div class="catrow"><span><b>Total</b></span><span><b>' + money2(catTotal) + "</b> &nbsp;<span class='subtle'>" + num(units.total) + " sold</span></span></div>";
     document.getElementById("cf-cat-note").textContent =
       "Apparel and alcohol are a tiny share of July sales so far (" + money2((cats.Apparel || 0) + (cats.Alcohol || 0)) +
       " combined, " + num((units.byCategory.Apparel || 0) + (units.byCategory.Alcohol || 0)) +
-      " items) — the store is overwhelmingly coffee.";
+      " items) \u2014 the store is overwhelmingly coffee.";
 
     CHARTS.coffee = function () {
       if (!chartReady()) return;
@@ -291,9 +291,9 @@
     var months = e.months;
     var revs = months.map(function (m) { return m.revenue; });
     document.getElementById("ev-kpis").innerHTML = [
-      { label: "Event Room Realized (Jan–Jun)", value: money2(e.realizedJanJun), meta: "Booked actuals, AOP Class view" },
-      { label: "Run-Rate (per month)", value: money2(e.runRateMonthly), meta: "Jan–Jun monthly average" },
-      { label: "Projected Annual", value: money(e.projectedAnnual), meta: "Actuals + Jul–Dec run-rate" }
+      { label: "Event Room Realized (Jan\u2013Jun)", value: money2(e.realizedJanJun), meta: "Booked actuals, AOP Class view" },
+      { label: "Run-Rate (per month)", value: money2(e.runRateMonthly), meta: "Jan\u2013Jun monthly average" },
+      { label: "Projected Annual", value: money(e.projectedAnnual), meta: "Actuals + Jul\u2013Dec run-rate" }
     ].map(kpiCard).join("");
 
     var tbody = "";
@@ -320,6 +320,82 @@
     };
   }
 
+  // ===================== COFFEESHOP EXPENSES =====================
+  function renderExpenses(x) {
+    if (!x) return;
+    var months = x.months, cats = x.categories, t = x.totals;
+    var EXP_COLORS = { materials: "#6f4e37", labor: "#0e4d92", otherCogs: "#8e8478", marketing: "#c77d0a", admin: "#1f8a4c" };
+
+    document.getElementById("ex-kpis").innerHTML = [
+      { label: "Total Expenses (Jan\u2013Jun)", value: money(t.totalExpense), meta: "COGS " + money(t.cogs) + " \u00b7 Opex " + money(t.opex) },
+      { label: "Net Revenue (Coffee P&L)", value: money(t.revenue), meta: "Total Income, net of discounts" },
+      { label: "Net Income (Jan\u2013Jun)", value: money(t.netIncome), meta: pct0(t.netMarginPct) + " net margin", cls: t.netIncome >= 0 ? "up" : "down" },
+      { label: "Gross Margin", value: pct0(t.grossMarginPct), meta: "Gross profit " + money(t.grossProfit) }
+    ].map(kpiCard).join("");
+
+    var tbody = "";
+    months.forEach(function (m) {
+      var margin = m.revenue > 0 ? m.netIncome / m.revenue * 100 : 0;
+      tbody += "<tr><td>" + m.label + "</td><td>" + money2(m.revenue) + "</td><td>" + money2(m.cogs) +
+        "</td><td>" + money2(m.opex) + "</td><td>" + money2(m.totalExpense) +
+        "</td><td class='" + (m.netIncome >= 0 ? "up" : "down") + "'>" + money2(m.netIncome) +
+        "</td><td>" + pct0(margin) + "</td></tr>";
+    });
+    document.querySelector("#ex-detail tbody").innerHTML = tbody;
+    document.querySelector("#ex-detail tfoot").innerHTML =
+      "<tr><td><b>Total (Jan\u2013Jun)</b></td><td><b>" + money2(t.revenue) + "</b></td><td><b>" + money2(t.cogs) +
+      "</b></td><td><b>" + money2(t.opex) + "</b></td><td><b>" + money2(t.totalExpense) +
+      "</b></td><td><b>" + money2(t.netIncome) + "</b></td><td><b>" + pct0(t.netMarginPct) + "</b></td></tr>";
+
+    document.getElementById("ex-cat-list").innerHTML = cats.map(function (c) {
+      var sum = Object.keys(c.monthly).reduce(function (a, k) { return a + c.monthly[k]; }, 0);
+      return '<div class="catrow"><span><i class="sw" style="background:' + (EXP_COLORS[c.key] || "#888") + '"></i>' +
+        c.label + ' <span class="subtle">(' + c.group + ')</span></span><span><b>' + money2(sum) +
+        '</b> &nbsp;<span class="subtle">' + pct0(sum / t.totalExpense * 100) + '</span></span></div>';
+    }).join("") +
+      '<div class="catrow"><span><b>Total Expenses</b></span><span><b>' + money2(t.totalExpense) + '</b></span></div>';
+
+    var ad = x.adminDetail || {};
+    document.getElementById("ex-admin-list").innerHTML = Object.keys(ad).map(function (k) {
+      return '<div class="catrow"><span>' + k + '</span><span><b>' + money2(ad[k]) + '</b></span></div>';
+    }).join("");
+
+    document.getElementById("ex-basis").textContent = x.basis;
+    document.getElementById("ex-note").textContent = x.note;
+
+    CHARTS.expenses = function () {
+      if (!chartReady()) return;
+      var maxExp = Math.max.apply(null, months.map(function (m) { return m.totalExpense; }));
+      var maxRev = Math.max.apply(null, months.map(function (m) { return m.revenue; }));
+      var maxV = Math.max(maxExp, maxRev) * 1.08;
+      var ds = cats.map(function (c) {
+        return { type: "bar", label: c.label, stack: "exp", yAxisID: "y",
+          data: months.map(function (m) { return c.monthly[m.key]; }),
+          backgroundColor: EXP_COLORS[c.key] || "#888", borderWidth: 0, maxBarThickness: 46 };
+      });
+      ds.push({ type: "line", label: "Net Revenue", yAxisID: "y1", order: 0,
+        data: months.map(function (m) { return m.revenue; }),
+        borderColor: COLORS.ink, backgroundColor: COLORS.ink, borderWidth: 2.5, pointRadius: 3, tension: .3 });
+      new Chart(document.getElementById("ex-chart").getContext("2d"), {
+        data: { labels: months.map(function (m) { return m.key; }), datasets: ds },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: { display: true, position: "bottom" },
+            tooltip: { callbacks: { label: function (xx) { return xx.dataset.label + ": " + money2(xx.parsed.y); } } }
+          },
+          scales: {
+            y: { stacked: true, beginAtZero: true, suggestedMax: maxV, position: "left",
+                 grid: { color: COLORS.grid }, ticks: { callback: function (v) { return "$" + (v / 1000) + "k"; } } },
+            y1: { stacked: false, beginAtZero: true, suggestedMax: maxV, position: "right", display: false },
+            x: { stacked: true, grid: { display: false } }
+          }
+        }
+      });
+    };
+  }
+
   function baseChartOpts(currency2) {
     return {
       responsive: true, maintainAspectRatio: false,
@@ -338,7 +414,7 @@
   // ---------- tabs ----------
   var built = {};
   function showTab(name) {
-    ["overall", "coffee", "events"].forEach(function (t) {
+    ["overall", "coffee", "events", "expenses"].forEach(function (t) {
       var panel = document.getElementById("tab-" + t);
       var btn = document.querySelector('.tabbtn[data-tab="' + t + '"]');
       if (panel) panel.classList.toggle("active", t === name);
@@ -357,11 +433,12 @@
     DATA = data;
     document.getElementById("load-note").innerHTML = "<strong>Note:</strong> " + data.overall.cutoff_note;
     document.getElementById("foot").innerHTML =
-      "Source: " + data.source + " &nbsp;•&nbsp; Generated " + data.generated +
-      " &nbsp;•&nbsp; Carolina Core Wellness";
+      "Source: " + data.source + " &nbsp;\u2022&nbsp; Generated " + data.generated +
+      " &nbsp;\u2022&nbsp; Carolina Core Wellness";
     renderOverall(data.overall);
     renderCoffee(data.coffee);
     renderEvents(data.events);
+    renderExpenses(data.expenses);
     wireTabs();
     showTab("overall");
     noteChartsUnavailable();
