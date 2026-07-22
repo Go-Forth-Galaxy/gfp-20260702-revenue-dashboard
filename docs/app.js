@@ -12,9 +12,9 @@
   var COLORS = {
     green: "#1f8a4c", greenSoft: "#9fd3b4", blue: "#0e4d92", blueSoft: "#9db8d6",
     amber: "#c77d0a", red: "#b3261e", ink: "#12303f", grid: "#e2e8ee",
-    coffee: "#6f4e37", apparel: "#c77d0a", alcohol: "#8e44ad"
+    coffee: "#6f4e37", food: "#2a9d8f", apparel: "#c77d0a", alcohol: "#8e44ad"
   };
-  var CAT_COLORS = { Coffee: COLORS.coffee, Apparel: COLORS.apparel, Alcohol: COLORS.alcohol };
+  var CAT_COLORS = { Coffee: COLORS.coffee, Food: COLORS.food, Apparel: COLORS.apparel, Alcohol: COLORS.alcohol };
   var CONS_FACTOR = 0.95;
 
   function chartReady() { return typeof Chart !== "undefined"; }
@@ -165,6 +165,15 @@
       " annual plan is booked (" + pct0(progress) + "). We've made real progress \u2014 but we can't stop: " +
       money(target - realized) + " remains across the back half of the year.";
 
+    if (o.julyCallout) {
+      var jc = o.julyCallout;
+      document.getElementById("ov-july").innerHTML =
+        "<strong>July-to-date callout (not in the headline above):</strong> The coffee store has booked <b>" +
+        money2(jc.total) + "</b> in Jul 1\u201321 \u2014 Coffee " + money2(jc.coffee) + " \u00b7 Food " +
+        money2(jc.food) + " \u00b7 Apparel " + money2(jc.apparel) + " \u00b7 Alcohol " + money2(jc.alcohol) +
+        ". " + jc.note;
+    }
+
     document.getElementById("ov-kpis").innerHTML = [
       { label: "Realized Revenue (Jan\u2013Jun booked)", value: money(realized), meta: pct0(progress) + " of annual plan" },
       { label: "Revised Full Year", value: money(projectedFull), meta: "Actuals + Jul\u2013Dec budget \u00b7 Conservative " + money(cons.total) },
@@ -230,16 +239,16 @@
     document.getElementById("cf-week-right").textContent = "Goal-to-date " + money(wk.goalToDate);
 
     document.getElementById("cf-kpis").innerHTML = [
-      { label: "July MTD (1\u201315)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
+      { label: "July MTD (1\u201321)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
       { label: "Current Week vs. Goal", value: pct0(wkPctToDate), meta: wk.label },
       { label: "Last Complete Week", value: money(c.lastWeek.realized), meta: c.lastWeek.label + " vs " + money(c.lastWeek.goal) + " goal" },
-      { label: "Products Sold (Jul 1\u201315)", value: num(units.total),
-        meta: "Coffee " + num(units.byCategory.Coffee || 0) + " \u00b7 Apparel " + num(units.byCategory.Apparel || 0) + " \u00b7 Alcohol " + num(units.byCategory.Alcohol || 0) }
+      { label: "Products Sold (Jul 1\u201321)", value: num(units.total),
+        meta: "Coffee " + num(units.byCategory.Coffee || 0) + " \u00b7 Food " + num(units.byCategory.Food || 0) + " \u00b7 Apparel " + num(units.byCategory.Apparel || 0) + " \u00b7 Alcohol " + num(units.byCategory.Alcohol || 0) }
     ].map(kpiCard).join("");
 
     var cats = c.byCategory;
     var catTotal = Object.keys(cats).reduce(function (a, k) { return a + cats[k]; }, 0);
-    var order = ["Coffee", "Apparel", "Alcohol"];
+    var order = ["Coffee", "Food", "Apparel", "Alcohol"];
     document.getElementById("cf-cat-list").innerHTML = order.map(function (k) {
       var v = cats[k] || 0, u = (units.byCategory[k] || 0);
       return '<div class="catrow"><span><i class="sw" style="background:' + CAT_COLORS[k] + '"></i>' + k + "</span>" +
@@ -247,9 +256,10 @@
     }).join("") +
       '<div class="catrow"><span><b>Total</b></span><span><b>' + money2(catTotal) + "</b> &nbsp;<span class='subtle'>" + num(units.total) + " sold</span></span></div>";
     document.getElementById("cf-cat-note").textContent =
-      "Apparel and alcohol are a tiny share of July sales so far (" + money2((cats.Apparel || 0) + (cats.Alcohol || 0)) +
-      " combined, " + num((units.byCategory.Apparel || 0) + (units.byCategory.Alcohol || 0)) +
-      " items) \u2014 the store is overwhelmingly coffee.";
+      "Food is now broken out as its own category: " + money2(cats.Food || 0) + " (" +
+      pct0((cats.Food || 0) / catTotal * 100) + " of July sales, " + num(units.byCategory.Food || 0) +
+      " items). Apparel and alcohol stay tiny (" + money2((cats.Apparel || 0) + (cats.Alcohol || 0)) +
+      " combined) \u2014 the store is coffee-led, with food the clear #2.";
 
     CHARTS.coffee = function () {
       if (!chartReady()) return;
@@ -273,9 +283,9 @@
       new Chart(document.getElementById("cf-cat-chart").getContext("2d"), {
         type: "doughnut",
         data: {
-          labels: ["Coffee", "Apparel", "Alcohol"],
-          datasets: [{ data: [cats.Coffee || 0, cats.Apparel || 0, cats.Alcohol || 0],
-            backgroundColor: [COLORS.coffee, COLORS.apparel, COLORS.alcohol], borderWidth: 2, borderColor: "#fff" }]
+          labels: ["Coffee", "Food", "Apparel", "Alcohol"],
+          datasets: [{ data: [cats.Coffee || 0, cats.Food || 0, cats.Apparel || 0, cats.Alcohol || 0],
+            backgroundColor: [COLORS.coffee, COLORS.food, COLORS.apparel, COLORS.alcohol], borderWidth: 2, borderColor: "#fff" }]
         },
         options: {
           responsive: true, maintainAspectRatio: false, cutout: "58%",
