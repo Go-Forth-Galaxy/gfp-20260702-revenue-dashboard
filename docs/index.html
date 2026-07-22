@@ -179,9 +179,18 @@
         <section class="kpis" id="ex-kpis"></section>
 
         <div class="panel">
-          <h2>Monthly Expenses by Category vs. Revenue</h2>
-          <p class="hint">Incurred coffee-shop expenses (Jan&#8211;Jun booked actuals) stacked by category, with the black line showing monthly net revenue &#8212; to watch cost growth against the revenue it supports. <strong>Category &amp; monthly</strong> granularity (vendor/weekly not yet available).</p>
+          <h2>Sales vs. Expenses &#8212; Are We In Line?</h2>
+          <p class="hint">Monthly coffee-shop expenses (Jan&#8211;Jun booked actuals) stacked by category, with the <strong>net revenue (sales) line</strong> on the same dollar axis &#8212; so you can see costs rise against the revenue that drove them. The <strong>red dashed line</strong> is <strong>expense as a % of sales</strong> (right axis): flat means costs are scaling in line with sales; climbing means costs are outrunning sales. <strong>Category &amp; monthly</strong> granularity (by-vendor / by-week upgrades when a QuickBooks bills export is supplied).</p>
           <div class="chart-wrap"><canvas id="ex-chart"></canvas></div>
+          <div class="legend">
+            <span><i style="background:#6f4e37"></i>Materials</span>
+            <span><i style="background:#0e4d92"></i>Direct Labor</span>
+            <span><i style="background:#8e8478"></i>Other COGS</span>
+            <span><i style="background:#c77d0a"></i>Marketing</span>
+            <span><i style="background:#1f8a4c"></i>Administrative</span>
+            <span><i style="background:#12303f"></i>Net revenue (sales)</span>
+            <span><i style="background:#b3261e"></i>Expense % of sales (right axis)</span>
+          </div>
         </div>
 
         <div class="split-grid">
@@ -200,7 +209,7 @@
         <div class="panel">
           <h2>Monthly Detail &#8212; Revenue, Expenses &amp; Net</h2>
           <table id="ex-detail">
-            <thead><tr><th>Month</th><th>Net Revenue</th><th>COGS</th><th>Opex</th><th>Total Expense</th><th>Net Income</th><th>Net Margin</th></tr></thead>
+            <thead><tr><th>Month</th><th>Net Revenue</th><th>COGS</th><th>Opex</th><th>Total Expense</th><th>Exp % of Sales</th><th>Net Income</th><th>Net Margin</th></tr></thead>
             <tbody></tbody><tfoot></tfoot>
           </table>
           <p class="subtle" id="ex-note"></p>
