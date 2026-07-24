@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-22",
-  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Sales Receipts - Square Import (July 1\u201321 2026) v2 (item-level coffee-store sales, 2,066 lines, incl. Food breakdown) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun)",
+  "generated": "2026-07-24",
+  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Square item-level sales Jul 1\u201321 (v2) + Jul 22, plus Jul 23 QuickBooks Sync \u2014 coffee-store sales, 2,340 lines, incl. Food breakdown \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun)",
   "overall": {
     "denominator": 783074.13,
     "realized": 338136.57,
@@ -119,11 +119,11 @@
       "basis": "Realized is booked Jan\u2013Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul\u2013Dec) to reach the $783,074 four-stream AOP target."
     },
     "julyCallout": {
-      "label": "July-to-date (Jul 1\u201321, coffee store)",
-      "total": 16333.85,
-      "coffee": 12884.1,
-      "food": 3319.75,
-      "apparel": 123.0,
+      "label": "July-to-date (Jul 1\u201323, coffee store)",
+      "total": 18523.7,
+      "coffee": 14590.2,
+      "food": 3799.5,
+      "apparel": 127.0,
       "alcohol": 7.0,
       "note": "Shown for visibility only \u2014 it is NOT included in the 43.2% headline above, which is Jan\u2013Jun booked actuals across all four revenue streams. July actuals for Wellness, Monthly Leasing and Event Room aren't in yet, so folding one stream's partial month into the four-stream pace would understate true progress."
     }
@@ -255,16 +255,28 @@
         "dow": "Tue",
         "revenue": 932.25,
         "goal": 1200
+      },
+      {
+        "date": "2026-07-22",
+        "dow": "Wed",
+        "revenue": 1091.5,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-23",
+        "dow": "Thu",
+        "revenue": 1098.35,
+        "goal": 1200
       }
     ],
     "byCategory": {
-      "Coffee": 12884.1,
-      "Food": 3319.75,
-      "Apparel": 123.0,
+      "Coffee": 14590.2,
+      "Food": 3799.5,
+      "Apparel": 127.0,
       "Alcohol": 7.0
     },
-    "mtdRealized": 16333.85,
-    "mtdBudget": 21150,
+    "mtdRealized": 18523.7,
+    "mtdBudget": 23550,
     "weeklyGoal": 7050,
     "dailyGoal": {
       "weekday": 1200,
@@ -272,9 +284,9 @@
       "sun": 450
     },
     "currentWeek": {
-      "label": "Jul 20\u201321 (partial, through Tue)",
-      "realized": 1909.5,
-      "goalToDate": 2400,
+      "label": "Jul 20\u201323 (partial, through Thu)",
+      "realized": 4099.35,
+      "goalToDate": 4800,
       "fullGoal": 7050
     },
     "lastWeek": {
@@ -311,15 +323,15 @@
       }
     ],
     "units": {
-      "total": 2066,
+      "total": 2340,
       "byCategory": {
-        "Coffee": 1645,
-        "Food": 417,
-        "Apparel": 3,
+        "Coffee": 1864,
+        "Food": 471,
+        "Apparel": 4,
         "Alcohol": 1
       }
     },
-    "windowNote": "Refreshed to the Jul 1\u201321 window from the Square item-level import (v2). Food is now a distinct 4th category; previously it was folded into Coffee."
+    "windowNote": "Refreshed to the Jul 1\u201323 window: Jul 1\u201321 from the Square item-level import (v2), plus Jul 22 (Square) and Jul 23 (QuickBooks Sync) daily receipts. Food is a distinct 4th category."
   },
   "events": {
     "months": [
