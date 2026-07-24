@@ -169,7 +169,7 @@
       var jc = o.julyCallout;
       document.getElementById("ov-july").innerHTML =
         "<strong>July-to-date callout (not in the headline above):</strong> The coffee store has booked <b>" +
-        money2(jc.total) + "</b> in Jul 1\u201321 \u2014 Coffee " + money2(jc.coffee) + " \u00b7 Food " +
+        money2(jc.total) + "</b> in Jul 1\u201323 \u2014 Coffee " + money2(jc.coffee) + " \u00b7 Food " +
         money2(jc.food) + " \u00b7 Apparel " + money2(jc.apparel) + " \u00b7 Alcohol " + money2(jc.alcohol) +
         ". " + jc.note;
     }
@@ -239,10 +239,10 @@
     document.getElementById("cf-week-right").textContent = "Goal-to-date " + money(wk.goalToDate);
 
     document.getElementById("cf-kpis").innerHTML = [
-      { label: "July MTD (1\u201321)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
+      { label: "July MTD (1\u201323)", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
       { label: "Current Week vs. Goal", value: pct0(wkPctToDate), meta: wk.label },
       { label: "Last Complete Week", value: money(c.lastWeek.realized), meta: c.lastWeek.label + " vs " + money(c.lastWeek.goal) + " goal" },
-      { label: "Products Sold (Jul 1\u201321)", value: num(units.total),
+      { label: "Products Sold (Jul 1\u201323)", value: num(units.total),
         meta: "Coffee " + num(units.byCategory.Coffee || 0) + " \u00b7 Food " + num(units.byCategory.Food || 0) + " \u00b7 Apparel " + num(units.byCategory.Apparel || 0) + " \u00b7 Alcohol " + num(units.byCategory.Alcohol || 0) }
     ].map(kpiCard).join("");
 
