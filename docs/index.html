@@ -179,6 +179,24 @@
       <section class="tabpanel" id="tab-expenses">
         <section class="kpis" id="ex-kpis"></section>
 
+        <div class="panel" id="exj-panel">
+          <h2>July 2026 &#8212; Coffee-Shop Expenses by Vendor <span class="subtle">(QBO accrual)</span></h2>
+          <p class="hint">Live <strong>QuickBooks accrual</strong> figures from the CCPC <em>Profit &amp; Loss by Class</em> (Coffee class), cross-checked line-by-line to the <em>Transaction List by Vendor</em>, for <strong id="exj-window"></strong>. This is a different basis from the AOP-budget Jan&#8211;Jun trend below, so it&#8217;s shown as its own panel rather than blended into that series. Only <strong>Material (COGS)</strong> is vendor-itemized &#8212; Direct Labor is payroll and Admin is a single maintenance line.</p>
+          <section class="kpis" id="exj-kpis"></section>
+          <div class="split-grid">
+            <div>
+              <h3>Material (COGS) by Vendor</h3>
+              <div id="exj-vendor-list"></div>
+            </div>
+            <div>
+              <h3>Expense Categories</h3>
+              <div id="exj-cat-list"></div>
+              <p class="subtle" id="exj-note"></p>
+            </div>
+          </div>
+          <p class="subtle" id="exj-basis"></p>
+        </div>
+
         <div class="panel">
           <h2>Sales vs. Expenses &#8212; Are We In Line?</h2>
           <p class="hint">Monthly coffee-shop expenses (Jan&#8211;Jun booked actuals) stacked by category, with the <strong>net revenue (sales) line</strong> on the same dollar axis &#8212; so you can see costs rise against the revenue that drove them. The <strong>red dashed line</strong> is <strong>expense as a % of sales</strong> (right axis): flat means costs are scaling in line with sales; climbing means costs are outrunning sales. <strong>Category &amp; monthly</strong> granularity (by-vendor / by-week upgrades when a QuickBooks bills export is supplied).</p>
