@@ -374,6 +374,8 @@
     document.getElementById("ex-basis").textContent = x.basis;
     document.getElementById("ex-note").textContent = x.note;
 
+    renderExpensesJuly(x.july);
+
     CHARTS.expenses = function () {
       if (!chartReady()) return;
       var maxExp = Math.max.apply(null, months.map(function (m) { return m.totalExpense; }));
@@ -415,6 +417,34 @@
         }
       });
     };
+  }
+
+  function renderExpensesJuly(j) {
+    if (!j) return;
+    if (!document.getElementById("exj-panel")) return;
+    var byKey = {};
+    j.categories.forEach(function (c) { byKey[c.key] = c.amount; });
+    var wEl = document.getElementById("exj-window"); if (wEl) wEl.textContent = j.window;
+    document.getElementById("exj-kpis").innerHTML = [
+      { label: "July Expenses (1\u201327)", value: money(j.totalExpense), meta: "Material " + money(byKey.materials) + " \u00b7 Labor " + money(byKey.labor) + " \u00b7 Admin " + money(byKey.admin) },
+      { label: "Coffee Income (July)", value: money(j.income), meta: "QBO Coffee class, net" },
+      { label: "Net Income (July)", value: money(j.netIncome), meta: pct0(j.income > 0 ? j.netIncome / j.income * 100 : 0) + " net margin", cls: j.netIncome >= 0 ? "up" : "down" },
+      { label: "Material Vendors", value: String(j.vendors.length), meta: "itemized, sums to " + money(j.materialTotal) }
+    ].map(kpiCard).join("");
+    document.getElementById("exj-vendor-list").innerHTML = j.vendors.map(function (v) {
+      return '<div class="catrow"><span>' + v.name + (v.note ? ' <span class="subtle">(' + v.note + ')</span>' : '') +
+        '</span><span><b>' + money2(v.amount) + '</b></span></div>';
+    }).join("") +
+      '<div class="catrow"><span><b>Total Material (COGS)</b></span><span><b>' + money2(j.materialTotal) + '</b></span></div>';
+    var CJ = { materials: "#6f4e37", labor: "#0e4d92", admin: "#1f8a4c" };
+    document.getElementById("exj-cat-list").innerHTML = j.categories.map(function (c) {
+      return '<div class="catrow"><span><i class="sw" style="background:' + (CJ[c.key] || "#888") + '"></i>' +
+        c.label + '</span><span><b>' + money2(c.amount) + '</b> &nbsp;<span class="subtle">' +
+        pct0(j.totalExpense > 0 ? c.amount / j.totalExpense * 100 : 0) + '</span></span></div>';
+    }).join("") +
+      '<div class="catrow"><span><b>Total July Expense</b></span><span><b>' + money2(j.totalExpense) + '</b></span></div>';
+    document.getElementById("exj-note").textContent = j.note;
+    document.getElementById("exj-basis").textContent = j.basis;
   }
 
   function baseChartOpts(currency2) {
