@@ -306,6 +306,23 @@
       { label: "Projected Annual", value: money(e.projectedAnnual), meta: "Actuals + Jul\u2013Dec run-rate" }
     ].map(kpiCard).join("");
 
+    // ---- Event Room: YTD booked vs. full-year run-rate projection (info bar; not a pace signal) ----
+    var ep = e.progress;
+    var evBar = document.getElementById("ev-prog-bar");
+    if (ep && evBar) {
+      var evRealized = ep.realized;
+      var evProjected = ep.projectedAnnual;
+      var evRatio = evProjected > 0 ? evRealized / evProjected * 100 : 0;
+      evBar.className = "bar green";
+      evBar.style.width = Math.max(2, Math.min(100, evRatio)).toFixed(1) + "%";
+      evBar.textContent = pct0(evRatio);
+      document.getElementById("ev-prog-left").textContent = "Booked (Jan\u2013Jun) " + money(evRealized);
+      document.getElementById("ev-prog-right").textContent = "Projected FY " + money(evProjected);
+      document.getElementById("ev-prog-hint").textContent =
+        "Event Room has booked " + money(evRealized) + " through Jun 30 \u2014 " + pct0(evRatio) +
+        " of the " + money(evProjected) + " full-year run-rate projection. " + (ep.basisNote || "");
+    }
+
     var tbody = "";
     months.forEach(function (m) {
       tbody += "<tr><td>" + m.label + "</td><td>" + money2(m.revenue) + "</td><td>" +
