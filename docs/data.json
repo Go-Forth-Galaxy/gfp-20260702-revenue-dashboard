@@ -1,6 +1,6 @@
 {
   "generated": "2026-07-27",
-  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Square item-level sales Jul 1\u201321 (v2) + Jul 22, plus Jul 23\u201326 QuickBooks Sync \u2014 coffee-store sales, 2,532 lines (Jul 24\u201326 all-Coffee, no split) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun)",
+  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Square item-level sales Jul 1\u201321 (v2) + Jul 22, plus Jul 23\u201326 QuickBooks Sync \u2014 coffee-store sales, 2,532 lines (Jul 24\u201326 all-Coffee, no split) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun) | July coffee-shop expenses (QBO accrual, Jul 1\u201327) from CCPC P&L by Class + Transaction List by Vendor.",
   "overall": {
     "denominator": 783074.13,
     "realized": 338136.57,
@@ -583,6 +583,84 @@
       "Taxes & Fees": 327.0,
       "Shared Services (credit)": -2200.0
     },
-    "note": "Revenue shown here is the Coffee P&L Total Income (net of discounts), so gross margin and net income tie out within the same statement. It differs slightly from the Coffee tab's gross sales figure by the discount/refund line."
+    "note": "Revenue shown here is the Coffee P&L Total Income (net of discounts), so gross margin and net income tie out within the same statement. It differs slightly from the Coffee tab's gross sales figure by the discount/refund line.",
+    "july": {
+      "window": "Jul 1\u201327, 2026",
+      "basis": "QBO accrual \u2014 CCPC \u201cProfit & Loss by Class\u201d (Coffee class), cross-checked line-by-line to the \u201cTransaction List by Vendor.\u201d Live QuickBooks accrual data; a different basis from the AOP-budget Jan\u2013Jun trend, so it is shown as its own panel rather than blended into that series.",
+      "income": 21759.83,
+      "totalExpense": 13564.82,
+      "netIncome": 8195.01,
+      "categories": [
+        {
+          "key": "materials",
+          "label": "Material (COGS)",
+          "amount": 7670.07
+        },
+        {
+          "key": "labor",
+          "label": "Direct Labor (wages, tax, benefits)",
+          "amount": 5551.75
+        },
+        {
+          "key": "admin",
+          "label": "Computer Supplies & Maintenance",
+          "amount": 343.0
+        }
+      ],
+      "materialTotal": 7670.07,
+      "vendors": [
+        {
+          "name": "Nurture by Naya",
+          "amount": 2313.0,
+          "note": "resale goods for the shop"
+        },
+        {
+          "name": "Sam's Club",
+          "amount": 2017.13,
+          "note": ""
+        },
+        {
+          "name": "Fortuna Enterprises",
+          "amount": 1507.55,
+          "note": ""
+        },
+        {
+          "name": "Vignette",
+          "amount": 847.5,
+          "note": ""
+        },
+        {
+          "name": "Odeko",
+          "amount": 388.0,
+          "note": ""
+        },
+        {
+          "name": "Larrys Coffee",
+          "amount": 298.88,
+          "note": ""
+        },
+        {
+          "name": "PayPal",
+          "amount": 160.0,
+          "note": ""
+        },
+        {
+          "name": "SP Harney & Sons Tea",
+          "amount": 58.7,
+          "note": ""
+        },
+        {
+          "name": "Amazon",
+          "amount": 50.52,
+          "note": ""
+        },
+        {
+          "name": "Harris Teeter",
+          "amount": 28.79,
+          "note": ""
+        }
+      ],
+      "note": "Only Material (COGS) is vendor-itemized \u2014 Direct Labor is payroll and Admin is a single computer/maintenance line, neither vendor-level. Vendor rows sum exactly to Material $7,670.07; the three category lines sum to the $13,564.82 total. Coffee product income for the same window was $21,759.83 (Net Income $8,195.01)."
+    }
   }
 }
