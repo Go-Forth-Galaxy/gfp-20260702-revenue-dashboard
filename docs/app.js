@@ -343,6 +343,29 @@
       { label: "Gross Margin", value: pct0(t.grossMarginPct), meta: "Gross profit " + money(t.grossProfit) }
     ].map(kpiCard).join("");
 
+    // ---- Budget vs. Actual progress bar (Jan\u2013Jun coffee-shop expenses; lower is better) ----
+    var xb = x.budget;
+    var exBar = document.getElementById("ex-budget-bar");
+    if (xb && exBar) {
+      var exActual = t.totalExpense;
+      var exBudget = xb.janJunBudget;
+      var exRatio = exBudget > 0 ? exActual / exBudget * 100 : 0;
+      var exOverUnder = exBudget - exActual;
+      var exLvl = exRatio <= 100 ? "green" : exRatio <= 105 ? "yellow" : "red";
+      exBar.className = "bar " + exLvl;
+      exBar.style.width = Math.max(2, Math.min(100, exRatio)).toFixed(1) + "%";
+      exBar.textContent = pct0(exRatio);
+      document.getElementById("ex-budget-left").textContent = "Actual " + money(exActual);
+      document.getElementById("ex-budget-right").textContent = "Budget " + money(exBudget);
+      var exFav = exOverUnder >= 0
+        ? money(Math.abs(exOverUnder)) + " under budget (favorable)"
+        : money(Math.abs(exOverUnder)) + " over budget (unfavorable)";
+      document.getElementById("ex-budget-hint").textContent =
+        "Coffee-shop expenses are " + pct0(exRatio) + " of the Jan\u2013Jun AOP expense budget \u2014 " + exFav +
+        ". Year-to-date spend is " + money(exActual) + " of the " + money(xb.annualBudget) +
+        " full-year expense budget (" + pct0(exActual / xb.annualBudget * 100) + " spent). For expenses, at or under 100% is good.";
+    }
+
     var tbody = "";
     months.forEach(function (m) {
       var margin = m.revenue > 0 ? m.netIncome / m.revenue * 100 : 0;
