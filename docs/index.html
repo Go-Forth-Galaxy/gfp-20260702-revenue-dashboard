@@ -177,25 +177,17 @@
 
       <!-- ===================== COFFEESHOP EXPENSES ===================== -->
       <section class="tabpanel" id="tab-expenses">
-        <section class="kpis" id="ex-kpis"></section>
-
-        <div class="panel" id="exj-panel">
-          <h2>July 2026 &#8212; Coffee-Shop Expenses by Vendor <span class="subtle">(QBO accrual)</span></h2>
-          <p class="hint">Live <strong>QuickBooks accrual</strong> figures from the CCPC <em>Profit &amp; Loss by Class</em> (Coffee class), cross-checked line-by-line to the <em>Transaction List by Vendor</em>, for <strong id="exj-window"></strong>. This is a different basis from the AOP-budget Jan&#8211;Jun trend below, so it&#8217;s shown as its own panel rather than blended into that series. Only <strong>Material (COGS)</strong> is vendor-itemized &#8212; Direct Labor is payroll and Admin is a single maintenance line.</p>
-          <section class="kpis" id="exj-kpis"></section>
-          <div class="split-grid">
-            <div>
-              <h3>Material (COGS) by Vendor</h3>
-              <div id="exj-vendor-list"></div>
-            </div>
-            <div>
-              <h3>Expense Categories</h3>
-              <div id="exj-cat-list"></div>
-              <p class="subtle" id="exj-note"></p>
-            </div>
+        <!-- budget vs. actual progress bar ON TOP -->
+        <div class="panel">
+          <h2>Budget vs. Actual &#8212; Coffee-Shop Expenses (Jan&#8211;Jun)</h2>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="ex-budget-bar">0%</div></div>
+            <div class="progress-meta"><span id="ex-budget-left"></span><span id="ex-budget-right"></span></div>
           </div>
-          <p class="subtle" id="exj-basis"></p>
+          <p class="hint" id="ex-budget-hint"></p>
         </div>
+
+        <section class="kpis" id="ex-kpis"></section>
 
         <div class="panel">
           <h2>Sales vs. Expenses &#8212; Are We In Line?</h2>
@@ -210,6 +202,24 @@
             <span><i style="background:#12303f"></i>Net revenue (sales)</span>
             <span><i style="background:#b3261e"></i>Expense % of sales (right axis)</span>
           </div>
+        </div>
+
+        <div class="panel" id="exj-panel">
+          <h2>July 2026 &#8212; Coffee-Shop Expenses by Vendor <span class="subtle">(QBO accrual)</span></h2>
+          <p class="hint">Live <strong>QuickBooks accrual</strong> figures from the CCPC <em>Profit &amp; Loss by Class</em> (Coffee class), cross-checked line-by-line to the <em>Transaction List by Vendor</em>, for <strong id="exj-window"></strong>. This is a different basis from the AOP-budget Jan&#8211;Jun trend above, so it&#8217;s shown as its own panel rather than blended into that series. Only <strong>Material (COGS)</strong> is vendor-itemized &#8212; Direct Labor is payroll and Admin is a single maintenance line.</p>
+          <section class="kpis" id="exj-kpis"></section>
+          <div class="split-grid">
+            <div>
+              <h3>Material (COGS) by Vendor</h3>
+              <div id="exj-vendor-list"></div>
+            </div>
+            <div>
+              <h3>Expense Categories</h3>
+              <div id="exj-cat-list"></div>
+              <p class="subtle" id="exj-note"></p>
+            </div>
+          </div>
+          <p class="subtle" id="exj-basis"></p>
         </div>
 
         <div class="split-grid">
