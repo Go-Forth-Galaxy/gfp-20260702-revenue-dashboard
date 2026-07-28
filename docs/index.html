@@ -68,6 +68,8 @@
         <button class="tabbtn" data-tab="coffee">Coffee</button>
         <button class="tabbtn" data-tab="events">Events</button>
         <button class="tabbtn" data-tab="expenses">Coffeeshop Expenses</button>
+        <button class="tabbtn" data-tab="june">June</button>
+        <button class="tabbtn" data-tab="julyYtd">July YTD</button>
       </nav>
 
       <!-- ===================== OVERALL ===================== -->
@@ -252,6 +254,66 @@
             <tbody></tbody><tfoot></tfoot>
           </table>
           <p class="subtle" id="ex-note"></p>
+        </div>
+      </section>
+
+      <!-- ===================== JUNE ===================== -->
+      <section class="tabpanel" id="tab-june">
+        <div class="panel">
+          <h2>June 2026 &#8212; Month Snapshot</h2>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="jn-bar">0%</div></div>
+            <div class="progress-meta"><span id="jn-bar-left"></span><span id="jn-bar-right"></span></div>
+          </div>
+          <p class="hint" id="jn-bar-hint"></p>
+        </div>
+
+        <section class="kpis" id="jn-kpis"></section>
+
+        <div class="panel">
+          <h2>June in Context &#8212; H1 Monthly Revenue</h2>
+          <p class="hint">June revenue against the other Jan&#8211;Jun booked months (<strong>June highlighted</strong>). June was the lowest of the six H1 months.</p>
+          <div class="chart-wrap"><canvas id="jn-chart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <h2>June Revenue by Stream</h2>
+          <table id="jn-detail">
+            <thead><tr><th>Stream</th><th>June</th><th>% of June</th><th>vs. May</th></tr></thead>
+            <tbody></tbody><tfoot></tfoot>
+          </table>
+          <p class="subtle" id="jn-note"></p>
+        </div>
+      </section>
+
+      <!-- ===================== JULY YTD ===================== -->
+      <section class="tabpanel" id="tab-julyYtd">
+        <div class="panel">
+          <h2>July YTD &#8212; Year-to-Date vs. Annual Plan</h2>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="jy-bar">0%</div></div>
+            <div class="progress-meta"><span id="jy-bar-left"></span><span id="jy-bar-right"></span></div>
+          </div>
+          <p class="hint" id="jy-bar-hint"></p>
+          <div id="jy-pace"></div>
+        </div>
+
+        <div class="forward-note" id="jy-caveat"></div>
+        <section class="kpis" id="jy-kpis"></section>
+
+        <div class="panel">
+          <h2>Monthly Revenue &#8212; Jan&#8211;Jul <span class="subtle">(July = coffee only)</span></h2>
+          <p class="hint">Jan&#8211;Jun are <strong>four-stream booked actuals</strong>. July (Jul 1&#8211;27) shows <strong>coffee-store sales only</strong> &#8212; Event Room, Wellness, and Monthly Leasing July actuals are not booked yet, so the July bar is partial.</p>
+          <div class="chart-wrap"><canvas id="jy-chart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <h2>YTD Revenue by Stream</h2>
+          <table id="jy-detail">
+            <thead><tr><th>Stream</th><th>Jan&#8211;Jun</th><th>July</th><th>YTD</th></tr></thead>
+            <tbody></tbody><tfoot></tfoot>
+          </table>
+          <p class="subtle" id="jy-note"></p>
         </div>
       </section>
 
