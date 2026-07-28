@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-27",
-  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Square item-level sales Jul 1\u201321 (v2) + Jul 22, plus Jul 23\u201326 QuickBooks Sync \u2014 coffee-store sales, 2,532 lines (Jul 24\u201326 all-Coffee, no split) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun) | July coffee-shop expenses (QBO accrual, Jul 1\u201327) from CCPC P&L by Class + Transaction List by Vendor.",
+  "generated": "2026-07-28",
+  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Square item-level sales Jul 1\u201321 (v2) + Jul 22, plus Jul 23\u201326 QuickBooks Sync + Jul 27 Square \u2014 coffee-store sales, 2,636 lines (Jul 24\u201327 all-Coffee, no split) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun) | July coffee-shop expenses (QBO accrual, Jul 1\u201327) from CCPC P&L by Class + Transaction List by Vendor.",
   "overall": {
     "denominator": 783074.13,
     "realized": 338136.57,
@@ -119,9 +119,9 @@
       "basis": "Realized is booked Jan\u2013Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul\u2013Dec) to reach the $783,074 four-stream AOP target."
     },
     "julyCallout": {
-      "label": "July-to-date (Jul 1\u201326, coffee store)",
-      "total": 20080.83,
-      "coffee": 16147.33,
+      "label": "July-to-date (Jul 1\u201327, coffee store)",
+      "total": 20827.33,
+      "coffee": 16893.83,
       "food": 3799.5,
       "apparel": 127.0,
       "alcohol": 7.0,
@@ -285,16 +285,22 @@
         "dow": "Sun",
         "revenue": 534.25,
         "goal": 450
+      },
+      {
+        "date": "2026-07-27",
+        "dow": "Mon",
+        "revenue": 746.5,
+        "goal": 1200
       }
     ],
     "byCategory": {
-      "Coffee": 16147.33,
+      "Coffee": 16893.83,
       "Food": 3799.5,
       "Apparel": 127.0,
       "Alcohol": 7.0
     },
-    "mtdRealized": 20080.83,
-    "mtdBudget": 25800,
+    "mtdRealized": 20827.33,
+    "mtdBudget": 27000,
     "weeklyGoal": 7050,
     "dailyGoal": {
       "weekday": 1200,
@@ -302,14 +308,14 @@
       "sun": 450
     },
     "currentWeek": {
-      "label": "Jul 20\u201326 (complete)",
-      "realized": 5656.48,
-      "goalToDate": 7050,
+      "label": "Jul 27 (partial)",
+      "realized": 746.5,
+      "goalToDate": 1200,
       "fullGoal": 7050
     },
     "lastWeek": {
-      "label": "Jul 13\u201319 (complete)",
-      "realized": 5825.7,
+      "label": "Jul 20\u201326 (complete)",
+      "realized": 5656.48,
       "goal": 7050
     },
     "annualBudget": 334236.06,
@@ -341,15 +347,15 @@
       }
     ],
     "units": {
-      "total": 2532,
+      "total": 2636,
       "byCategory": {
-        "Coffee": 2056,
+        "Coffee": 2160,
         "Food": 471,
         "Apparel": 4,
         "Alcohol": 1
       }
     },
-    "windowNote": "Refreshed to the Jul 1\u201326 window: Jul 1\u201321 from the Square item-level import (v2), plus Jul 22\u201326 daily receipts (Jul 22 Square; Jul 23\u201326 QuickBooks Sync). Note: the Jul 24\u201326 receipts arrived without a category split, so all $1,557.13 of those three days is booked as Coffee \u2014 Food/Apparel are understated for that stretch (the category total still reconciles to MTD). Food is a distinct 4th category."
+    "windowNote": "Refreshed to the Jul 1\u201327 window: Jul 1\u201321 from the Square item-level import (v2), plus Jul 22\u201327 daily receipts (Jul 22 & 27 Square; Jul 23\u201326 QuickBooks Sync). Note: the Jul 24\u201327 receipts arrived without a category split, so all $2,303.63 of those four days is booked as Coffee \u2014 Food/Apparel are understated for that stretch (the category total still reconciles to MTD). Food is a distinct 4th category."
   },
   "events": {
     "months": [
