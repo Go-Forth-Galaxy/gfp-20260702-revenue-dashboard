@@ -755,13 +755,13 @@
   },
   "julyYtd": {
     "throughLabel": "Jul 28, 2026",
-    "denominator": 783074.13,
+    "denominator": 986240.13,
     "janJunFourStream": 338136.57,
     "julyCoffeeOnly": 20827.33,
     "julyBooked": 63580.33,
-    "realized": 401716.9,
-    "realizedPct": 51.3,
-    "remaining": 381357.23,
+    "realized": 503050.14,
+    "realizedPct": 51.0,
+    "remaining": 483189.99,
     "streams": [
       {
         "name": "Coffee",
@@ -786,10 +786,10 @@
       },
       {
         "name": "Operations",
-        "janJun": 0.0,
+        "janJun": 101333.24,
         "july": 15000.0,
-        "ytd": 15000.0,
-        "julyNote": "Go-Forth Pest Control $15,000, reclassified from Monthly Leasing (accrual, Jul 1-28)"
+        "ytd": 116333.24,
+        "julyNote": "Jan-Jun property/operations income $101,333.24 + July Go-Forth $15,000 (building/property cost center, accrual)"
       },
       {
         "name": "Wellness",
@@ -851,9 +851,16 @@
         "partial": true
       }
     ],
-    "barNote": "YTD realized ($401,716.90) as a percent of the $783,074.13 four-stream annual plan. July includes Coffee (Square cash, Jul 1-27) plus Event Room, Monthly Leasing, and a new Operations line (accrual, Jul 1-28); Wellness July is not booked, so YTD is still slightly understated and the pace read remains conservative.",
-    "paceSub": "July is now 3 of 4 revenue streams (coffee + event room + monthly leasing) plus a separate Operations line; Wellness is not booked, and coffee is cash-basis while leasing/event/operations are accrual (mixed basis). The true four-stream YTD is at least this high. Use the Overall tab (Jan-Jun, clean four-stream) for the cleanest pace figure.",
-    "caveat": "This YTD folds a full four-stream Jan-Jun ($338,136.57) together with a July that is 3 of 4 streams: Coffee $20,827.33 (Square cash, Jul 1-27) + Event Room $1,700 + Monthly Leasing $27,203 + Operations $15,000 + Other $3,850 - Discounts $5,000 (accrual, Jul 1-28). Wellness July is not booked. Monthly Leasing $27,203 is ~1.58x June's $17,169 (CCYS $10k the main driver); the Go-Forth $15,000 is now booked to Operations, not leasing.",
-    "note": "YTD = Jan-Jun four-stream booked actuals (AOP Class view) + July: coffee-store Square sales (Jul 1-27) plus Event Room, Monthly Leasing, Operations, Other, and Discounts from the July P&L Detail (accrual, Jul 1-28). The Go-Forth Pest Control $15,000 is booked to Operations (a 5th class), not Monthly Leasing. Wellness has no July line. The $3,850 'Other' is two unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850)."
+    "barNote": "YTD realized ($503,050.14) as a percent of the reworked $986,240 five-stream plan (four streams $783,074 + Operations run-rate $203,166). The original four-stream sub-total is retained: $401,716.90 = 51.3% of $783,074. Operations is the building/property cost center - its income is counted here but it runs at a gross loss, and the run-rate target is a projection, not a budget.",
+    "paceSub": "The denominator now includes Operations via a run-rate target ($203,166 = YTD annualized), so the headline barely moves (51.0% vs the prior four-stream 51.3%). Operations sits at ~57% of its run-rate by construction. Coffee is cash-basis while leasing/event/operations are accrual (mixed basis); Wellness July is not booked.",
+    "caveat": "This YTD now counts Operations (a 5th class) toward a reworked five-stream plan. Realized $503,050.14 = Jan-Jun all-stream $439,469.81 + July booked $63,580.33. The four-stream sub-total is retained: $401,716.90 / 51.3% of $783,074. The Operations run-rate target ($203,166) is annualized YTD actuals, labeled run-rate not a budget. Operations is a building/property cost center running at a gross loss (~$123k of building COGS against its $116k income), so counting its income completes the total-entity picture but does not add a profitable stream. The monthly bars show the four operating streams + July; the $101,333 Jan-Jun Operations income is in the YTD totals but not distributed across the monthly bars (only the aggregate is available).",
+    "note": "YTD = Jan-Jun all-stream booked actuals ($439,469.81 = four streams $338,136.57 + Operations $101,333.24, AOP Class view / QBO P&L by Class) + July booked $63,580.33 (coffee Square cash Jul 1-27; Event Room, Monthly Leasing, Operations, Other, Discounts accrual Jul 1-28). Per Steven (2026-07-28), Operations now counts toward a reworked five-stream plan via a run-rate target (~$203,166 = annualized YTD), keeping the original four-stream $783,074 / $401,716.90 (51.3%) visible as a sub-total. Wellness has no July line (3 of 4 streams). The $3,850 'Other' is two unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850).",
+    "fourStreamYtd": 401716.9,
+    "fourStreamDenominator": 783074.13,
+    "fourStreamPct": 51.3,
+    "operationsYtd": 116333.24,
+    "operationsRunRate": 203166.0,
+    "operationsPct": 57.3,
+    "janJunTotal": 439469.81
   }
 }
