@@ -580,12 +580,12 @@
     document.getElementById("jy-caveat").innerHTML = "<strong>Heads-up on July:</strong> " + y.caveat;
 
     document.getElementById("jy-kpis").innerHTML = [
-      { label: "YTD Realized (through Jul 28)", value: money(y.realized), meta: pct0(y.realizedPct) + " of annual plan" },
-      { label: "Jan\u2013Jun (four streams)", value: money(y.janJunFourStream), meta: "booked actuals, all streams" },
-      { label: "July booked (3 streams)", value: money2(y.julyBooked), meta: "coffee $20,827 + non-coffee $42,753" },
-      { label: "Annual Plan (AOP)", value: money(y.denominator), meta: "all four revenue streams" },
+      { label: "YTD Realized (through Jul 28)", value: money(y.realized), meta: pct0(y.realizedPct) + " of the five-stream plan" },
+      { label: "Four-stream sub-total", value: money(y.fourStreamYtd), meta: pct0(y.fourStreamPct) + " of $783,074 (original plan)" },
+      { label: "Operations YTD (run-rate)", value: money2(y.operationsYtd), meta: "vs " + money(y.operationsRunRate) + " run-rate target" },
+      { label: "Annual Plan (5-stream)", value: money(y.denominator), meta: "four streams + Operations run-rate" },
       { label: "Remaining to Plan", value: money(y.remaining), meta: "rest of July + Aug\u2013Dec" },
-      { label: "July Streams Booked", value: "3 of 4", meta: "Wellness July not booked yet" }
+      { label: "July Streams Booked", value: "3 of 4", meta: "plus Operations (5th class)" }
     ].map(kpiCard).join("");
 
     var tb = "";
@@ -596,7 +596,7 @@
     });
     document.querySelector("#jy-detail tbody").innerHTML = tb;
     document.querySelector("#jy-detail tfoot").innerHTML =
-      "<tr><td><b>Total YTD</b></td><td><b>" + money2(y.janJunFourStream) + "</b></td><td><b>" +
+      "<tr><td><b>Total YTD</b></td><td><b>" + money2(y.janJunTotal) + "</b></td><td><b>" +
       money2(y.julyBooked) + "</b></td><td><b>" + money2(y.realized) + "</b></td></tr>";
     document.getElementById("jy-note").textContent = y.note;
 
