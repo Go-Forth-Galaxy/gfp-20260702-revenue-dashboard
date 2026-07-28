@@ -580,12 +580,12 @@
     document.getElementById("jy-caveat").innerHTML = "<strong>Heads-up on July:</strong> " + y.caveat;
 
     document.getElementById("jy-kpis").innerHTML = [
-      { label: "YTD Realized (through Jul 27)", value: money(y.realized), meta: pct0(y.realizedPct) + " of annual plan" },
+      { label: "YTD Realized (through Jul 28)", value: money(y.realized), meta: pct0(y.realizedPct) + " of annual plan" },
       { label: "Jan\u2013Jun (four streams)", value: money(y.janJunFourStream), meta: "booked actuals, all streams" },
-      { label: "July MTD (coffee only)", value: money2(y.julyCoffeeOnly), meta: "Jul 1\u201327 \u00b7 other streams not booked" },
+      { label: "July booked (3 streams)", value: money2(y.julyBooked), meta: "coffee $20,827 + non-coffee $42,753" },
       { label: "Annual Plan (AOP)", value: money(y.denominator), meta: "all four revenue streams" },
       { label: "Remaining to Plan", value: money(y.remaining), meta: "rest of July + Aug\u2013Dec" },
-      { label: "July Streams Booked", value: "1 of 4", meta: "coffee only \u2014 3 streams pending" }
+      { label: "July Streams Booked", value: "3 of 4", meta: "Wellness July not booked yet" }
     ].map(kpiCard).join("");
 
     var tb = "";
@@ -597,7 +597,7 @@
     document.querySelector("#jy-detail tbody").innerHTML = tb;
     document.querySelector("#jy-detail tfoot").innerHTML =
       "<tr><td><b>Total YTD</b></td><td><b>" + money2(y.janJunFourStream) + "</b></td><td><b>" +
-      money2(y.julyCoffeeOnly) + "</b></td><td><b>" + money2(y.realized) + "</b></td></tr>";
+      money2(y.julyBooked) + "</b></td><td><b>" + money2(y.realized) + "</b></td></tr>";
     document.getElementById("jy-note").textContent = y.note;
 
     CHARTS.julyYtd = function () {
@@ -608,7 +608,7 @@
           labels: y.months.map(function (m) { return m.key; }),
           datasets: [{
             label: "Monthly Revenue", data: y.months.map(function (m) { return m.revenue; }),
-            backgroundColor: y.months.map(function (m) { return m.coffeeOnly ? COLORS.coffee : COLORS.green; }),
+            backgroundColor: y.months.map(function (m) { return m.partial ? "#e9a23b" : (m.coffeeOnly ? COLORS.coffee : COLORS.green); }),
             borderRadius: 4, maxBarThickness: 46
           }]
         },
