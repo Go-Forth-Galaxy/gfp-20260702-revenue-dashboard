@@ -502,10 +502,125 @@
     };
   }
 
+  // ===================== JUNE =====================
+  function renderJune(j) {
+    if (!j) return;
+    if (!document.getElementById("tab-june")) return;
+    var bar = document.getElementById("jn-bar");
+    var ratio = j.benchmarkPct;
+    bar.className = "bar green";
+    bar.style.width = Math.max(2, Math.min(100, ratio)).toFixed(1) + "%";
+    bar.textContent = pct0(ratio);
+    document.getElementById("jn-bar-left").textContent = "June " + money2(j.total);
+    document.getElementById("jn-bar-right").textContent = "H1 avg month " + money(j.h1Avg);
+    document.getElementById("jn-bar-hint").textContent = j.barNote;
+
+    document.getElementById("jn-kpis").innerHTML = [
+      { label: "June Total Revenue", value: money2(j.total), meta: "All four streams \u00b7 booked" },
+      { label: "vs. H1 Monthly Average", value: pct0(j.benchmarkPct), meta: "H1 avg month " + money(j.h1Avg) },
+      { label: "MoM vs. May", value: pct(j.momPct), meta: "May was " + money(j.priorMonthTotal), cls: j.momPct >= 0 ? "up" : "down" },
+      { label: "Rank in H1", value: j.rank, meta: j.rankNote },
+      { label: "Net Operating Income", value: money2(j.netIncome), meta: pct0(j.grossMarginPct) + " gross margin" },
+      { label: "Top Stream", value: j.topStream.name, meta: money2(j.topStream.value) + " \u00b7 " + pct0(j.topStream.pct) + " of June" }
+    ].map(kpiCard).join("");
+
+    var tb = "";
+    j.streams.forEach(function (s) {
+      var vs = (s.may && s.may !== 0) ? pct((s.value - s.may) / s.may * 100) : "\u2014";
+      tb += "<tr><td>" + s.name + "</td><td>" + money2(s.value) + "</td><td>" +
+        pct0(j.total !== 0 ? s.value / j.total * 100 : 0) + "</td><td>" + vs + "</td></tr>";
+    });
+    document.querySelector("#jn-detail tbody").innerHTML = tb;
+    document.querySelector("#jn-detail tfoot").innerHTML =
+      "<tr><td><b>Total</b></td><td><b>" + money2(j.total) + "</b></td><td>100.0%</td><td>" +
+      pct((j.total - j.priorMonthTotal) / j.priorMonthTotal * 100) + "</td></tr>";
+    document.getElementById("jn-note").textContent = j.note;
+
+    CHARTS.june = function () {
+      if (!chartReady()) return;
+      new Chart(document.getElementById("jn-chart").getContext("2d"), {
+        type: "bar",
+        data: {
+          labels: j.h1.map(function (m) { return m.key; }),
+          datasets: [{
+            label: "Monthly Revenue", data: j.h1.map(function (m) { return m.revenue; }),
+            backgroundColor: j.h1.map(function (m) { return m.key === "Jun" ? COLORS.red : COLORS.green; }),
+            borderRadius: 4, maxBarThickness: 46
+          }]
+        },
+        options: baseChartOpts()
+      });
+    };
+  }
+
+  // ===================== JULY YTD =====================
+  function renderJulyYtd(y) {
+    if (!y) return;
+    if (!document.getElementById("tab-julyYtd")) return;
+    var progress = y.realized / y.denominator * 100;
+    var ps = paceStatus(y.realized, y.denominator);
+    var bar = document.getElementById("jy-bar");
+    bar.className = "bar " + ps.level;
+    bar.style.width = Math.max(2, Math.min(100, progress)).toFixed(1) + "%";
+    bar.textContent = pct0(progress);
+    document.getElementById("jy-bar-left").textContent = "Realized " + money(y.realized);
+    document.getElementById("jy-bar-right").textContent = "Target " + money(y.denominator);
+    document.getElementById("jy-bar-hint").textContent = y.barNote;
+
+    var gapTxt = ps.gapPts < 0
+      ? " \u2014 behind by " + Math.abs(ps.gapPts).toFixed(1) + " pts"
+      : " \u2014 ahead by " + ps.gapPts.toFixed(1) + " pts";
+    document.getElementById("jy-pace").innerHTML =
+      '<div class="pace pace-' + ps.level + '">' +
+        '<div class="pace-head">' + paceLabel(ps.level) + ": " + pct0(ps.realizedPct) +
+          " of the annual plan realized vs " + pct0(ps.elapsedPct) + " of the year elapsed" + gapTxt + ".</div>" +
+        '<div class="pace-sub">' + y.paceSub + "</div>" +
+      "</div>";
+
+    document.getElementById("jy-caveat").innerHTML = "<strong>Heads-up on July:</strong> " + y.caveat;
+
+    document.getElementById("jy-kpis").innerHTML = [
+      { label: "YTD Realized (through Jul 27)", value: money(y.realized), meta: pct0(y.realizedPct) + " of annual plan" },
+      { label: "Jan\u2013Jun (four streams)", value: money(y.janJunFourStream), meta: "booked actuals, all streams" },
+      { label: "July MTD (coffee only)", value: money2(y.julyCoffeeOnly), meta: "Jul 1\u201327 \u00b7 other streams not booked" },
+      { label: "Annual Plan (AOP)", value: money(y.denominator), meta: "all four revenue streams" },
+      { label: "Remaining to Plan", value: money(y.remaining), meta: "rest of July + Aug\u2013Dec" },
+      { label: "July Streams Booked", value: "1 of 4", meta: "coffee only \u2014 3 streams pending" }
+    ].map(kpiCard).join("");
+
+    var tb = "";
+    y.streams.forEach(function (s) {
+      tb += "<tr><td>" + s.name + (s.julyNote ? ' <span class="subtle">(' + s.julyNote + ')</span>' : '') +
+        "</td><td>" + money2(s.janJun) + "</td><td>" + (s.july ? money2(s.july) : "\u2014") +
+        "</td><td>" + money2(s.ytd) + "</td></tr>";
+    });
+    document.querySelector("#jy-detail tbody").innerHTML = tb;
+    document.querySelector("#jy-detail tfoot").innerHTML =
+      "<tr><td><b>Total YTD</b></td><td><b>" + money2(y.janJunFourStream) + "</b></td><td><b>" +
+      money2(y.julyCoffeeOnly) + "</b></td><td><b>" + money2(y.realized) + "</b></td></tr>";
+    document.getElementById("jy-note").textContent = y.note;
+
+    CHARTS.julyYtd = function () {
+      if (!chartReady()) return;
+      new Chart(document.getElementById("jy-chart").getContext("2d"), {
+        type: "bar",
+        data: {
+          labels: y.months.map(function (m) { return m.key; }),
+          datasets: [{
+            label: "Monthly Revenue", data: y.months.map(function (m) { return m.revenue; }),
+            backgroundColor: y.months.map(function (m) { return m.coffeeOnly ? COLORS.coffee : COLORS.green; }),
+            borderRadius: 4, maxBarThickness: 46
+          }]
+        },
+        options: baseChartOpts()
+      });
+    };
+  }
+
   // ---------- tabs ----------
   var built = {};
   function showTab(name) {
-    ["overall", "coffee", "events", "expenses"].forEach(function (t) {
+    ["overall", "coffee", "events", "expenses", "june", "julyYtd"].forEach(function (t) {
       var panel = document.getElementById("tab-" + t);
       var btn = document.querySelector('.tabbtn[data-tab="' + t + '"]');
       if (panel) panel.classList.toggle("active", t === name);
@@ -530,6 +645,8 @@
     renderCoffee(data.coffee);
     renderEvents(data.events);
     renderExpenses(data.expenses);
+    renderJune(data.june);
+    renderJulyYtd(data.julyYtd);
     wireTabs();
     showTab("overall");
     noteChartsUnavailable();
