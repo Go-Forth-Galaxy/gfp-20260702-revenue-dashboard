@@ -754,13 +754,14 @@
   "note": "June 2026 booked actuals from the AOP 'Profit & Loss - Class view' (accrual). All four streams reconcile to the $50,270.18 June Total Income; per-stream 'vs. May' compares each stream to its May actual."
  },
  "julyYtd": {
-  "throughLabel": "Jul 27, 2026",
+  "throughLabel": "Jul 28, 2026",
   "denominator": 783074.13,
   "janJunFourStream": 338136.57,
   "julyCoffeeOnly": 20827.33,
-  "realized": 358963.9,
-  "realizedPct": 45.8,
-  "remaining": 424110.23,
+  "julyBooked": 63580.33,
+  "realized": 401716.9,
+  "realizedPct": 51.3,
+  "remaining": 381357.23,
   "streams": [
    {
     "name": "Coffee",
@@ -772,30 +773,37 @@
    {
     "name": "Event Room",
     "janJun": 20302.32,
-    "july": 0,
-    "ytd": 20302.32,
-    "julyNote": "July not booked"
+    "july": 1700.0,
+    "ytd": 22002.32,
+    "julyNote": "Meeting Room rental (accrual, Jul 1-28)"
    },
    {
     "name": "Monthly Leasing",
     "janJun": 115857.01,
-    "july": 0,
-    "ytd": 115857.01,
-    "julyNote": "July not booked"
+    "july": 42203.0,
+    "ytd": 158060.01,
+    "julyNote": "9 Ossi suites + Go-Forth + Wagamuffins (accrual)"
    },
    {
     "name": "Wellness",
     "janJun": 60000.0,
-    "july": 0,
+    "july": 0.0,
     "ytd": 60000.0,
     "julyNote": "July not booked"
    },
    {
+    "name": "Other",
+    "janJun": 0.0,
+    "july": 3850.0,
+    "ytd": 3850.0,
+    "julyNote": "2 unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850)"
+   },
+   {
     "name": "Discounts",
     "janJun": -2116.25,
-    "july": 0,
-    "ytd": -2116.25,
-    "julyNote": ""
+    "july": -5000.0,
+    "ytd": -7116.25,
+    "julyNote": "CCYS In Kind (July)"
    }
   ],
   "months": [
@@ -831,13 +839,14 @@
    },
    {
     "key": "Jul",
-    "revenue": 20827.33,
-    "coffeeOnly": true
+    "revenue": 63580.33,
+    "coffeeOnly": false,
+    "partial": true
    }
   ],
-  "barNote": "YTD realized ($358,963.90) as a percent of the $783,074.13 four-stream annual plan. IMPORTANT: July reflects coffee-store sales only ($20,827.33, Jul 1-27) - Event Room, Wellness, and Monthly Leasing July actuals are not booked yet, so YTD is understated for those three streams and the pace read is conservative.",
-  "paceSub": "July is only partially represented (coffee store only), so the true four-stream YTD is higher than shown and the gap to pace is smaller than it looks. Use the Overall tab (Jan-Jun, clean four-stream) for the headline pace figure.",
-  "caveat": "This YTD folds a full four-stream Jan-Jun ($338,136.57) together with a coffee-only July ($20,827.33). The other three streams' July revenue is not booked yet, so treat the July increment and the pace bar as coffee-only, not a complete July.",
-  "note": "YTD = Jan-Jun four-stream booked actuals (AOP Class view) + July coffee-store sales (Square, Jul 1-27). Coffee YTD mixes two bases (Class-view income Jan-Jun + Square gross July); the other streams show Jan-Jun only."
+  "barNote": "YTD realized ($401,716.90) as a percent of the $783,074.13 four-stream annual plan. July now includes Coffee (Square cash, Jul 1-27), Event Room, and Monthly Leasing (accrual, Jul 1-28); Wellness July is not booked, so YTD is still slightly understated and the pace read remains conservative.",
+  "paceSub": "July is now 3 of 4 streams (coffee + event room + monthly leasing); Wellness is not booked, and coffee is cash-basis while leasing/event are accrual (mixed basis). The true four-stream YTD is at least this high. Use the Overall tab (Jan-Jun, clean four-stream) for the cleanest pace figure.",
+  "caveat": "This YTD folds a full four-stream Jan-Jun ($338,136.57) together with a July that is 3 of 4 streams: Coffee $20,827.33 (Square cash, Jul 1-27) + Event Room $1,700 + Monthly Leasing $42,203 + Other $3,850 - Discounts $5,000 (accrual, Jul 1-28). Wellness July is not booked. Note Monthly Leasing $42,203 is ~2.5x June's $17,169 (Go-Forth $15k + CCYS $10k).",
+  "note": "YTD = Jan-Jun four-stream booked actuals (AOP Class view) + July: coffee-store Square sales (Jul 1-27) plus Event Room, Monthly Leasing, Other, and Discounts from the July P&L Detail (accrual, Jul 1-28). Wellness has no July line. The $3,850 'Other' is two unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850)."
  }
 }
