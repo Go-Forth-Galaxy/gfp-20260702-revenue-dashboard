@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-28",
+  "generated": "2026-07-30",
   "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Square item-level sales Jul 1\u201321 (v2) + Jul 22, plus Jul 23\u201326 QuickBooks Sync + Jul 27 Square \u2014 coffee-store sales, 2,636 lines (Jul 24\u201327 all-Coffee, no split) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun) | July coffee-shop expenses (QBO accrual, Jul 1\u201327) from CCPC P&L by Class + Transaction List by Vendor.",
   "overall": {
     "denominator": 783074.13,
@@ -119,9 +119,9 @@
       "basis": "Realized is booked Jan\u2013Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul\u2013Dec) to reach the $783,074 four-stream AOP target."
     },
     "julyCallout": {
-      "label": "July-to-date (Jul 1\u201327, coffee store)",
-      "total": 20827.33,
-      "coffee": 16893.83,
+      "label": "July-to-date (Jul 1\u201329, coffee store)",
+      "total": 22826.03,
+      "coffee": 18892.53,
       "food": 3799.5,
       "apparel": 127.0,
       "alcohol": 7.0,
@@ -291,16 +291,28 @@
         "dow": "Mon",
         "revenue": 746.5,
         "goal": 1200
+      },
+      {
+        "date": "2026-07-28",
+        "dow": "Tue",
+        "revenue": 973.7,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-29",
+        "dow": "Wed",
+        "revenue": 1025.0,
+        "goal": 1200
       }
     ],
     "byCategory": {
-      "Coffee": 16893.83,
+      "Coffee": 18892.53,
       "Food": 3799.5,
       "Apparel": 127.0,
       "Alcohol": 7.0
     },
-    "mtdRealized": 20827.33,
-    "mtdBudget": 27000,
+    "mtdRealized": 22826.03,
+    "mtdBudget": 29400,
     "weeklyGoal": 7050,
     "dailyGoal": {
       "weekday": 1200,
@@ -308,9 +320,9 @@
       "sun": 450
     },
     "currentWeek": {
-      "label": "Jul 27 (partial)",
-      "realized": 746.5,
-      "goalToDate": 1200,
+      "label": "Jul 27\u201329 (partial)",
+      "realized": 2745.2,
+      "goalToDate": 3600,
       "fullGoal": 7050
     },
     "lastWeek": {
@@ -347,15 +359,16 @@
       }
     ],
     "units": {
-      "total": 2636,
+      "total": 2914,
       "byCategory": {
-        "Coffee": 2160,
+        "Coffee": 2438,
         "Food": 471,
         "Apparel": 4,
         "Alcohol": 1
       }
     },
-    "windowNote": "Refreshed to the Jul 1\u201327 window: Jul 1\u201321 from the Square item-level import (v2), plus Jul 22\u201327 daily receipts (Jul 22 & 27 Square; Jul 23\u201326 QuickBooks Sync). Note: the Jul 24\u201327 receipts arrived without a category split, so all $2,303.63 of those four days is booked as Coffee \u2014 Food/Apparel are understated for that stretch (the category total still reconciles to MTD). Food is a distinct 4th category."
+    "windowNote": "Refreshed to the Jul 1\u201329 window: Jul 1\u201321 from the Square item-level import (v2), plus Jul 22\u201329 daily receipts. Note: the Jul 24\u201329 receipts arrived without a category split, so all $4,302.33 of those six days is booked as Coffee \u2014 Food/Apparel are understated for that stretch (the category total still reconciles to MTD). Food is a distinct 4th category.",
+    "generated": null
   },
   "events": {
     "months": [
@@ -758,17 +771,17 @@
     "denominator": 986240.13,
     "janJunFourStream": 338136.57,
     "julyCoffeeOnly": 20827.33,
-    "julyBooked": 63580.33,
-    "realized": 503050.14,
-    "realizedPct": 51.0,
-    "remaining": 483189.99,
+    "julyBooked": 65579.03,
+    "realized": 505048.84,
+    "realizedPct": 51.2,
+    "remaining": 481191.29,
     "streams": [
       {
         "name": "Coffee",
         "janJun": 144093.49,
-        "july": 20827.33,
-        "ytd": 164920.82,
-        "julyNote": "Square gross, Jul 1-27"
+        "july": 22826.03,
+        "ytd": 166919.52,
+        "julyNote": "Square gross, Jul 1-29"
       },
       {
         "name": "Event Room",
@@ -846,18 +859,18 @@
       },
       {
         "key": "Jul",
-        "revenue": 63580.33,
+        "revenue": 65579.03,
         "coffeeOnly": false,
         "partial": true
       }
     ],
-    "barNote": "YTD realized ($503,050.14) as a percent of the reworked $986,240 five-stream plan (four streams $783,074 + Operations run-rate $203,166). The original four-stream sub-total is retained: $401,716.90 = 51.3% of $783,074. Operations is the building/property cost center - its income is counted here but it runs at a gross loss, and the run-rate target is a projection, not a budget.",
-    "paceSub": "The denominator now includes Operations via a run-rate target ($203,166 = YTD annualized), so the headline barely moves (51.0% vs the prior four-stream 51.3%). Operations sits at ~57% of its run-rate by construction. Coffee is cash-basis while leasing/event/operations are accrual (mixed basis); Wellness July is not booked.",
-    "caveat": "This YTD now counts Operations (a 5th class) toward a reworked five-stream plan. Realized $503,050.14 = Jan-Jun all-stream $439,469.81 + July booked $63,580.33. The four-stream sub-total is retained: $401,716.90 / 51.3% of $783,074. The Operations run-rate target ($203,166) is annualized YTD actuals, labeled run-rate not a budget. Operations is a building/property cost center running at a gross loss (~$123k of building COGS against its $116k income), so counting its income completes the total-entity picture but does not add a profitable stream. The monthly bars show the four operating streams + July; the $101,333 Jan-Jun Operations income is in the YTD totals but not distributed across the monthly bars (only the aggregate is available).",
-    "note": "YTD = Jan-Jun all-stream booked actuals ($439,469.81 = four streams $338,136.57 + Operations $101,333.24, AOP Class view / QBO P&L by Class) + July booked $63,580.33 (coffee Square cash Jul 1-27; Event Room, Monthly Leasing, Operations, Other, Discounts accrual Jul 1-28). Per Steven (2026-07-28), Operations now counts toward a reworked five-stream plan via a run-rate target (~$203,166 = annualized YTD), keeping the original four-stream $783,074 / $401,716.90 (51.3%) visible as a sub-total. Wellness has no July line (3 of 4 streams). The $3,850 'Other' is two unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850).",
-    "fourStreamYtd": 401716.9,
+    "barNote": "YTD realized ($505,048.84) as a percent of the reworked $986,240 five-stream plan (four streams $783,074 + Operations run-rate $203,166). The original four-stream sub-total is retained: $403,715.60 = 51.6% of $783,074. Operations is the building/property cost center - its income is counted here but it runs at a gross loss, and the run-rate target is a projection, not a budget.",
+    "paceSub": "The denominator now includes Operations via a run-rate target ($203,166 = YTD annualized), so the headline barely moves (51.2% vs the prior four-stream 51.6%). Operations sits at ~57% of its run-rate by construction. Coffee is cash-basis while leasing/event/operations are accrual (mixed basis); Wellness July is not booked.",
+    "caveat": "This YTD now counts Operations (a 5th class) toward a reworked five-stream plan. Realized $505,048.84 = Jan-Jun all-stream $439,469.81 + July booked $65,579.03. The four-stream sub-total is retained: $403,715.60 / 51.6% of $783,074. The Operations run-rate target ($203,166) is annualized YTD actuals, labeled run-rate not a budget. Operations is a building/property cost center running at a gross loss (~$123k of building COGS against its $116k income), so counting its income completes the total-entity picture but does not add a profitable stream. The monthly bars show the four operating streams + July; the $101,333 Jan-Jun Operations income is in the YTD totals but not distributed across the monthly bars (only the aggregate is available).",
+    "note": "YTD = Jan-Jun all-stream booked actuals ($439,469.81 = four streams $338,136.57 + Operations $101,333.24, AOP Class view / QBO P&L by Class) + July booked $65,579.03 (coffee Square cash Jul 1-29; Event Room, Monthly Leasing, Operations, Other, Discounts accrual Jul 1-28). Per Steven (2026-07-28), Operations now counts toward a reworked five-stream plan via a run-rate target (~$203,166 = annualized YTD), keeping the original four-stream $783,074 / $403,715.60 (51.6%) visible as a sub-total. Wellness has no July line (3 of 4 streams). The $3,850 'Other' is two unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850).",
+    "fourStreamYtd": 403715.6,
     "fourStreamDenominator": 783074.13,
-    "fourStreamPct": 51.3,
+    "fourStreamPct": 51.6,
     "operationsYtd": 116333.24,
     "operationsRunRate": 203166.0,
     "operationsPct": 57.3,
