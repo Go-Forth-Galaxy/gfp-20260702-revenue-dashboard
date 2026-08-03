@@ -129,3 +129,4 @@ footer{max-width:1160px;margin:0 auto;padding:0 22px 40px;color:var(--muted);fon
 .num { text-align: right; }
 .panel-header h3 { margin-top: 0; font-size: 15px; color: var(--gfp-blue-dark); margin-bottom: 12px; }
 .cat-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.kpi.down .kpi-val, .kpi.down .kpi-meta { color: #b3261e; }
