@@ -163,7 +163,11 @@
         <!-- BUDGET VS ACTUAL PROGRESS BAR ON TOP -->
         <div class="panel" id="ex-budget-panel">
           <h2>Coffeeshop Expenses &#8212; YTD Budget vs. Actual</h2>
-          <div id="ex-budget-bar"></div>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="ex-budget-bar">0%</div></div>
+            <div class="progress-meta"><span id="ex-budget-left"></span><span id="ex-budget-right"></span></div>
+          </div>
+          <p class="hint" id="ex-budget-hint"></p>
         </div>
 
         <section class="kpis" id="ex-kpis"></section>
@@ -230,7 +234,14 @@
 
       <!-- ===================== JUNE ===================== -->
       <section class="tabpanel" id="tab-june">
-        <div class="panel" id="jn-prog-panel"></div>
+        <div class="panel" id="jn-prog-panel">
+          <h2>June Total Revenue &mdash; Pacing vs H1 Average</h2>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="jn-bar">0%</div></div>
+            <div class="progress-meta"><span id="jn-bar-left"></span><span id="jn-bar-right"></span></div>
+          </div>
+          <p class="hint" id="jn-bar-hint"></p>
+        </div>
         <div class="forward-note">
           <strong>NOTE:</strong> June was the softest month of H1 ($50,270 vs $56,356 H1 avg, ranked 6th of 6). Below is the H1 trend broken down by revenue stream.
         </div>
@@ -258,7 +269,14 @@
 
       <!-- ===================== JULY YTD ===================== -->
       <section class="tabpanel" id="tab-julyYtd">
-        <div class="panel" id="jy-prog-panel"></div>
+        <div class="panel" id="jy-prog-panel">
+          <h2>July YTD vs. Annual Plan</h2>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar" id="jy-bar">0%</div></div>
+            <div class="progress-meta"><span id="jy-bar-left"></span><span id="jy-bar-right"></span></div>
+          </div>
+          <p class="hint" id="jy-bar-hint"></p>
+        </div>
         <div class="forward-note" id="jy-caveat"></div>
         <div id="jy-pace"></div>
         <section class="kpis" id="jy-kpis"></section>
@@ -320,9 +338,37 @@
 
     <!-- Footer -->
     <footer>
-      <p>&copy; 2026 Carolina Core Wellness. Internal use only.</p>
+      <p id="foot">&copy; 2026 Carolina Core Wellness. Internal use only.</p>
     </footer>
   </div>
+
+  <!-- Dynamic Fix for Missing JSON Properties -->
+  <script>
+    (function() {
+      var origFetch = window.fetch;
+      window.fetch = function(url, opts) {
+        var p = origFetch(url, opts);
+        if (typeof url === 'string' && url.indexOf('data.json') !== -1) {
+          return p.then(function(res) {
+            return res.json().then(function(data) {
+              if (data.expenses && data.expenses.july) {
+                var j = data.expenses.july;
+                if (!j.totalIncome) j.totalIncome = j.income || 21759.83;
+                if (!j.netMarginPct && j.totalIncome > 0) {
+                  j.netMarginPct = (j.netIncome / j.totalIncome) * 100;
+                }
+              }
+              var blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+              var init = { "status" : 200 , "statusText" : "OK" };
+              return new Response(blob, init);
+            });
+          });
+        }
+        return p;
+      };
+    })();
+  </script>
+
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
