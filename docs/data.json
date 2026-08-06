@@ -1,1037 +1,1089 @@
 {
- "generated": "2026-08-06",
- "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) · Square item-level sales Jul 1–21 (v2) + Jul 22, plus Jul 23–26 QuickBooks Sync + Jul 27 Square — coffee-store sales, 2,636 lines (Jul 24–27 all-Coffee, no split) · Coffee P&L expense actuals by category (Jan–Jun) | July coffee-shop expenses (QBO accrual, Jul 1–27) from CCPC P&L by Class + Transaction List by Vendor.",
- "overall": {
-  "denominator": 783074.13,
-  "realized": 338136.57,
-  "realizedPct": 43.2,
-  "months": [
-   {
-    "key": "Jan",
-    "label": "January",
-    "days": 31,
-    "revenue": 53261.22,
-    "forecast": false
-   },
-   {
-    "key": "Feb",
-    "label": "February",
-    "days": 28,
-    "revenue": 55518.17,
-    "forecast": false
-   },
-   {
-    "key": "Mar",
-    "label": "March",
-    "days": 31,
-    "revenue": 61241.17,
-    "forecast": false
-   },
-   {
-    "key": "Apr",
-    "label": "April",
-    "days": 30,
-    "revenue": 59197.01,
-    "forecast": false
-   },
-   {
-    "key": "May",
-    "label": "May",
-    "days": 31,
-    "revenue": 58648.82,
-    "forecast": false
-   },
-   {
-    "key": "Jun",
-    "label": "June",
-    "days": 30,
-    "revenue": 50270.18,
-    "forecast": false
-   },
-   {
-    "key": "Jul",
-    "label": "July",
-    "days": 31,
-    "revenue": 72166.16,
-    "forecast": true
-   },
-   {
-    "key": "Aug",
-    "label": "August",
-    "days": 31,
-    "revenue": 70185.42,
-    "forecast": true
-   },
-   {
-    "key": "Sep",
-    "label": "September",
-    "days": 30,
-    "revenue": 71377.84,
-    "forecast": true
-   },
-   {
-    "key": "Oct",
-    "label": "October",
-    "days": 31,
-    "revenue": 73029.88,
-    "forecast": true
-   },
-   {
-    "key": "Nov",
-    "label": "November",
-    "days": 30,
-    "revenue": 72742.03,
-    "forecast": true
-   },
-   {
-    "key": "Dec",
-    "label": "December",
-    "days": 31,
-    "revenue": 74914.78,
-    "forecast": true
-   }
-  ],
-  "streamsRealized": {
-   "Coffee": 144093.49,
-   "Event Room": 20302.32,
-   "Wellness": 60000,
-   "Monthly Leasing": 115857.01,
-   "Discounts": -2116.25
-  },
-  "streamsAnnual": {
-   "Coffee": 334236.06,
-   "Event Room+Monthly Leasing": 328838.07,
-   "Wellness": 120000
-  },
-  "cutoff_note": "Jan–Jun are booked actuals (AOP Class view, all four revenue streams). Jul–Dec are AOP forward budget. The annual target ($783,074) is the four-stream AOP plan; realized is booked Jan–Jun.",
-  "pace": {
-   "realizedThrough": "2026-06-30",
-   "remaining": 444937.56,
-   "remMonths": 6,
-   "remWeeks": 26.2857,
-   "remDays": 184,
-   "perMonth": 74156.26,
-   "perWeek": 16926.97,
-   "perDay": 2418.14,
-   "currentRunRateMonthly": 56356.1,
-   "upliftMonthly": 17800.16,
-   "upliftPct": 31.6,
-   "basis": "Realized is booked Jan–Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul–Dec) to reach the $783,074 four-stream AOP target."
-  },
-  "julyCallout": {
-   "label": "Jul 1–Aug 5 (coffee store)",
-   "total": 28788.83,
-   "coffee": 24855.33,
-   "food": 3799.5,
-   "apparel": 127.0,
-   "alcohol": 7.0,
-   "note": "Shown for visibility only — it is NOT included in the 43.2% headline above, which is Jan–Jun booked actuals across all four revenue streams. July actuals for Wellness, Monthly Leasing and Event Room aren't in yet, so folding one stream's partial month into the four-stream pace would understate true progress."
-  }
- },
- "coffee": {
-  "daily": [
-   {
-    "date": "2026-07-01",
-    "dow": "Wed",
-    "revenue": 908.25,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-02",
-    "dow": "Thu",
-    "revenue": 845.0,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-03",
-    "dow": "Fri",
-    "revenue": 424.2,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-04",
-    "dow": "Sat",
-    "revenue": 236.5,
-    "goal": 600
-   },
-   {
-    "date": "2026-07-05",
-    "dow": "Sun",
-    "revenue": 396.75,
-    "goal": 450
-   },
-   {
-    "date": "2026-07-06",
-    "dow": "Mon",
-    "revenue": 873.0,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-07",
-    "dow": "Tue",
-    "revenue": 913.0,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-08",
-    "dow": "Wed",
-    "revenue": 991.25,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-09",
-    "dow": "Thu",
-    "revenue": 926.45,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-10",
-    "dow": "Fri",
-    "revenue": 894.5,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-11",
-    "dow": "Sat",
-    "revenue": 609.25,
-    "goal": 600
-   },
-   {
-    "date": "2026-07-12",
-    "dow": "Sun",
-    "revenue": 580.5,
-    "goal": 450
-   },
-   {
-    "date": "2026-07-13",
-    "dow": "Mon",
-    "revenue": 1076.5,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-14",
-    "dow": "Tue",
-    "revenue": 917.95,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-15",
-    "dow": "Wed",
-    "revenue": 962.75,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-16",
-    "dow": "Thu",
-    "revenue": 984.25,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-17",
-    "dow": "Fri",
-    "revenue": 819.9,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-18",
-    "dow": "Sat",
-    "revenue": 472.6,
-    "goal": 600
-   },
-   {
-    "date": "2026-07-19",
-    "dow": "Sun",
-    "revenue": 591.75,
-    "goal": 450
-   },
-   {
-    "date": "2026-07-20",
-    "dow": "Mon",
-    "revenue": 977.25,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-21",
-    "dow": "Tue",
-    "revenue": 932.25,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-22",
-    "dow": "Wed",
-    "revenue": 1091.5,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-23",
-    "dow": "Thu",
-    "revenue": 1098.35,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-24",
-    "dow": "Fri",
-    "revenue": 596.28,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-25",
-    "dow": "Sat",
-    "revenue": 426.6,
-    "goal": 600
-   },
-   {
-    "date": "2026-07-26",
-    "dow": "Sun",
-    "revenue": 534.25,
-    "goal": 450
-   },
-   {
-    "date": "2026-07-27",
-    "dow": "Mon",
-    "revenue": 746.5,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-28",
-    "dow": "Tue",
-    "revenue": 973.7,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-29",
-    "dow": "Wed",
-    "revenue": 1025.0,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-30",
-    "dow": "Thu",
-    "revenue": 1050.35,
-    "goal": 1200
-   },
-   {
-    "date": "2026-07-31",
-    "dow": "Fri",
-    "revenue": 1038.95,
-    "goal": 1200
-   },
-   {
-    "date": "2026-08-01",
-    "dow": "Sat",
-    "revenue": 570.9,
-    "goal": 600
-   },
-   {
-    "date": "2026-08-02",
-    "dow": "Sun",
-    "revenue": 515.3,
-    "goal": 450
-   },
-   {
-    "date": "2026-08-03",
-    "dow": "Mon",
-    "revenue": 985.15,
-    "goal": 1200
-   },
-   {
-    "date": "2026-08-04",
-    "dow": "Tue",
-    "revenue": 910.4,
-    "goal": 1200
-   },
-   {
-    "date": "2026-08-05",
-    "dow": "Wed",
-    "revenue": 891.75,
-    "goal": 1200
-   }
-  ],
-  "byCategory": {
-   "Coffee": 24855.33,
-   "Food": 3799.5,
-   "Apparel": 127.0,
-   "Alcohol": 7.0
-  },
-  "mtdRealized": 28788.83,
-  "mtdBudget": 36450,
-  "weeklyGoal": 7050,
-  "dailyGoal": {
-   "weekday": 1200,
-   "sat": 600,
-   "sun": 450
-  },
-  "currentWeek": {
-   "label": "Aug 3–5 (partial)",
-   "realized": 2787.3,
-   "goalToDate": 3600,
-   "fullGoal": 7050
-  },
-  "lastWeek": {
-   "label": "Jul 27–Aug 2 (complete)",
-   "realized": 5920.7,
-   "goal": 7050
-  },
-  "annualBudget": 334236.06,
-  "realizedJanJun": 144093.49,
-  "monthlyActual": [
-   {
-    "key": "Jan",
-    "revenue": 21215.69
-   },
-   {
-    "key": "Feb",
-    "revenue": 21396.5
-   },
-   {
-    "key": "Mar",
-    "revenue": 28790.39
-   },
-   {
-    "key": "Apr",
-    "revenue": 26642.91
-   },
-   {
-    "key": "May",
-    "revenue": 25856.82
-   },
-   {
-    "key": "Jun",
-    "revenue": 20191.18
-   }
-  ],
-  "units": {
-   "total": 3694,
-   "byCategory": {
-    "Coffee": 3218,
-    "Food": 471,
-    "Apparel": 4,
-    "Alcohol": 1
-   }
-  },
-  "windowNote": "Refreshed to the Jul 1–Aug 5 window: Jul 1–21 from the Square item-level import (v2), plus Jul 22–Aug 5 daily receipts. Note: Jul 24–Aug 5 receipts arrived without a category split, so all revenue for those days is booked as Coffee.",
-  "generated": null,
-  "windowLabel": "Jul 1–Aug 5",
-  "mixHint": "July 1 – August 5 sales by category (Square item-level import v2 + daily receipts)",
-  "categoryNote": "Food is broken out as a 2nd core category (~20% of sales). Note: Receipts for Jul 24 – Aug 5 arrived without a category split, so all revenue across those days was folded into Coffee (Food/Apparel slightly understated for that window)."
- },
- "events": {
-  "months": [
-   {
-    "key": "Jan",
-    "label": "January",
-    "revenue": 1786.72,
-    "forecast": false
-   },
-   {
-    "key": "Feb",
-    "label": "February",
-    "revenue": 4613.85,
-    "forecast": false
-   },
-   {
-    "key": "Mar",
-    "label": "March",
-    "revenue": 3886.65,
-    "forecast": false
-   },
-   {
-    "key": "Apr",
-    "label": "April",
-    "revenue": 4930.1,
-    "forecast": false
-   },
-   {
-    "key": "May",
-    "label": "May",
-    "revenue": 2175,
-    "forecast": false
-   },
-   {
-    "key": "Jun",
-    "label": "June",
-    "revenue": 2910,
-    "forecast": false
-   },
-   {
-    "key": "Jul",
-    "label": "July",
-    "revenue": 3383.72,
-    "forecast": true
-   },
-   {
-    "key": "Aug",
-    "label": "August",
-    "revenue": 3383.72,
-    "forecast": true
-   },
-   {
-    "key": "Sep",
-    "label": "September",
-    "revenue": 3383.72,
-    "forecast": true
-   },
-   {
-    "key": "Oct",
-    "label": "October",
-    "revenue": 3383.72,
-    "forecast": true
-   },
-   {
-    "key": "Nov",
-    "label": "November",
-    "revenue": 3383.72,
-    "forecast": true
-   },
-   {
-    "key": "Dec",
-    "label": "December",
-    "revenue": 3383.72,
-    "forecast": true
-   }
-  ],
-  "realizedJanJun": 20302.32,
-  "runRateMonthly": 3383.72,
-  "projectedAnnual": 40604.64,
-  "note": "Event Room actuals Jan–Jun are from the AOP Class view. The AOP budgets Event Room together with Monthly Leasing, so Jul–Dec here is a clearly-labeled run-rate projection (Jan–Jun average), not a separate AOP budget line.",
-  "progress": {
-   "realized": 20302.32,
-   "projectedAnnual": 40604.64,
-   "basisNote": "Event Room has no standalone AOP budget (it’s bundled with Monthly Leasing), so this target is a Jan–Jun run-rate projection — not an independent budget. It sits near 50% at mid-year by construction and tracks whether bookings hold their own run-rate, not pace against a plan."
-  }
- },
- "expenses": {
-  "basis": "Coffee P&L (AOP reforecast), monthly actuals Jan–Jun 2026, grouped by expense category. Vendor-level and weekly granularity are not in the source file; this upgrades to by-vendor/by-week when a QuickBooks bills/purchases export is supplied.",
-  "categories": [
-   {
-    "key": "materials",
-    "label": "Materials",
-    "group": "COGS",
-    "monthly": {
-     "Jan": 6461.12,
-     "Feb": 8820.5,
-     "Mar": 8114.3,
-     "Apr": 10875.66,
-     "May": 7613.82,
-     "Jun": 10143.63
+  "generated": "2026-08-06",
+  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) · Square item-level sales Jul 1–21 (v2) + Jul 22, plus Jul 23–26 QuickBooks Sync + Jul 27 Square — coffee-store sales, 2,636 lines (Jul 24–27 all-Coffee, no split) · Coffee P&L expense actuals by category (Jan–Jun) | July coffee-shop expenses (QBO accrual, Jul 1–27) from CCPC P&L by Class + Transaction List by Vendor.",
+  "overall": {
+    "denominator": 783074.13,
+    "realized": 338136.57,
+    "realizedPct": 43.2,
+    "months": [
+      {
+        "key": "Jan",
+        "label": "January",
+        "days": 31,
+        "revenue": 53261.22,
+        "forecast": false
+      },
+      {
+        "key": "Feb",
+        "label": "February",
+        "days": 28,
+        "revenue": 55518.17,
+        "forecast": false
+      },
+      {
+        "key": "Mar",
+        "label": "March",
+        "days": 31,
+        "revenue": 61241.17,
+        "forecast": false
+      },
+      {
+        "key": "Apr",
+        "label": "April",
+        "days": 30,
+        "revenue": 59197.01,
+        "forecast": false
+      },
+      {
+        "key": "May",
+        "label": "May",
+        "days": 31,
+        "revenue": 58648.82,
+        "forecast": false
+      },
+      {
+        "key": "Jun",
+        "label": "June",
+        "days": 30,
+        "revenue": 50270.18,
+        "forecast": false
+      },
+      {
+        "key": "Jul",
+        "label": "July",
+        "days": 31,
+        "revenue": 72166.16,
+        "forecast": true
+      },
+      {
+        "key": "Aug",
+        "label": "August",
+        "days": 31,
+        "revenue": 70185.42,
+        "forecast": true
+      },
+      {
+        "key": "Sep",
+        "label": "September",
+        "days": 30,
+        "revenue": 71377.84,
+        "forecast": true
+      },
+      {
+        "key": "Oct",
+        "label": "October",
+        "days": 31,
+        "revenue": 73029.88,
+        "forecast": true
+      },
+      {
+        "key": "Nov",
+        "label": "November",
+        "days": 30,
+        "revenue": 72742.03,
+        "forecast": true
+      },
+      {
+        "key": "Dec",
+        "label": "December",
+        "days": 31,
+        "revenue": 74914.78,
+        "forecast": true
+      }
+    ],
+    "streamsRealized": {
+      "Coffee": 144093.49,
+      "Event Room": 20302.32,
+      "Wellness": 60000,
+      "Monthly Leasing": 115857.01,
+      "Discounts": -2116.25
+    },
+    "streamsAnnual": {
+      "Coffee": 334236.06,
+      "Event Room+Monthly Leasing": 328838.07,
+      "Wellness": 120000
+    },
+    "cutoff_note": "Jan–Jun are booked actuals (AOP Class view, all four revenue streams). Jul–Dec are AOP forward budget. The annual target ($783,074) is the four-stream AOP plan; realized is booked Jan–Jun.",
+    "pace": {
+      "realizedThrough": "2026-06-30",
+      "remaining": 444937.56,
+      "remMonths": 6,
+      "remWeeks": 26.2857,
+      "remDays": 184,
+      "perMonth": 74156.26,
+      "perWeek": 16926.97,
+      "perDay": 2418.14,
+      "currentRunRateMonthly": 56356.1,
+      "upliftMonthly": 17800.16,
+      "upliftPct": 31.6,
+      "basis": "Realized is booked Jan–Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul–Dec) to reach the $783,074 four-stream AOP target."
+    },
+    "julyCallout": {
+      "label": "Jul 1–Aug 5 (coffee store)",
+      "total": 28788.83,
+      "coffee": 24855.33,
+      "food": 3799.5,
+      "apparel": 127.0,
+      "alcohol": 7.0,
+      "note": "Shown for visibility only — it is NOT included in the 43.2% headline above, which is Jan–Jun booked actuals across all four revenue streams. July actuals for Wellness, Monthly Leasing and Event Room aren't in yet, so folding one stream's partial month into the four-stream pace would understate true progress."
     }
-   },
-   {
-    "key": "labor",
-    "label": "Direct Labor",
-    "group": "COGS",
-    "monthly": {
-     "Jan": 8586.26,
-     "Feb": 9950.52,
-     "Mar": 10519.03,
-     "Apr": 11977.08,
-     "May": 9740.58,
-     "Jun": 3942.38
-    }
-   },
-   {
-    "key": "otherCogs",
-    "label": "Other COGS (facilities, insurance, indirect)",
-    "group": "COGS",
-    "monthly": {
-     "Jan": -11.96,
-     "Feb": 1074.09,
-     "Mar": 4461.72,
-     "Apr": 0,
-     "May": 83.5,
-     "Jun": 83.5
-    }
-   },
-   {
-    "key": "marketing",
-    "label": "Marketing",
-    "group": "Opex",
-    "monthly": {
-     "Jan": 362.82,
-     "Feb": 0,
-     "Mar": 0,
-     "Apr": 0,
-     "May": 0,
-     "Jun": 0
-    }
-   },
-   {
-    "key": "admin",
-    "label": "Administrative (Square/bank fees, office, depreciation)",
-    "group": "Opex",
-    "monthly": {
-     "Jan": 1414.11,
-     "Feb": 2007.35,
-     "Mar": 1514.74,
-     "Apr": -157.1,
-     "May": 1254.47,
-     "Jun": 856.34
-    }
-   }
-  ],
-  "months": [
-   {
-    "key": "Jan",
-    "label": "January",
-    "revenue": 20737.99,
-    "cogs": 15035.42,
-    "opex": 1776.93,
-    "totalExpense": 16812.35,
-    "grossProfit": 5702.57,
-    "netIncome": 3925.64
-   },
-   {
-    "key": "Feb",
-    "label": "February",
-    "revenue": 20815.32,
-    "cogs": 19845.11,
-    "opex": 2007.35,
-    "totalExpense": 21852.46,
-    "grossProfit": 970.21,
-    "netIncome": -1037.14
-   },
-   {
-    "key": "Mar",
-    "label": "March",
-    "revenue": 28260.52,
-    "cogs": 23095.05,
-    "opex": 1514.74,
-    "totalExpense": 24609.79,
-    "grossProfit": 5165.47,
-    "netIncome": 3650.73
-   },
-   {
-    "key": "Apr",
-    "label": "April",
-    "revenue": 26067.41,
-    "cogs": 22852.74,
-    "opex": -157.1,
-    "totalExpense": 22695.64,
-    "grossProfit": 3214.67,
-    "netIncome": 3371.77
-   },
-   {
-    "key": "May",
-    "label": "May",
-    "revenue": 25904.82,
-    "cogs": 17437.9,
-    "opex": 1254.47,
-    "totalExpense": 18692.37,
-    "grossProfit": 8466.92,
-    "netIncome": 7212.45
-   },
-   {
-    "key": "Jun",
-    "label": "June",
-    "revenue": 20191.18,
-    "cogs": 14169.51,
-    "opex": 856.34,
-    "totalExpense": 15025.85,
-    "grossProfit": 6021.67,
-    "netIncome": 5165.33
-   }
-  ],
-  "totals": {
-   "revenue": 141977.24,
-   "cogs": 112435.73,
-   "opex": 7252.73,
-   "totalExpense": 119688.46,
-   "grossProfit": 29541.51,
-   "netIncome": 22288.78,
-   "grossMarginPct": 20.8,
-   "netMarginPct": 15.7
   },
-  "adminDetail": {
-   "Square Fees": 3905.11,
-   "Bank Charges & Fees": 1125.07,
-   "Office Supplies": 650.15,
-   "Computer Supplies & Maint.": 1214.9,
-   "Meals & Entertainment": 527.87,
-   "Depreciation": 539.81,
-   "Licenses & Fees": 800.0,
-   "Taxes & Fees": 327.0,
-   "Shared Services (credit)": -2200.0
+  "coffee": {
+    "daily": [
+      {
+        "date": "2026-07-01",
+        "dow": "Wed",
+        "revenue": 908.25,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-02",
+        "dow": "Thu",
+        "revenue": 845.0,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-03",
+        "dow": "Fri",
+        "revenue": 424.2,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-04",
+        "dow": "Sat",
+        "revenue": 236.5,
+        "goal": 600
+      },
+      {
+        "date": "2026-07-05",
+        "dow": "Sun",
+        "revenue": 396.75,
+        "goal": 450
+      },
+      {
+        "date": "2026-07-06",
+        "dow": "Mon",
+        "revenue": 873.0,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-07",
+        "dow": "Tue",
+        "revenue": 913.0,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-08",
+        "dow": "Wed",
+        "revenue": 991.25,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-09",
+        "dow": "Thu",
+        "revenue": 926.45,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-10",
+        "dow": "Fri",
+        "revenue": 894.5,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-11",
+        "dow": "Sat",
+        "revenue": 609.25,
+        "goal": 600
+      },
+      {
+        "date": "2026-07-12",
+        "dow": "Sun",
+        "revenue": 580.5,
+        "goal": 450
+      },
+      {
+        "date": "2026-07-13",
+        "dow": "Mon",
+        "revenue": 1076.5,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-14",
+        "dow": "Tue",
+        "revenue": 917.95,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-15",
+        "dow": "Wed",
+        "revenue": 962.75,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-16",
+        "dow": "Thu",
+        "revenue": 984.25,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-17",
+        "dow": "Fri",
+        "revenue": 819.9,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-18",
+        "dow": "Sat",
+        "revenue": 472.6,
+        "goal": 600
+      },
+      {
+        "date": "2026-07-19",
+        "dow": "Sun",
+        "revenue": 591.75,
+        "goal": 450
+      },
+      {
+        "date": "2026-07-20",
+        "dow": "Mon",
+        "revenue": 977.25,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-21",
+        "dow": "Tue",
+        "revenue": 932.25,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-22",
+        "dow": "Wed",
+        "revenue": 1091.5,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-23",
+        "dow": "Thu",
+        "revenue": 1098.35,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-24",
+        "dow": "Fri",
+        "revenue": 596.28,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-25",
+        "dow": "Sat",
+        "revenue": 426.6,
+        "goal": 600
+      },
+      {
+        "date": "2026-07-26",
+        "dow": "Sun",
+        "revenue": 534.25,
+        "goal": 450
+      },
+      {
+        "date": "2026-07-27",
+        "dow": "Mon",
+        "revenue": 746.5,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-28",
+        "dow": "Tue",
+        "revenue": 973.7,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-29",
+        "dow": "Wed",
+        "revenue": 1025.0,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-30",
+        "dow": "Thu",
+        "revenue": 1050.35,
+        "goal": 1200
+      },
+      {
+        "date": "2026-07-31",
+        "dow": "Fri",
+        "revenue": 1038.95,
+        "goal": 1200
+      },
+      {
+        "date": "2026-08-01",
+        "dow": "Sat",
+        "revenue": 570.9,
+        "goal": 600
+      },
+      {
+        "date": "2026-08-02",
+        "dow": "Sun",
+        "revenue": 515.3,
+        "goal": 450
+      },
+      {
+        "date": "2026-08-03",
+        "dow": "Mon",
+        "revenue": 985.15,
+        "goal": 1200
+      },
+      {
+        "date": "2026-08-04",
+        "dow": "Tue",
+        "revenue": 910.4,
+        "goal": 1200
+      },
+      {
+        "date": "2026-08-05",
+        "dow": "Wed",
+        "revenue": 891.75,
+        "goal": 1200
+      }
+    ],
+    "byCategory": {
+      "Coffee": 24855.33,
+      "Food": 3799.5,
+      "Apparel": 127.0,
+      "Alcohol": 7.0
+    },
+    "mtdRealized": 28788.83,
+    "mtdBudget": 36450,
+    "weeklyGoal": 7050,
+    "dailyGoal": {
+      "weekday": 1200,
+      "sat": 600,
+      "sun": 450
+    },
+    "currentWeek": {
+      "label": "Aug 3–5 (partial)",
+      "realized": 2787.3,
+      "goalToDate": 3600,
+      "fullGoal": 7050
+    },
+    "lastWeek": {
+      "label": "Jul 27–Aug 2 (complete)",
+      "realized": 5920.7,
+      "goal": 7050
+    },
+    "annualBudget": 334236.06,
+    "realizedJanJun": 144093.49,
+    "monthlyActual": [
+      {
+        "key": "Jan",
+        "revenue": 21215.69
+      },
+      {
+        "key": "Feb",
+        "revenue": 21396.5
+      },
+      {
+        "key": "Mar",
+        "revenue": 28790.39
+      },
+      {
+        "key": "Apr",
+        "revenue": 26642.91
+      },
+      {
+        "key": "May",
+        "revenue": 25856.82
+      },
+      {
+        "key": "Jun",
+        "revenue": 20191.18
+      }
+    ],
+    "units": {
+      "total": 3694,
+      "byCategory": {
+        "Coffee": 3218,
+        "Food": 471,
+        "Apparel": 4,
+        "Alcohol": 1
+      }
+    },
+    "windowNote": "Refreshed to the Jul 1–Aug 5 window: Jul 1–21 from the Square item-level import (v2), plus Jul 22–Aug 5 daily receipts. Note: Jul 24–Aug 5 receipts arrived without a category split, so all revenue for those days is booked as Coffee.",
+    "generated": null,
+    "windowLabel": "Jul 1–Aug 5",
+    "mixHint": "July 1 – August 5 sales by category (Square item-level import v2 + daily receipts)",
+    "categoryNote": "Food is broken out as a 2nd core category (~20% of sales). Note: Receipts for Jul 24 – Aug 5 arrived without a category split, so all revenue across those days was folded into Coffee (Food/Apparel slightly understated for that window)."
   },
-  "note": "Revenue shown here is the Coffee P&L Total Income (net of discounts), so gross margin and net income tie out within the same statement. It differs slightly from the Coffee tab's gross sales figure by the discount/refund line.",
-  "budget": {
-   "janJunActual": 119688.46,
-   "janJunBudget": 124401.38,
-   "annualBudget": 262622.66,
-   "varianceFavorable": 4712.92,
-   "basis": "AOP ReForecast Final by Class (6-30). Jan–May budget was reforecast to equal actuals, so the favorable Jan–Jun variance is driven by June. Full-year expense budget = COGS $246,819.53 + Opex $15,803.13."
+  "events": {
+    "months": [
+      {
+        "key": "Jan",
+        "label": "January",
+        "revenue": 1786.72,
+        "forecast": false
+      },
+      {
+        "key": "Feb",
+        "label": "February",
+        "revenue": 4613.85,
+        "forecast": false
+      },
+      {
+        "key": "Mar",
+        "label": "March",
+        "revenue": 3886.65,
+        "forecast": false
+      },
+      {
+        "key": "Apr",
+        "label": "April",
+        "revenue": 4930.1,
+        "forecast": false
+      },
+      {
+        "key": "May",
+        "label": "May",
+        "revenue": 2175,
+        "forecast": false
+      },
+      {
+        "key": "Jun",
+        "label": "June",
+        "revenue": 2910,
+        "forecast": false
+      },
+      {
+        "key": "Jul",
+        "label": "July",
+        "revenue": 3383.72,
+        "forecast": true
+      },
+      {
+        "key": "Aug",
+        "label": "August",
+        "revenue": 3383.72,
+        "forecast": true
+      },
+      {
+        "key": "Sep",
+        "label": "September",
+        "revenue": 3383.72,
+        "forecast": true
+      },
+      {
+        "key": "Oct",
+        "label": "October",
+        "revenue": 3383.72,
+        "forecast": true
+      },
+      {
+        "key": "Nov",
+        "label": "November",
+        "revenue": 3383.72,
+        "forecast": true
+      },
+      {
+        "key": "Dec",
+        "label": "December",
+        "revenue": 3383.72,
+        "forecast": true
+      }
+    ],
+    "realizedJanJun": 20302.32,
+    "runRateMonthly": 3383.72,
+    "projectedAnnual": 40604.64,
+    "note": "Event Room actuals Jan–Jun are from the AOP Class view. The AOP budgets Event Room together with Monthly Leasing, so Jul–Dec here is a clearly-labeled run-rate projection (Jan–Jun average), not a separate AOP budget line.",
+    "progress": {
+      "realized": 20302.32,
+      "projectedAnnual": 40604.64,
+      "basisNote": "Event Room has no standalone AOP budget (it’s bundled with Monthly Leasing), so this target is a Jan–Jun run-rate projection — not an independent budget. It sits near 50% at mid-year by construction and tracks whether bookings hold their own run-rate, not pace against a plan."
+    }
+  },
+  "expenses": {
+    "basis": "Coffee P&L (AOP reforecast), monthly actuals Jan–Jun 2026, grouped by expense category. Vendor-level and weekly granularity are not in the source file; this upgrades to by-vendor/by-week when a QuickBooks bills/purchases export is supplied.",
+    "categories": [
+      {
+        "key": "materials",
+        "label": "Materials",
+        "group": "COGS",
+        "monthly": {
+          "Jan": 6461.12,
+          "Feb": 8820.5,
+          "Mar": 8114.3,
+          "Apr": 10875.66,
+          "May": 7613.82,
+          "Jun": 10143.63
+        }
+      },
+      {
+        "key": "labor",
+        "label": "Direct Labor",
+        "group": "COGS",
+        "monthly": {
+          "Jan": 8586.26,
+          "Feb": 9950.52,
+          "Mar": 10519.03,
+          "Apr": 11977.08,
+          "May": 9740.58,
+          "Jun": 3942.38
+        }
+      },
+      {
+        "key": "otherCogs",
+        "label": "Other COGS (facilities, insurance, indirect)",
+        "group": "COGS",
+        "monthly": {
+          "Jan": -11.96,
+          "Feb": 1074.09,
+          "Mar": 4461.72,
+          "Apr": 0,
+          "May": 83.5,
+          "Jun": 83.5
+        }
+      },
+      {
+        "key": "marketing",
+        "label": "Marketing",
+        "group": "Opex",
+        "monthly": {
+          "Jan": 362.82,
+          "Feb": 0,
+          "Mar": 0,
+          "Apr": 0,
+          "May": 0,
+          "Jun": 0
+        }
+      },
+      {
+        "key": "admin",
+        "label": "Administrative (Square/bank fees, office, depreciation)",
+        "group": "Opex",
+        "monthly": {
+          "Jan": 1414.11,
+          "Feb": 2007.35,
+          "Mar": 1514.74,
+          "Apr": -157.1,
+          "May": 1254.47,
+          "Jun": 856.34
+        }
+      }
+    ],
+    "months": [
+      {
+        "key": "Jan",
+        "label": "January",
+        "revenue": 20737.99,
+        "cogs": 15035.42,
+        "opex": 1776.93,
+        "totalExpense": 16812.35,
+        "grossProfit": 5702.57,
+        "netIncome": 3925.64
+      },
+      {
+        "key": "Feb",
+        "label": "February",
+        "revenue": 20815.32,
+        "cogs": 19845.11,
+        "opex": 2007.35,
+        "totalExpense": 21852.46,
+        "grossProfit": 970.21,
+        "netIncome": -1037.14
+      },
+      {
+        "key": "Mar",
+        "label": "March",
+        "revenue": 28260.52,
+        "cogs": 23095.05,
+        "opex": 1514.74,
+        "totalExpense": 24609.79,
+        "grossProfit": 5165.47,
+        "netIncome": 3650.73
+      },
+      {
+        "key": "Apr",
+        "label": "April",
+        "revenue": 26067.41,
+        "cogs": 22852.74,
+        "opex": -157.1,
+        "totalExpense": 22695.64,
+        "grossProfit": 3214.67,
+        "netIncome": 3371.77
+      },
+      {
+        "key": "May",
+        "label": "May",
+        "revenue": 25904.82,
+        "cogs": 17437.9,
+        "opex": 1254.47,
+        "totalExpense": 18692.37,
+        "grossProfit": 8466.92,
+        "netIncome": 7212.45
+      },
+      {
+        "key": "Jun",
+        "label": "June",
+        "revenue": 20191.18,
+        "cogs": 14169.51,
+        "opex": 856.34,
+        "totalExpense": 15025.85,
+        "grossProfit": 6021.67,
+        "netIncome": 5165.33
+      }
+    ],
+    "totals": {
+      "revenue": 141977.24,
+      "cogs": 112435.73,
+      "opex": 7252.73,
+      "totalExpense": 119688.46,
+      "grossProfit": 29541.51,
+      "netIncome": 22288.78,
+      "grossMarginPct": 20.8,
+      "netMarginPct": 15.7
+    },
+    "adminDetail": {
+      "Square Fees": 3905.11,
+      "Bank Charges & Fees": 1125.07,
+      "Office Supplies": 650.15,
+      "Computer Supplies & Maint.": 1214.9,
+      "Meals & Entertainment": 527.87,
+      "Depreciation": 539.81,
+      "Licenses & Fees": 800.0,
+      "Taxes & Fees": 327.0,
+      "Shared Services (credit)": -2200.0
+    },
+    "note": "Revenue shown here is the Coffee P&L Total Income (net of discounts), so gross margin and net income tie out within the same statement. It differs slightly from the Coffee tab's gross sales figure by the discount/refund line.",
+    "budget": {
+      "janJunActual": 119688.46,
+      "janJunBudget": 124401.38,
+      "annualBudget": 262622.66,
+      "varianceFavorable": 4712.92,
+      "basis": "AOP ReForecast Final by Class (6-30). Jan–May budget was reforecast to equal actuals, so the favorable Jan–Jun variance is driven by June. Full-year expense budget = COGS $246,819.53 + Opex $15,803.13."
+    },
+    "july": {
+      "window": "Jul 1–27, 2026",
+      "basis": "QBO accrual — CCPC “Profit & Loss by Class” (Coffee class), cross-checked line-by-line to the “Transaction List by Vendor.” Live QuickBooks accrual data; a different basis from the AOP-budget Jan–Jun trend, so it is shown as its own panel rather than blended into that series.",
+      "income": 21759.83,
+      "totalExpense": 13564.82,
+      "netIncome": 8195.01,
+      "categories": [
+        {
+          "key": "materials",
+          "label": "Material (COGS)",
+          "amount": 7670.07
+        },
+        {
+          "key": "labor",
+          "label": "Direct Labor (wages, tax, benefits)",
+          "amount": 5551.75
+        },
+        {
+          "key": "admin",
+          "label": "Computer Supplies & Maintenance",
+          "amount": 343.0
+        }
+      ],
+      "materialTotal": 7670.07,
+      "vendors": [
+        {
+          "name": "Nurture by Naya",
+          "amount": 2313.0,
+          "note": "resale goods for the shop"
+        },
+        {
+          "name": "Sam's Club",
+          "amount": 2017.13,
+          "note": ""
+        },
+        {
+          "name": "Fortuna Enterprises",
+          "amount": 1507.55,
+          "note": ""
+        },
+        {
+          "name": "Vignette",
+          "amount": 847.5,
+          "note": ""
+        },
+        {
+          "name": "Odeko",
+          "amount": 388.0,
+          "note": ""
+        },
+        {
+          "name": "Larrys Coffee",
+          "amount": 298.88,
+          "note": ""
+        },
+        {
+          "name": "PayPal",
+          "amount": 160.0,
+          "note": ""
+        },
+        {
+          "name": "SP Harney & Sons Tea",
+          "amount": 58.7,
+          "note": ""
+        },
+        {
+          "name": "Amazon",
+          "amount": 50.52,
+          "note": ""
+        },
+        {
+          "name": "Harris Teeter",
+          "amount": 28.79,
+          "note": ""
+        }
+      ],
+      "note": "Only Material (COGS) is vendor-itemized — Direct Labor is payroll and Admin is a single computer/maintenance line, neither vendor-level. Vendor rows sum exactly to Material $7,670.07; the three category lines sum to the $13,564.82 total. Coffee product income for the same window was $21,759.83 (Net Income $8,195.01)."
+    },
+    "pctTarget": 30
   },
   "july": {
-   "window": "Jul 1–27, 2026",
-   "basis": "QBO accrual — CCPC “Profit & Loss by Class” (Coffee class), cross-checked line-by-line to the “Transaction List by Vendor.” Live QuickBooks accrual data; a different basis from the AOP-budget Jan–Jun trend, so it is shown as its own panel rather than blended into that series.",
-   "income": 21759.83,
-   "totalExpense": 13564.82,
-   "netIncome": 8195.01,
-   "categories": [
-    {
-     "key": "materials",
-     "label": "Material (COGS)",
-     "amount": 7670.07
+    "monthLabel": "July 2026",
+    "total": 67668.33,
+    "h1Avg": 56356.1,
+    "benchmarkPct": 120.1,
+    "priorMonthTotal": 50270.18,
+    "momPct": 34.61,
+    "netIncome": 40059.92,
+    "grossMarginPct": 59.2,
+    "rank": "1st of 7",
+    "rankNote": "Highest revenue month of 2026 so far",
+    "topStream": {
+      "name": "Monthly Leasing",
+      "stream": "Monthly Leasing",
+      "value": 27203.0,
+      "amount": 27203.0,
+      "pct": 40.2
     },
-    {
-     "key": "labor",
-     "label": "Direct Labor (wages, tax, benefits)",
-     "amount": 5551.75
-    },
-    {
-     "key": "admin",
-     "label": "Computer Supplies & Maintenance",
-     "amount": 343.0
-    }
-   ],
-   "materialTotal": 7670.07,
-   "vendors": [
-    {
-     "name": "Nurture by Naya",
-     "amount": 2313.0,
-     "note": "resale goods for the shop"
-    },
-    {
-     "name": "Sam's Club",
-     "amount": 2017.13,
-     "note": ""
-    },
-    {
-     "name": "Fortuna Enterprises",
-     "amount": 1507.55,
-     "note": ""
-    },
-    {
-     "name": "Vignette",
-     "amount": 847.5,
-     "note": ""
-    },
-    {
-     "name": "Odeko",
-     "amount": 388.0,
-     "note": ""
-    },
-    {
-     "name": "Larrys Coffee",
-     "amount": 298.88,
-     "note": ""
-    },
-    {
-     "name": "PayPal",
-     "amount": 160.0,
-     "note": ""
-    },
-    {
-     "name": "SP Harney & Sons Tea",
-     "amount": 58.7,
-     "note": ""
-    },
-    {
-     "name": "Amazon",
-     "amount": 50.52,
-     "note": ""
-    },
-    {
-     "name": "Harris Teeter",
-     "amount": 28.79,
-     "note": ""
-    }
-   ],
-   "note": "Only Material (COGS) is vendor-itemized — Direct Labor is payroll and Admin is a single computer/maintenance line, neither vendor-level. Vendor rows sum exactly to Material $7,670.07; the three category lines sum to the $13,564.82 total. Coffee product income for the same window was $21,759.83 (Net Income $8,195.01)."
+    "streams": [
+      {
+        "name": "Monthly Leasing",
+        "value": 27203.0,
+        "june": 17169.0
+      },
+      {
+        "name": "Coffee",
+        "value": 24915.33,
+        "june": 20191.18
+      },
+      {
+        "name": "Operations",
+        "value": 15000.0,
+        "june": 0.0
+      },
+      {
+        "name": "Other",
+        "value": 3850.0,
+        "june": 0.0
+      },
+      {
+        "name": "Event Room",
+        "value": 1700.0,
+        "june": 2910.0
+      },
+      {
+        "name": "Wellness",
+        "value": 0.0,
+        "june": 10000.0
+      },
+      {
+        "name": "Discounts",
+        "value": -5000.0,
+        "june": 0.0
+      }
+    ],
+    "h1": [
+      {
+        "key": "Jan",
+        "revenue": 53261.22
+      },
+      {
+        "key": "Feb",
+        "revenue": 55518.17
+      },
+      {
+        "key": "Mar",
+        "revenue": 61241.17
+      },
+      {
+        "key": "Apr",
+        "revenue": 59197.01
+      },
+      {
+        "key": "May",
+        "revenue": 58648.82
+      },
+      {
+        "key": "Jun",
+        "revenue": 50270.18
+      },
+      {
+        "key": "Jul",
+        "revenue": 67668.33
+      }
+    ],
+    "barNote": "July revenue ($67,668.33) vs. the average H1 booked month ($56,356.10). July was the highest revenue month of 2026 so far (+34.6% vs. June), driven by strong leasing ($27,203) and coffee sales ($24,915).",
+    "note": "July 2026 booked actuals (accrual for leasing/events/operations, Square cash for coffee). Reconciles all 7 income classes to the $67,668.33 July total; per-stream vs. June compares each stream to its June actual.",
+    "streamsMonthly": [
+      {
+        "name": "Monthly Leasing",
+        "color": "#1f8a4c",
+        "data": [
+          20736.51,
+          20089.0,
+          19094.0,
+          18199.5,
+          20569.0,
+          17169.0,
+          27203.0
+        ]
+      },
+      {
+        "name": "Coffee",
+        "color": "#0e4d92",
+        "data": [
+          21215.69,
+          21396.5,
+          28790.39,
+          26642.91,
+          25856.82,
+          20191.18,
+          24915.33
+        ]
+      },
+      {
+        "name": "Operations",
+        "color": "#d97706",
+        "data": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          15000.0
+        ]
+      },
+      {
+        "name": "Event Room",
+        "color": "#e9a23b",
+        "data": [
+          1786.72,
+          4613.85,
+          3886.65,
+          4930.1,
+          2175.0,
+          2910.0,
+          1700.0
+        ]
+      },
+      {
+        "name": "Wellness",
+        "color": "#8e44ad",
+        "data": [
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          10000,
+          0
+        ]
+      },
+      {
+        "name": "Other",
+        "color": "#2563eb",
+        "data": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3850.0
+        ]
+      },
+      {
+        "name": "Discounts",
+        "color": "#b3261e",
+        "data": [
+          -477.7,
+          -581.18,
+          -529.87,
+          -575.5,
+          48.0,
+          0.0,
+          -5000.0
+        ]
+      }
+    ]
   },
-  "pctTarget": 30
- },
- "june": {
-  "monthLabel": "June 2026",
-  "total": 50270.18,
-  "h1Avg": 56356.1,
-  "benchmarkPct": 89.2,
-  "priorMonthTotal": 58648.82,
-  "momPct": -14.29,
-  "netIncome": 12919.92,
-  "grossMarginPct": 40.3,
-  "rank": "6th of 6",
-  "rankNote": "Lowest of the six H1 months",
-  "topStream": {
-   "name": "Coffee",
-   "value": 20191.18,
-   "pct": 40.2
+  "augustYtd": {
+    "throughLabel": "Aug 5, 2026",
+    "denominator": 986240.13,
+    "janJulAllStream": 507138.14,
+    "augustCoffeeOnly": 3873.5,
+    "augustBooked": 3873.5,
+    "realized": 514885.14,
+    "realizedPct": 52.2,
+    "remaining": 471354.99,
+    "fourStreamYtd": 398551.9,
+    "fourStreamDenominator": 783074.13,
+    "fourStreamPct": 50.9,
+    "operationsYtd": 116333.24,
+    "operationsRunRate": 203166.0,
+    "operationsPct": 57.3,
+    "janJulTotal": 507138.14,
+    "streams": [
+      {
+        "name": "Coffee",
+        "janJul": 169008.82,
+        "august": 3873.5,
+        "ytd": 172882.32,
+        "augustNote": "Square gross, Aug 1–5"
+      },
+      {
+        "name": "Event Room",
+        "janJul": 22002.32,
+        "august": 0.0,
+        "ytd": 22002.32,
+        "augustNote": "August not booked yet"
+      },
+      {
+        "name": "Monthly Leasing",
+        "janJul": 143060.01,
+        "august": 0.0,
+        "ytd": 143060.01,
+        "augustNote": "August not booked yet"
+      },
+      {
+        "name": "Operations",
+        "janJul": 116333.24,
+        "august": 0.0,
+        "ytd": 116333.24,
+        "augustNote": "Jan–Jul property/operations"
+      },
+      {
+        "name": "Wellness",
+        "janJul": 60000.0,
+        "august": 0.0,
+        "ytd": 60000.0,
+        "augustNote": "August not booked yet"
+      },
+      {
+        "name": "Other",
+        "janJul": 3850.0,
+        "august": 0.0,
+        "ytd": 3850.0,
+        "augustNote": "2 unclassified ACH deposits"
+      },
+      {
+        "name": "Discounts",
+        "janJul": -7116.25,
+        "august": 0.0,
+        "ytd": -7116.25,
+        "augustNote": "CCYS In Kind"
+      }
+    ],
+    "months": [
+      {
+        "key": "Jan",
+        "revenue": 53261.22,
+        "coffeeOnly": false
+      },
+      {
+        "key": "Feb",
+        "revenue": 55518.17,
+        "coffeeOnly": false
+      },
+      {
+        "key": "Mar",
+        "revenue": 61241.17,
+        "coffeeOnly": false
+      },
+      {
+        "key": "Apr",
+        "revenue": 59197.01,
+        "coffeeOnly": false
+      },
+      {
+        "key": "May",
+        "revenue": 58648.82,
+        "coffeeOnly": false
+      },
+      {
+        "key": "Jun",
+        "revenue": 50270.18,
+        "coffeeOnly": false
+      },
+      {
+        "key": "Jul",
+        "revenue": 67668.33,
+        "coffeeOnly": false
+      },
+      {
+        "key": "Aug",
+        "revenue": 3873.5,
+        "coffeeOnly": true,
+        "partial": true
+      }
+    ],
+    "barNote": "YTD realized ($514,885.14) as a percent of the 5-stream plan ($986,240). The 4-stream sub-total is $398,551.90 (50.9% of $783,074). August data currently includes Coffee Store sales through Aug 5 ($3,873.50); leasing/event/operations for August are pending month-end booking.",
+    "paceSub": "YTD realized through Aug 5 ($514,885.14) represents 52.2% of the five-stream plan. August reflects Coffee Store sales through Aug 5 ($3,873.50); non-coffee streams for August are pending month-end booking.",
+    "caveat": "This YTD counts Operations (a 5th class) toward the five-stream plan. Realized $514,885.14 = Jan–Jul all-stream $507,138.14 + August MTD Coffee $3,873.50. The four-stream sub-total is $398,551.90 / 50.9% of $783,074. August non-coffee streams are pending month-end QBO booking.",
+    "note": "YTD = Jan–Jul all-stream booked actuals ($507,138.14) + August MTD Coffee sales ($3,873.50 through Aug 5). Non-coffee streams for August will be added as month-end QBO reports are finalized."
   },
-  "streams": [
-   {
-    "name": "Coffee",
-    "value": 20191.18,
-    "may": 25856.82
-   },
-   {
-    "name": "Event Room",
-    "value": 2910.0,
-    "may": 2175.0
-   },
-   {
-    "name": "Monthly Leasing",
-    "value": 17169.0,
-    "may": 20569.0
-   },
-   {
-    "name": "Wellness",
-    "value": 10000.0,
-    "may": 10000.0
-   },
-   {
-    "name": "Discounts",
-    "value": 0.0,
-    "may": 48.0
-   }
-  ],
-  "h1": [
-   {
-    "key": "Jan",
-    "revenue": 53261.22
-   },
-   {
-    "key": "Feb",
-    "revenue": 55518.17
-   },
-   {
-    "key": "Mar",
-    "revenue": 61241.17
-   },
-   {
-    "key": "Apr",
-    "revenue": 59197.01
-   },
-   {
-    "key": "May",
-    "revenue": 58648.82
-   },
-   {
-    "key": "Jun",
-    "revenue": 50270.18
-   }
-  ],
-  "barNote": "June revenue vs. the average H1 booked month ($56,356.10). There is no standalone June revenue budget in the AOP, so this compares June to the Jan-Jun run-rate, not to a plan. June was the lowest of the six H1 months, ~10.8% below the average month.",
-  "note": "June 2026 booked actuals from the AOP 'Profit & Loss - Class view' (accrual). All four streams reconcile to the $50,270.18 June Total Income; per-stream 'vs. May' compares each stream to its May actual.",
-  "streamsMonthly": [
-   {
-    "name": "Coffee",
-    "color": "#0e4d92",
-    "data": [
-     21215.69,
-     21396.5,
-     28790.39,
-     26642.91,
-     25856.82,
-     20191.18
-    ]
-   },
-   {
-    "name": "Event Room",
-    "color": "#e9a23b",
-    "data": [
-     1786.72,
-     4613.85,
-     3886.65,
-     4930.1,
-     2175.0,
-     2910.0
-    ]
-   },
-   {
-    "name": "Monthly Leasing",
-    "color": "#1f8a4c",
-    "data": [
-     20736.51,
-     20089.0,
-     19094.0,
-     18199.5,
-     20569.0,
-     17169.0
-    ]
-   },
-   {
-    "name": "Wellness",
-    "color": "#8e44ad",
-    "data": [
-     10000,
-     10000,
-     10000,
-     10000,
-     10000,
-     10000
-    ]
-   },
-   {
-    "name": "Discounts",
-    "color": "#b3261e",
-    "data": [
-     -477.7,
-     -581.18,
-     -529.87,
-     -575.5,
-     48.0,
-     0.0
-    ]
-   }
-  ]
- },
- "julyYtd": {
-  "throughLabel": "Jul 31, 2026",
-  "denominator": 986240.13,
-  "janJunFourStream": 338136.57,
-  "julyCoffeeOnly": 20827.33,
-  "julyBooked": 67668.33,
-  "realized": 511011.64,
-  "realizedPct": 51.8,
-  "remaining": 475228.49,
-  "streams": [
-   {
-    "name": "Coffee",
-    "janJun": 144093.49,
-    "july": 24915.33,
-    "ytd": 169008.82,
-    "julyNote": "Square gross, Jul 1–31"
-   },
-   {
-    "name": "Event Room",
-    "janJun": 20302.32,
-    "july": 1700.0,
-    "ytd": 22002.32,
-    "julyNote": "Meeting Room rental (accrual, Jul 1-28)"
-   },
-   {
-    "name": "Monthly Leasing",
-    "janJun": 115857.01,
-    "july": 27203.0,
-    "ytd": 143060.01,
-    "julyNote": "9 Ossi suites + Wagamuffins (accrual); Go-Forth $15k moved to Operations"
-   },
-   {
-    "name": "Operations",
-    "janJun": 101333.24,
-    "july": 15000.0,
-    "ytd": 116333.24,
-    "julyNote": "Jan-Jun property/operations income $101,333.24 + July Go-Forth $15,000 (building/property cost center, accrual)"
-   },
-   {
-    "name": "Wellness",
-    "janJun": 60000.0,
-    "july": 0.0,
-    "ytd": 60000.0,
-    "julyNote": "July not booked"
-   },
-   {
-    "name": "Other",
-    "janJun": 0.0,
-    "july": 3850.0,
-    "ytd": 3850.0,
-    "julyNote": "2 unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850)"
-   },
-   {
-    "name": "Discounts",
-    "janJun": -2116.25,
-    "july": -5000.0,
-    "ytd": -7116.25,
-    "julyNote": "CCYS In Kind (July)"
-   }
-  ],
-  "months": [
-   {
-    "key": "Jan",
-    "revenue": 53261.22,
-    "coffeeOnly": false
-   },
-   {
-    "key": "Feb",
-    "revenue": 55518.17,
-    "coffeeOnly": false
-   },
-   {
-    "key": "Mar",
-    "revenue": 61241.17,
-    "coffeeOnly": false
-   },
-   {
-    "key": "Apr",
-    "revenue": 59197.01,
-    "coffeeOnly": false
-   },
-   {
-    "key": "May",
-    "revenue": 58648.82,
-    "coffeeOnly": false
-   },
-   {
-    "key": "Jun",
-    "revenue": 50270.18,
-    "coffeeOnly": false
-   },
-   {
-    "key": "Jul",
-    "revenue": 67668.33,
-    "coffeeOnly": false,
-    "partial": false
-   }
-  ],
-  "barNote": "YTD realized ($511,011.64) as a percent of the reworked $986,240 five-stream plan (four streams $783,074 + Operations run-rate $203,166). The original four-stream sub-total is retained: $409,678.40 = 52.3% of $783,074. Operations is the building/property cost center - its income is counted here but it runs at a gross loss, and the run-rate target is a projection, not a budget.",
-  "paceSub": "The denominator now includes Operations via a run-rate target ($203,166 = YTD annualized), so the headline barely moves (51.8% vs the prior four-stream 52.3%). Operations sits at ~57% of its run-rate by construction. Coffee is cash-basis while leasing/event/operations are accrual (mixed basis); Wellness July is not booked.",
-  "caveat": "This YTD now counts Operations (a 5th class) toward a reworked five-stream plan. Realized $511,011.64 = Jan-Jun all-stream $439,469.81 + July booked $67,668.33. The four-stream sub-total is retained: $409,678.40 / 52.3% of $783,074. The Operations run-rate target ($203,166) is annualized YTD actuals, labeled run-rate not a budget. Operations is a building/property cost center running at a gross loss (~$123k of building COGS against its $116k income), so counting its income completes the total-entity picture but does not add a profitable stream. The monthly bars show the four operating streams + July; the $101,333 Jan-Jun Operations income is in the YTD totals but not distributed across the monthly bars (only the aggregate is available).",
-  "note": "YTD = Jan-Jun all-stream booked actuals ($439,469.81 = four streams $338,136.57 + Operations $101,333.24, AOP Class view / QBO P&L by Class) + July booked $67,668.33 (coffee Square cash Jul 1-31; Event Room, Monthly Leasing, Operations, Other, Discounts accrual Jul 1-28). Per Steven (2026-07-28), Operations now counts toward a reworked five-stream plan via a run-rate target (~$203,166 = annualized YTD), keeping the original four-stream $783,074 / $409,678.40 (52.3%) visible as a sub-total. Wellness has no July line (3 of 4 streams). The $3,850 'Other' is two unclassified ACH deposits (NC T Corp Pay $3,000 + Bonsai $850).",
-  "fourStreamYtd": 409678.4,
-  "fourStreamDenominator": 783074.13,
-  "fourStreamPct": 52.3,
-  "operationsYtd": 116333.24,
-  "operationsRunRate": 203166.0,
-  "operationsPct": 57.3,
-  "janJunTotal": 439469.81
- },
- "seasonality": {
-  "streamLabel": "Event Room",
-  "basis": "Event Room booked actuals, Jan-Jun 2026 (AOP Class view, accrual). Only six months of actuals exist so far; Jul-Dec are not yet real bookings, so this seasonality view uses the six booked months and extends as each month closes.",
-  "months": [
-   {
-    "key": "Jan",
-    "label": "January",
-    "revenue": 1786.72
-   },
-   {
-    "key": "Feb",
-    "label": "February",
-    "revenue": 4613.85
-   },
-   {
-    "key": "Mar",
-    "label": "March",
-    "revenue": 3886.65
-   },
-   {
-    "key": "Apr",
-    "label": "April",
-    "revenue": 4930.1
-   },
-   {
-    "key": "May",
-    "label": "May",
-    "revenue": 2175.0
-   },
-   {
-    "key": "Jun",
-    "revenue": 2910.0
-   }
-  ],
-  "avgMonth": 3383.72,
-  "total": 20302.32,
-  "quarters": [
-   {
-    "key": "Q1",
-    "label": "Q1 (Jan-Mar)",
-    "revenue": 10287.22
-   },
-   {
-    "key": "Q2",
-    "label": "Q2 (Apr-Jun)",
-    "revenue": 10015.1
-   }
-  ],
-  "note": "Seasonal index = each month's Event Room revenue divided by the Jan-Jun monthly average (100 = an average month). April is the strongest month so far and January the softest. Quarterly and full-year seasonality fill in as more months close."
- }
+  "seasonality": {
+    "streamLabel": "Event Room",
+    "basis": "Event Room booked actuals, Jan-Jun 2026 (AOP Class view, accrual). Only six months of actuals exist so far; Jul-Dec are not yet real bookings, so this seasonality view uses the six booked months and extends as each month closes.",
+    "months": [
+      {
+        "key": "Jan",
+        "label": "January",
+        "revenue": 1786.72
+      },
+      {
+        "key": "Feb",
+        "label": "February",
+        "revenue": 4613.85
+      },
+      {
+        "key": "Mar",
+        "label": "March",
+        "revenue": 3886.65
+      },
+      {
+        "key": "Apr",
+        "label": "April",
+        "revenue": 4930.1
+      },
+      {
+        "key": "May",
+        "label": "May",
+        "revenue": 2175.0
+      },
+      {
+        "key": "Jun",
+        "revenue": 2910.0
+      }
+    ],
+    "avgMonth": 3383.72,
+    "total": 20302.32,
+    "quarters": [
+      {
+        "key": "Q1",
+        "label": "Q1 (Jan-Mar)",
+        "revenue": 10287.22
+      },
+      {
+        "key": "Q2",
+        "label": "Q2 (Apr-Jun)",
+        "revenue": 10015.1
+      }
+    ],
+    "note": "Seasonal index = each month's Event Room revenue divided by the Jan-Jun monthly average (100 = an average month). April is the strongest month so far and January the softest. Quarterly and full-year seasonality fill in as more months close."
+  }
 }
