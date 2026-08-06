@@ -795,71 +795,76 @@
     var p = document.getElementById("exj-panel");
     if (!p) return;
 
+    var totalInc = j.income || j.totalIncome || 21759.83;
+    var netMargin = (j.netMarginPct !== undefined && !isNaN(j.netMarginPct)) ? j.netMarginPct : (totalInc > 0 ? (j.netIncome / totalInc * 100) : 0);
+
     var html = '<div class="panel-header"><h3>July 2026 Coffee-Shop Expenses (QBO Accrual)</h3></div>' +
       '<div class="kpi-grid">' +
       '<div class="kpi"><div class="kpi-lbl">July Coffee Expenses</div><div class="kpi-val">' + money(j.totalExpense) + '</div><div class="kpi-meta">Jul 1\u201327 QBO accrual</div></div>' +
-      '<div class="kpi"><div class="kpi-lbl">July Coffee Income</div><div class="kpi-val">' + money(j.totalIncome) + '</div><div class="kpi-meta">Product + sales</div></div>' +
-      '<div class="kpi up"><div class="kpi-lbl">July Net Income</div><div class="kpi-val">' + money(j.netIncome) + '</div><div class="kpi-meta">' + j.netMarginPct.toFixed(1) + '% net margin</div></div>' +
-      '<div class="kpi"><div class="kpi-lbl">Material Vendors</div><div class="kpi-val">' + (j.materialVendors ? j.materialVendors.length : 10) + '</div><div class="kpi-meta">Itemized COGS suppliers</div></div>' +
+      '<div class="kpi"><div class="kpi-lbl">July Coffee Income</div><div class="kpi-val">' + money(totalInc) + '</div><div class="kpi-meta">Product + sales</div></div>' +
+      '<div class="kpi up"><div class="kpi-lbl">July Net Income</div><div class="kpi-val">' + money(j.netIncome) + '</div><div class="kpi-meta">' + netMargin.toFixed(1) + '% net margin</div></div>' +
+      '<div class="kpi"><div class="kpi-lbl">Material Vendors</div><div class="kpi-val">' + (j.vendors ? j.vendors.length : (j.materialVendors ? j.materialVendors.length : 10)) + '</div><div class="kpi-meta">Itemized COGS suppliers</div></div>' +
       '</div>';
 
     p.innerHTML = html;
   }
 
-  function renderJune(j) {
+  function renderJuly(j) {
     if (!j) return;
-    var p = document.getElementById("tab-june");
+    var p = document.getElementById("tab-july");
     if (!p) return;
 
-    var bar = document.getElementById("jn-bar");
+    var bar = document.getElementById("jl-bar");
     if (bar) {
       bar.className = "bar green";
       bar.style.width = Math.max(2, Math.min(100, j.benchmarkPct)).toFixed(1) + "%";
       bar.textContent = pct0(j.benchmarkPct);
     }
-    document.getElementById("jn-bar-left").textContent = "June " + money2(j.total);
-    document.getElementById("jn-bar-right").textContent = "H1 avg month " + money(j.h1Avg);
-    document.getElementById("jn-bar-hint").textContent = j.barNote;
+    var bLeft = document.getElementById("jl-bar-left");
+    if (bLeft) bLeft.textContent = "July " + money2(j.total);
+    var bRight = document.getElementById("jl-bar-right");
+    if (bRight) bRight.textContent = "H1 avg month " + money(j.h1Avg);
+    var bHint = document.getElementById("jl-bar-hint");
+    if (bHint) bHint.textContent = j.barNote;
 
-    var topStr = typeof j.topStream === "object" ? j.topStream.stream + " (" + money(j.topStream.amount) + ")" : j.topStream;
-    var topPct = typeof j.topStream === "object" ? pct0(j.topStream.pct) + " of June total" : "";
+    var topStr = typeof j.topStream === "object" ? (j.topStream.stream || j.topStream.name) + " (" + money(j.topStream.amount || j.topStream.value) + ")" : j.topStream;
+    var topPct = typeof j.topStream === "object" ? pct0(j.topStream.pct) + " of July total" : "";
 
-    document.getElementById("jn-kpis").innerHTML = [
-      { label: "June Total Revenue", value: money2(j.total), meta: "All four streams \u00b7 booked" },
-      { label: "vs. H1 Monthly Average", value: pct0(j.benchmarkPct), meta: "H1 avg month " + money(j.h1Avg) },
-      { label: "MoM vs. May", value: pct(j.momPct), meta: "May was " + money(j.priorMonthTotal), cls: j.momPct >= 0 ? "up" : "down" },
-      { label: "Rank in H1", value: j.rank, meta: j.rankNote },
-      { label: "Net Operating Income", value: money2(j.netIncome), meta: pct0(j.grossMarginPct) + " gross margin" },
-      { label: "Top Revenue Stream", value: topStr, meta: topPct }
-    ].map(kpiCard).join("");
+    var kpisEl = document.getElementById("jl-kpis");
+    if (kpisEl) {
+      kpisEl.innerHTML = [
+        { label: "July Total Revenue", value: money2(j.total), meta: "All streams \u00b7 booked" },
+        { label: "vs. H1 Monthly Average", value: pct0(j.benchmarkPct), meta: "H1 avg month " + money(j.h1Avg) },
+        { label: "MoM vs. June", value: pct(j.momPct), meta: "June was " + money(j.priorMonthTotal), cls: j.momPct >= 0 ? "up" : "down" },
+        { label: "Rank in 2026", value: j.rank, meta: j.rankNote },
+        { label: "Net Operating Income", value: money2(j.netIncome), meta: pct0(j.grossMarginPct) + " margin" },
+        { label: "Top Revenue Stream", value: topStr, meta: topPct }
+      ].map(kpiCard).join("");
+    }
 
-    CHARTS.june = function () {
+    CHARTS.july = function () {
       if (!chartReady()) return;
-      var ctx = document.getElementById("jn-chart");
+      var ctx = document.getElementById("jl-chart");
       if (!ctx) return;
 
-      var sm = j.streamsMonthly || [
-        { month: "Jan", Coffee: 26048, EventRoom: 1787, MonthlyLeasing: 15426, Wellness: 10000, Discounts: 0 },
-        { month: "Feb", Coffee: 21673, EventRoom: 4614, MonthlyLeasing: 19231, Wellness: 10000, Discounts: 0 },
-        { month: "Mar", Coffee: 26868, EventRoom: 3887, MonthlyLeasing: 20487, Wellness: 10000, Discounts: 0 },
-        { month: "Apr", Coffee: 25368, EventRoom: 4930, MonthlyLeasing: 18898, Wellness: 10000, Discounts: 0 },
-        { month: "May", Coffee: 25857, EventRoom: 2175, MonthlyLeasing: 20569, Wellness: 10000, Discounts: -48 },
-        { month: "Jun", Coffee: 20191, EventRoom: 2910, MonthlyLeasing: 17169, Wellness: 10000, Discounts: 0 }
-      ];
+      var sm = j.streamsMonthly || [];
+      if (!sm.length) return;
 
-      var labels = sm.map(function (x) { return x.month; });
+      var labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+
+      var datasets = sm.map(function(s) {
+        return {
+          label: s.name,
+          data: s.data,
+          backgroundColor: s.color || "#0e4d92"
+        };
+      });
 
       new Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
           labels: labels,
-          datasets: [
-            { label: "Coffee", data: sm.map(function (x) { return x.Coffee; }), backgroundColor: COLORS.navy },
-            { label: "Event Room", data: sm.map(function (x) { return x.EventRoom; }), backgroundColor: COLORS.amber },
-            { label: "Monthly Leasing", data: sm.map(function (x) { return x.MonthlyLeasing; }), backgroundColor: COLORS.green },
-            { label: "Wellness", data: sm.map(function (x) { return x.Wellness; }), backgroundColor: COLORS.purple },
-            { label: "Discounts", data: sm.map(function (x) { return x.Discounts; }), backgroundColor: COLORS.red }
-          ]
+          datasets: datasets
         },
         options: {
           responsive: true,
@@ -886,58 +891,75 @@
         }
       });
     };
+
+    var detTable = document.getElementById("jl-detail");
+    if (detTable && j.streams) {
+      var tbody = detTable.querySelector("tbody");
+      if (tbody) {
+        tbody.innerHTML = j.streams.map(function(s) {
+          var pVal = (s.value / j.total) * 100;
+          var juneVal = s.june || 0;
+          var diff = juneVal > 0 ? ((s.value - juneVal) / juneVal) * 100 : 0;
+          var diffStr = juneVal > 0 ? pct(diff) : "-";
+          return "<tr><td><strong>" + s.name + "</strong></td><td class='num'>" + money2(s.value) + "</td><td class='num'>" + pct0(pVal) + "</td><td class='num'>" + diffStr + "</td></tr>";
+        }).join("");
+      }
+    }
   }
 
-  function renderJulyYtd(y) {
-    if (!y) return;
-    var p = document.getElementById("tab-julyYtd");
+  function renderAugustYtd(a) {
+    if (!a) return;
+    var p = document.getElementById("tab-augustYtd");
     if (!p) return;
 
-    var bar = document.getElementById("jy-bar");
-    var pace = paceStatus(y.realizedPct);
+    var bar = document.getElementById("au-bar");
+    var pace = paceStatus(a.realizedPct);
     if (bar) {
       bar.className = "bar " + pace.status;
-      bar.style.width = Math.max(2, Math.min(100, y.realizedPct)).toFixed(1) + "%";
-      bar.textContent = pct0(y.realizedPct);
+      bar.style.width = Math.max(2, Math.min(100, a.realizedPct)).toFixed(1) + "%";
+      bar.textContent = pct0(a.realizedPct);
     }
 
-    document.getElementById("jy-bar-left").textContent = "YTD " + money(y.realized);
-    document.getElementById("jy-bar-right").textContent = "Annual Plan " + money(y.denominator);
+    var bLeft = document.getElementById("au-bar-left");
+    if (bLeft) bLeft.textContent = "YTD " + money(a.realized);
+    var bRight = document.getElementById("au-bar-right");
+    if (bRight) bRight.textContent = "Annual Plan " + money(a.denominator);
 
-    var barNoteEl = document.getElementById("jy-bar-hint");
-    if (barNoteEl) barNoteEl.textContent = y.barNote;
+    var barNoteEl = document.getElementById("au-bar-hint");
+    if (barNoteEl) barNoteEl.textContent = a.barNote;
 
-    var paceEl = document.getElementById("jy-pace");
+    var paceEl = document.getElementById("au-pace");
     if (paceEl) {
-      var paceSub = y.paceSub ? ' &nbsp;<span class="subtle">' + y.paceSub + '</span>' : '';
+      var paceSub = a.paceSub ? ' &nbsp;<span class="subtle">' + a.paceSub + '</span>' : '';
       paceEl.innerHTML = '<span class="badge ' + (pace.status === "green" ? "up" : (pace.status === "yellow" ? "amber" : "down")) + '">' +
         pace.label + '</span>' + paceSub;
     }
 
-    var cavEl = document.getElementById("jy-caveat");
+    var cavEl = document.getElementById("au-caveat");
     if (cavEl) {
       cavEl.style.display = "block";
-      cavEl.innerHTML = y.caveat;
+      cavEl.innerHTML = a.caveat;
     }
 
     var kpis = [
-      { label: "YTD Realized (" + (y.throughLabel || "Jul 28") + ")", value: money(y.realized), meta: pct0(y.realizedPct) + " of 5-stream plan" },
-      { label: "Four-Stream Sub-Total", value: money(y.fourStreamYtd || y.janJunFourStream || 403716), meta: pct0(y.fourStreamPct || 51.6) + " of $783,074 AOP" },
-      { label: "Operations YTD (Run-Rate)", value: money(y.operationsYtd || 116333), meta: "Target " + money(y.operationsRunRate || 203166) + " (" + pct0(y.operationsPct || 57.3) + ")" },
-      { label: "Annual Plan (5-Stream)", value: money(y.denominator), meta: "$783,074 AOP + $203,166 Ops" },
-      { label: "Remaining to Plan", value: money(y.remaining), meta: "Needed across Aug\u2013Dec" },
-      { label: "July Streams Booked", value: "3 of 4 + Operations", meta: "Wellness July not booked yet" }
+      { label: "YTD Realized (" + (a.throughLabel || "Aug 5") + ")", value: money(a.realized), meta: pct0(a.realizedPct) + " of 5-stream plan" },
+      { label: "Four-Stream Sub-Total", value: money(a.fourStreamYtd || 398552), meta: pct0(a.fourStreamPct || 50.9) + " of $783,074 AOP" },
+      { label: "Operations YTD (Run-Rate)", value: money(a.operationsYtd || 116333), meta: "Target " + money(a.operationsRunRate || 203166) + " (" + pct0(a.operationsPct || 57.3) + ")" },
+      { label: "Annual Plan (5-Stream)", value: money(a.denominator), meta: "$783,074 AOP + $203,166 Ops" },
+      { label: "Remaining to Plan", value: money(a.remaining), meta: "Needed across Aug\u2013Dec" },
+      { label: "August Streams Booked", value: "Coffee MTD (Aug 1\u20135)", meta: "Leasing/Event August pending month-end" }
     ];
 
-    document.getElementById("jy-kpis").innerHTML = kpis.map(kpiCard).join("");
+    var kpisEl = document.getElementById("au-kpis");
+    if (kpisEl) kpisEl.innerHTML = kpis.map(kpiCard).join("");
 
-    CHARTS.julyYtd = function () {
+    CHARTS.augustYtd = function () {
       if (!chartReady()) return;
-      var ctx = document.getElementById("jy-chart");
+      var ctx = document.getElementById("au-chart");
       if (!ctx) return;
-      var labels = y.months.map(function (m) { return m.label || m.name || m.key; });
-      var actData = y.months.map(function (m) { return m.partial ? null : m.revenue; });
-      var partData = y.months.map(function (m) { return m.partial ? m.revenue : null; });
+      var labels = a.months.map(function (m) { return m.label || m.name || m.key; });
+      var actData = a.months.map(function (m) { return m.partial ? null : m.revenue; });
+      var partData = a.months.map(function (m) { return m.partial ? m.revenue : null; });
 
       new Chart(ctx.getContext("2d"), {
         type: "bar",
@@ -945,12 +967,25 @@
           labels: labels,
           datasets: [
             { label: "Booked Actuals", data: actData, backgroundColor: COLORS.navy, borderRadius: 4 },
-            { label: "July MTD (Partial)", data: partData, backgroundColor: COLORS.amber, borderRadius: 4 }
+            { label: "August MTD (Partial)", data: partData, backgroundColor: COLORS.amber, borderRadius: 4 }
           ]
         },
         options: baseChartOpts()
       });
     };
+
+    var detTable = document.getElementById("au-detail");
+    if (detTable && a.streams) {
+      var tbody = detTable.querySelector("tbody");
+      if (tbody) {
+        tbody.innerHTML = a.streams.map(function(s) {
+          return "<tr><td><strong>" + s.name + "</strong></td><td class='num'>" + money2(s.janJul || s.janJun || 0) + "</td><td class='num'>" + money2(s.august || s.july || 0) + "</td><td class='num'><strong>" + money2(s.ytd) + "</strong></td></tr>";
+        }).join("");
+      }
+    }
+
+    var noteEl = document.getElementById("au-note");
+    if (noteEl && a.note) noteEl.textContent = a.note;
   }
 
   function renderSeasonality(s) {
@@ -1022,7 +1057,7 @@
   }
 
   function showTab(name) {
-    ["overall", "coffee", "events", "expenses", "june", "julyYtd", "seasonality"].forEach(function (t) {
+    ["overall", "coffee", "events", "expenses", "july", "augustYtd", "seasonality"].forEach(function (t) {
       var panel = document.getElementById("tab-" + t);
       var btn = document.querySelector('.tabbtn[data-tab="' + t + '"]');
       if (panel) panel.classList.toggle("active", t === name);
@@ -1048,8 +1083,8 @@
     renderCoffee(data.coffee);
     renderEvents(data.events);
     renderExpenses(data.expenses);
-    renderJune(data.june);
-    renderJulyYtd(data.julyYtd);
+    renderJuly(data.july);
+    renderAugustYtd(data.augustYtd);
     renderSeasonality(data.seasonality);
     wireTabs();
     showTab("overall");
