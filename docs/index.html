@@ -1,100 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carolina Core Wellness &#8212; 2026 Revenue</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Chart.js with unpkg CDN fallback -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
-          onerror="this.onerror=null;this.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js';"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carolina Core Wellness &mdash; 2026 Revenue Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js';"></script>
 </head>
 <body>
-  <div class="app">
-    <!-- Header -->
-    <header class="appbar">
-      <div class="brand">
-        <div class="logo">CCW</div>
-        <div>
-          <h1>Carolina Core Wellness &#8212; 2026 Revenue</h1>
-          <p class="tag">MoM booked actuals &amp; full-year projections &#8212; Carolina Core Wellness</p>
-        </div>
-      </div>
-      <div class="auth-box" id="auth-box">
-        <!-- Dashboard is public; sign-in gate removed -->
-      </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="main">
-      <p class="subtle" id="load-note">Loading revenue data...</p>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">CCW</div>
+      <div>
+        <h1>Carolina Core Wellness &mdash; 2026 Revenue</h1>
+        <div class="sub">Monthly actuals, forward AOP budget, and weekly performance schedule</div>
+      </div>
+    </div>
+  </header>
 
-      <!-- Tab Navigation -->
-      <nav class="tabs" id="tabs">
+  <main class="content">
+
+    <div class="card">
+      <p class="forward-note" id="load-note" style="margin-bottom: 16px;">Loading revenue data...</p>
+
+      <div class="tabs">
         <button class="tabbtn active" data-tab="overall">Overall</button>
         <button class="tabbtn" data-tab="coffee">Coffee</button>
         <button class="tabbtn" data-tab="events">Events</button>
         <button class="tabbtn" data-tab="expenses">Coffeeshop Expenses</button>
-        <button class="tabbtn" data-tab="june">June</button>
-        <button class="tabbtn" data-tab="julyYtd">July YTD</button>
+        <button class="tabbtn" data-tab="july">July</button>
+        <button class="tabbtn" data-tab="augustYtd">August YTD</button>
         <button class="tabbtn" data-tab="seasonality">Seasonality</button>
-      </nav>
+      </div>
 
-      <!-- ===================== OVERALL ===================== -->
+      <!-- ===================== OVERALL TAB ===================== -->
       <section class="tabpanel active" id="tab-overall">
-        <!-- PROGRESS BAR ON TOP -->
-        <div class="panel">
-          <h2>Annual Plan Progress &#8212; 2026 Total Revenue</h2>
+
+        <div class="panel" id="ov-prog-panel">
+          <h2>Annual Revenue Plan Progress</h2>
           <div class="progress-wrap">
             <div class="progress"><div class="bar" id="ov-bar">0%</div></div>
             <div class="progress-meta"><span id="ov-bar-left"></span><span id="ov-bar-right"></span></div>
           </div>
           <p class="hint" id="ov-bar-hint"></p>
-          <div id="ov-pace"></div>
         </div>
 
         <div class="forward-note" id="ov-forward">
-          <strong>FORWARD LOOKOUT:</strong> Jan&#8211;Jun reflect <strong>booked actuals</strong> ($338,137 / 43.2% of annual plan).
-          Jul&#8211;Dec reflect the AOP forecast. We are making forward progress, but we can't stop here.
+          <strong>FORWARD-LOOKING PROJECTION:</strong> Jan&ndash;Jun figures reflect booked actuals. Jul&ndash;Dec figures are AOP forward budget.
         </div>
-        <div class="forward-note" id="ov-july"></div>
+
+        <div class="forward-note" id="ov-july" style="display:none; border-left-color: var(--amber);"></div>
+
+        <div id="ov-pace" style="margin-bottom: 16px;"></div>
 
         <section class="kpis" id="ov-kpis"></section>
 
-        <!-- Catch-Up Required Panel -->
-        <div class="panel" id="ov-catchup-panel">
-          <h2>Required Pace to Hit Annual Plan</h2>
-          <p class="hint">What it takes across the remaining 6 months (Jul&#8211;Dec) to reach the <strong>$783,074 four-stream annual plan</strong> from our current <strong>$338,137 H1 base</strong> ($444,938 remaining).</p>
-          <div id="ov-catchup-grid"></div>
+        <div class="panel" style="margin-top: 16px;">
+          <h2>H2 Target Catch-Up Schedule</h2>
+          <p class="hint">Average run-rates required across Jul&ndash;Dec to reach the $783,074 four-stream AOP plan.</p>
+          <div class="kpi-grid" id="ov-catchup-grid"></div>
         </div>
 
         <div class="panel">
-          <h2>Company-Wide Monthly Revenue &amp; Forecast</h2>
-          <div class="chart-wrap"><canvas id="ov-chart"></canvas></div>
-          <div class="legend">
-            <span><i style="background:#0e4d92"></i>Booked Actuals (Jan&#8211;Jun)</span>
-            <span><i style="background:#1f8a4c"></i>AOP Forecast (Jul&#8211;Dec)</span>
-            <span><i style="background:#b3261e"></i>Conservative (&minus;5%, Jul&#8211;Dec)</span>
+          <h2>2026 Revenue Trend &mdash; Actuals &amp; AOP Budget</h2>
+          <div class="chart-wrap" style="height: 380px;">
+            <canvas id="ov-chart"></canvas>
           </div>
+          <div class="legend" style="justify-content: center; margin-top: 16px;">
+            <span><i style="background: #0e4d92;"></i>Booked Actuals</span>
+            <span><i style="background: #1f8a4c;"></i>AOP Forecast</span>
+            <span><i style="background: #b3261e;"></i>Conservative (&minus;5%, Jul&ndash;Dec)</span>
+          </div>
+          <p class="hint" style="text-align: center; margin-top: 8px;">
+            Conservative forecast applies a &minus;5% adjustment to Jul&ndash;Dec forward months only. Past actuals (Jan&ndash;Jun) remain unadjusted.
+          </p>
         </div>
 
         <div class="panel">
-          <h2>Monthly Performance Detail</h2>
+          <h2>Monthly Revenue Detail</h2>
           <table id="ov-detail">
-            <thead><tr><th>Month</th><th>Type</th><th>Revenue</th><th>vs. Prior Mo</th><th>Pace Read</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Type</th>
+                <th class="num">Revenue</th>
+                <th class="num">MoM Change</th>
+                <th>Pace Read</th>
+              </tr>
+            </thead>
             <tbody></tbody>
           </table>
         </div>
+
       </section>
 
-      <!-- ===================== COFFEE ===================== -->
+      <!-- ===================== COFFEE TAB ===================== -->
       <section class="tabpanel" id="tab-coffee">
-        <!-- CURRENT WEEK PROGRESS BAR ON TOP -->
-        <div class="panel">
-          <h2>Current Week Lookout &#8212; Coffee Revenue</h2>
+
+        <div class="panel" id="cf-prog-panel">
+          <h2>Current Week Performance</h2>
           <div class="progress-wrap">
             <div class="progress"><div class="bar" id="cf-bar">0%</div></div>
             <div class="progress-meta"><span id="cf-bar-left"></span><span id="cf-bar-right"></span></div>
@@ -102,67 +108,79 @@
           <p class="hint" id="cf-bar-hint"></p>
         </div>
 
-        <div class="forward-note">
-          <strong>PROVENANCE:</strong> Jul 1&#8211;29 coffee/food revenue is sourced directly from Square item-level sales receipts (two QB Sync files + Jul 27/28/29 single days). This is cash basis, gross sales (not net of discounts).
-        </div>
-
         <section class="kpis" id="cf-kpis"></section>
 
-        <div class="split-grid">
+        <div class="split-grid" style="margin-top: 20px;">
           <div class="panel">
-            <h2>Revenue Mix &#8212; Coffee / Food / Apparel / Alcohol</h2>
-            <p class="hint">July 1&#8211;29 sales by category (Square item-level import, v2).</p>
-            <div class="chart-wrap" style="height:260px"><canvas id="cf-cat-chart"></canvas></div>
-            <div id="cf-cat-list" style="margin-top:16px;"></div>
-            <p class="hint" style="margin-top:16px" id="cf-cat-note"></p>
-          </div>
-          <div class="panel">
-            <h2>Daily Lookout &#8212; July 1&#8211;29 Actuals vs. Goal</h2>
-            <p class="hint">Pace compared to daily target ($1,200 wkday / $600 Sat / $450 Sun). Cash basis (Square).</p>
-            <div class="chart-wrap" style="height:260px"><canvas id="cf-daily-chart"></canvas></div>
-            <div class="legend" style="justify-content:center;margin-top:16px">
-              <span><i style="background:#1f8a4c"></i>Met Goal</span>
-              <span><i style="background:#c77d0a"></i>&ge; 70%</span>
-              <span><i style="background:#b3261e"></i>&lt; 70%</span>
-              <span><i style="background:#12303f;height:2px"></i>Daily Goal</span>
+            <h2 id="cf-daily-heading">Daily Lookout</h2>
+            <div class="chart-wrap" style="height: 280px;">
+              <canvas id="cf-chart"></canvas>
             </div>
+            <p class="hint">Bars color-coded by AOP daily goal attainment: Green = &ge;Goal, Amber = &ge;70%, Red = &lt;70%.</p>
+          </div>
+
+          <div class="panel">
+            <h2 id="cf-mix-heading">Revenue Mix</h2>
+            <div class="chart-wrap" style="height: 200px;">
+              <canvas id="cf-mix-chart"></canvas>
+            </div>
+            <div id="cf-cat-list" style="margin-top: 12px;"></div>
+            <p class="hint" style="margin-top: 8px;" id="cf-mix-hint"></p>
           </div>
         </div>
+
+        <p class="hint" style="margin-top: 16px;" id="cf-cat-note"></p>
+
       </section>
 
-      <!-- ===================== EVENTS ===================== -->
+      <!-- ===================== EVENTS TAB ===================== -->
       <section class="tabpanel" id="tab-events">
-        <!-- YTD VS RUN-RATE PROGRESS BAR ON TOP -->
-        <div class="panel" id="ev-prog-panel">
-          <h2>Event Room &#8212; YTD Booked vs. Full-Year Run-Rate</h2>
-          <div id="ev-prog-bar"></div>
+
+        <div class="panel">
+          <h2>Event Room &mdash; YTD Booked vs. Full-Year Run-Rate</h2>
+          <div class="progress-wrap">
+            <div class="progress"><div class="bar green" id="ev-prog-bar" style="width: 50.0%;">50.0%</div></div>
+            <div class="progress-meta"><span id="ev-prog-left">Booked (Jan&ndash;Jun) $20,302</span><span id="ev-prog-right">Projected FY $40,605</span></div>
+          </div>
+          <p class="hint" id="ev-prog-hint">Event Room has no standalone AOP budget (it's bundled with Monthly Leasing), so this target is a Jan&ndash;Jun run-rate projection &mdash; not an independent budget.</p>
         </div>
 
         <section class="kpis" id="ev-kpis"></section>
-        
-        <div class="panel">
-          <h2>Event Room Monthly Bookings (Jan&#8211;Jun Actuals)</h2>
-          <div class="chart-wrap" style="height:300px"><canvas id="ev-chart"></canvas></div>
-          <div class="legend">
-            <span><i style="background:#e9a23b"></i>Booked Actuals</span>
-            <span><i style="background:#fff2df;border:1px solid #c77d0a"></i>Run-Rate Projection</span>
+
+        <div class="panel" style="margin-top: 20px;">
+          <h2>Event Room Monthly Revenue Trend</h2>
+          <div class="chart-wrap" style="height: 320px;">
+            <canvas id="ev-chart"></canvas>
+          </div>
+          <div class="legend" style="justify-content: center; margin-top: 16px;">
+            <span><i style="background: #0e4d92;"></i>Booked Actuals (Jan&ndash;Jun)</span>
+            <span><i style="background: #e9a23b;"></i>Run-Rate Projection (Jul&ndash;Dec)</span>
           </div>
         </div>
-        
+
         <div class="panel">
           <h2>Event Room Monthly Detail</h2>
           <table id="ev-detail">
-            <thead><tr><th>Month</th><th>Type</th><th>Revenue</th><th>vs. Prior Mo</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Type</th>
+                <th class="num">Revenue</th>
+                <th class="num">MoM Change</th>
+                <th>Pace Read</th>
+              </tr>
+            </thead>
             <tbody></tbody>
           </table>
         </div>
+
       </section>
 
-      <!-- ===================== EXPENSES ===================== -->
+      <!-- ===================== COFFEESHOP EXPENSES ===================== -->
       <section class="tabpanel" id="tab-expenses">
-        <!-- BUDGET VS ACTUAL PROGRESS BAR ON TOP -->
+
         <div class="panel" id="ex-budget-panel">
-          <h2>Coffeeshop Expenses &#8212; YTD Budget vs. Actual</h2>
+          <h2>Coffeeshop Expenses &mdash; Jan&ndash;Jun Spend vs Reforecast Budget</h2>
           <div class="progress-wrap">
             <div class="progress"><div class="bar" id="ex-budget-bar">0%</div></div>
             <div class="progress-meta"><span id="ex-budget-left"></span><span id="ex-budget-right"></span></div>
@@ -172,118 +190,90 @@
 
         <section class="kpis" id="ex-kpis"></section>
 
-        <!-- JULY VENDOR PANEL -->
-        <div class="panel" id="exj-panel">
-          <!-- Populated by JS -->
-        </div>
+        <div id="exj-panel" class="panel" style="margin-top: 20px;"></div>
 
-        <!-- NEW SPLIT PERCENTAGE CHARTS -->
-        <div class="chart-row">
+        <div class="split-grid" style="margin-top: 20px;">
           <div class="panel">
-            <h2>Materials (COGS) % of Sales</h2>
-            <p class="hint">Goal: Keep Materials &le; 30% of Net Revenue</p>
-            <div class="chart-wrap" style="height:260px"><canvas id="ex-mat-chart"></canvas></div>
-            <div class="legend" style="justify-content:center">
-              <span><i style="background:#1f8a4c"></i>On Track (&le; 30%)</span>
-              <span><i style="background:#b3261e"></i>Off Track (&gt; 30%)</span>
-              <span><i style="background:#12303f;height:2px"></i>30% Goal</span>
-            </div>
+            <h2>Materials Expense % of Sales</h2>
+            <div class="chart-wrap" style="height: 260px;"><canvas id="ex-mat-chart"></canvas></div>
+            <p class="hint">Goal: &le; 30% of monthly sales. Green = &le;30%, Red = &gt;30%.</p>
           </div>
+
           <div class="panel">
-            <h2>Direct Labor % of Sales</h2>
-            <p class="hint">Goal: Keep Labor &le; 30% of Net Revenue</p>
-            <div class="chart-wrap" style="height:260px"><canvas id="ex-lab-chart"></canvas></div>
-            <div class="legend" style="justify-content:center">
-              <span><i style="background:#1f8a4c"></i>On Track (&le; 30%)</span>
-              <span><i style="background:#b3261e"></i>Off Track (&gt; 30%)</span>
-              <span><i style="background:#12303f;height:2px"></i>30% Goal</span>
-            </div>
+            <h2>Direct Labor Expense % of Sales</h2>
+            <div class="chart-wrap" style="height: 260px;"><canvas id="ex-lab-chart"></canvas></div>
+            <p class="hint">Goal: &le; 30% of monthly sales. Green = &le;30%, Red = &gt;30%.</p>
           </div>
         </div>
 
-        <div class="split-grid">
+        <div class="split-grid" style="margin-top: 20px;">
           <div class="panel">
-            <h2>H1 Expense Categories</h2>
-            <div id="ex-cat-list"></div>
+            <h2>Jan&ndash;Jun Expense Categories</h2>
+            <div id="ex-cat-breakdown"></div>
           </div>
+
           <div class="panel">
-            <h2>H1 Administrative Detail</h2>
-            <div id="ex-adm-list"></div>
+            <h2>Jan&ndash;Jun Administrative Detail</h2>
+            <div id="ex-admin-breakdown"></div>
           </div>
         </div>
 
-        <div class="panel">
-          <h2>Coffeeshop P&L Monthly Detail (Jan&#8211;Jun Actuals)</h2>
-          <table id="ex-detail">
-            <thead>
-              <tr>
-                <th>Month</th>
-                <th class="num">Net Rev</th>
-                <th class="num">COGS</th>
-                <th class="num">Opex</th>
-                <th class="num">Total Exp</th>
-                <th class="num">Net Income</th>
-                <th class="num">Net Margin</th>
-                <th class="num">Exp % of Sales</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
       </section>
 
-      <!-- ===================== JUNE ===================== -->
-      <section class="tabpanel" id="tab-june">
-        <div class="panel" id="jn-prog-panel">
-          <h2>June Total Revenue &mdash; Pacing vs H1 Average</h2>
+      <!-- ===================== JULY TAB ===================== -->
+      <section class="tabpanel" id="tab-july">
+        <div class="panel" id="jl-prog-panel">
+          <h2>July Total Revenue &mdash; Pacing vs H1 Average</h2>
           <div class="progress-wrap">
-            <div class="progress"><div class="bar" id="jn-bar">0%</div></div>
-            <div class="progress-meta"><span id="jn-bar-left"></span><span id="jn-bar-right"></span></div>
+            <div class="progress"><div class="bar" id="jl-bar">0%</div></div>
+            <div class="progress-meta"><span id="jl-bar-left"></span><span id="jl-bar-right"></span></div>
           </div>
-          <p class="hint" id="jn-bar-hint"></p>
+          <p class="hint" id="jl-bar-hint"></p>
         </div>
         <div class="forward-note">
-          <strong>NOTE:</strong> June was the softest month of H1 ($50,270 vs $56,356 H1 avg, ranked 6th of 6). Below is the H1 trend broken down by revenue stream.
+          <strong>NOTE:</strong> July was the highest revenue month of 2026 so far ($67,668 vs $56,356 H1 avg, ranked 1st of 7). Below is the 2026 trend broken down by revenue stream.
         </div>
-        <section class="kpis" id="jn-kpis"></section>
+        <section class="kpis" id="jl-kpis"></section>
         <div class="panel">
-          <h2>H1 Monthly Revenue by Stream</h2>
-          <div class="chart-wrap" style="height:360px"><canvas id="jn-chart"></canvas></div>
+          <h2>2026 Monthly Revenue by Stream</h2>
+          <div class="chart-wrap" style="height:360px"><canvas id="jl-chart"></canvas></div>
           <div class="legend" style="justify-content:center;margin-top:16px">
-            <span><i style="background:#0e4d92"></i>Coffee</span>
-            <span><i style="background:#e9a23b"></i>Event Room</span>
             <span><i style="background:#1f8a4c"></i>Monthly Leasing</span>
+            <span><i style="background:#0e4d92"></i>Coffee</span>
+            <span><i style="background:#d97706"></i>Operations</span>
+            <span><i style="background:#e9a23b"></i>Event Room</span>
             <span><i style="background:#8e44ad"></i>Wellness</span>
+            <span><i style="background:#2563eb"></i>Other</span>
             <span><i style="background:#b3261e"></i>Discounts</span>
           </div>
         </div>
         <div class="panel">
-          <h2>June Streams Detail</h2>
-          <table id="jn-detail">
-            <thead><tr><th>Revenue Stream</th><th class="num">June Actual</th><th class="num">% of June Total</th><th class="num">vs. May</th></tr></thead>
+          <h2>July Streams Detail</h2>
+          <table id="jl-detail">
+            <thead><tr><th>Revenue Stream</th><th class="num">July Actual</th><th class="num">% of July Total</th><th class="num">vs. June</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
-        <div id="jn-review"></div>
+        <div id="jl-review"></div>
       </section>
 
-      <!-- ===================== JULY YTD ===================== -->
-      <section class="tabpanel" id="tab-julyYtd">
-        <div class="panel" id="jy-prog-panel">
-          <h2>July YTD vs. Annual Plan</h2>
+      <!-- ===================== AUGUST YTD ===================== -->
+      <section class="tabpanel" id="tab-augustYtd">
+        <div class="panel" id="au-prog-panel">
+          <h2>August YTD vs. Annual Plan</h2>
           <div class="progress-wrap">
-            <div class="progress"><div class="bar" id="jy-bar">0%</div></div>
-            <div class="progress-meta"><span id="jy-bar-left"></span><span id="jy-bar-right"></span></div>
+            <div class="progress"><div class="bar" id="au-bar">0%</div></div>
+            <div class="progress-meta"><span id="au-bar-left"></span><span id="au-bar-right"></span></div>
           </div>
-          <p class="hint" id="jy-bar-hint"></p>
+          <p class="hint" id="au-bar-hint"></p>
         </div>
-        <div class="forward-note" id="jy-caveat"></div>
-        <div id="jy-pace"></div>
-        <section class="kpis" id="jy-kpis"></section>
+        <div class="forward-note" id="au-caveat"></div>
+        <div id="au-pace"></div>
+        <section class="kpis" id="au-kpis"></section>
         <div class="panel">
           <h2>Revenue vs. Annual Plan</h2>
-          <p class="hint">Includes four Jan&#8211;Jun revenue streams + July coffee-store + July Event/Leasing.</p>
-          <div class="chart-wrap" style="height:300px"><canvas id="jy-chart"></canvas></div>
+          <p class="hint">Includes Jan&#8211;Jul all-stream revenue + August MTD Coffee sales (through Aug 5).</p>
+          <div class="chart-wrap" style="height:300px"><canvas id="au-chart"></canvas></div>
           <div class="legend">
             <span><i style="background:#0e4d92"></i>Booked Full Month</span>
             <span><i style="background:#e9a23b"></i>Partial Month Booked</span>
@@ -291,85 +281,59 @@
           </div>
         </div>
         <div class="panel">
-          <h2>July YTD by Revenue Stream</h2>
-          <table id="jy-detail">
-            <thead><tr><th>Revenue Stream</th><th class="num">Jan&#8211;Jun Actual</th><th class="num">July Booked</th><th class="num">YTD Realized</th></tr></thead>
+          <h2>August YTD by Revenue Stream</h2>
+          <table id="au-detail">
+            <thead><tr><th>Revenue Stream</th><th class="num">Jan&#8211;Jul Actual</th><th class="num">August Booked</th><th class="num">YTD Realized</th></tr></thead>
             <tbody></tbody>
           </table>
-          <p class="hint" style="margin-top:16px" id="jy-note"></p>
+          <p class="hint" style="margin-top:16px" id="au-note"></p>
         </div>
-        <div id="jy-review"></div>
+        <div id="au-review"></div>
       </section>
 
       <!-- ===================== SEASONALITY ===================== -->
       <section class="tabpanel" id="tab-seasonality">
-        <div class="forward-note">
-          <strong>EXECUTIVE SUMMARY:</strong> Event Room bookings show strong seasonality. Spring (April) drives the highest volume, while early winter (Jan/Feb) is extremely soft. April volume is ~2.7&times; January's volume.
-        </div>
-        <section class="kpis" id="se-kpis"></section>
         <div class="panel">
-          <h2>Event Room Seasonality Trend (Jan&#8211;Jun)</h2>
-          <p class="hint">Monthly revenue vs. the $3,384 baseline average.</p>
-          <div class="chart-wrap" style="height:320px"><canvas id="se-chart"></canvas></div>
-          <div class="legend" style="justify-content:center">
-            <span><i style="background:#e9a23b"></i>Monthly Revenue</span>
-            <span><i style="background:#12303f;height:2px"></i>Baseline Average</span>
+          <h2>Event Room &mdash; Seasonal Demand Index</h2>
+          <p class="hint">Monthly demand index comparing each booked month against the baseline monthly average ($3,384 = Index 100.0).</p>
+        </div>
+
+        <section class="kpis" id="sn-kpis"></section>
+
+        <div class="panel" style="margin-top:20px">
+          <h2>Booked Monthly Revenue vs Baseline Average</h2>
+          <div class="chart-wrap" style="height:320px"><canvas id="sn-chart"></canvas></div>
+          <div class="legend" style="justify-content:center;margin-top:16px">
+            <span><i style="background:#e9a23b"></i>Event Room Revenue</span>
+            <span><i style="background:#0e4d92"></i>Baseline Monthly Average ($3,384)</span>
           </div>
         </div>
+
         <div class="panel">
-          <h2>Seasonal Index Detail</h2>
-          <table id="se-detail">
+          <h2>Event Room Monthly Seasonality Detail</h2>
+          <table id="sn-table">
             <thead>
               <tr>
                 <th>Month</th>
                 <th class="num">Booked Revenue</th>
                 <th class="num">% of H1 Total</th>
                 <th class="num">Seasonal Index</th>
-                <th>Rating</th>
+                <th>Performance Rating</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
-          <p class="hint" style="margin-top:16px"><em>Note: Seasonal Index = (Month / Baseline Average) &times; 100. An index of 100 means the month performed exactly at the baseline average.</em></p>
         </div>
       </section>
 
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer>
-      <p id="foot">&copy; 2026 Carolina Core Wellness. Internal use only.</p>
-    </footer>
-  </div>
+  </main>
 
-  <!-- Dynamic Fix for Missing JSON Properties -->
-  <script>
-    (function() {
-      var origFetch = window.fetch;
-      window.fetch = function(url, opts) {
-        var p = origFetch(url, opts);
-        if (typeof url === 'string' && url.indexOf('data.json') !== -1) {
-          return p.then(function(res) {
-            return res.json().then(function(data) {
-              if (data.expenses && data.expenses.july) {
-                var j = data.expenses.july;
-                if (!j.totalIncome) j.totalIncome = j.income || 21759.83;
-                if (!j.netMarginPct && j.totalIncome > 0) {
-                  j.netMarginPct = (j.netIncome / j.totalIncome) * 100;
-                }
-              }
-              var blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-              var init = { "status" : 200 , "statusText" : "OK" };
-              return new Response(blob, init);
-            });
-          });
-        }
-        return p;
-      };
-    })();
-  </script>
+  <footer class="foot" id="foot">
+    Carolina Core Wellness &mdash; 2026 Revenue Dashboard
+  </footer>
 
-  <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
