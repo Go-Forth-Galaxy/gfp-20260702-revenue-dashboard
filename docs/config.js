@@ -10,5 +10,5 @@
    e.g. file:// or in-app browsers — with no real security.)
    ============================================================ */
 window.GFP_CONFIG = {
-  DATA_URL: "data.json?v=20260807b"
+  DATA_URL: "data.json?v=20260807c"
 };
