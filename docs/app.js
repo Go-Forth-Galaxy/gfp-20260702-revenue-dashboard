@@ -1110,7 +1110,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || "data.json";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260807b";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
