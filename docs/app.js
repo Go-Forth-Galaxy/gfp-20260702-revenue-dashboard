@@ -763,13 +763,30 @@
 
     var catBox = document.getElementById("ex-cat-breakdown");
     if (catBox && x.categories) {
-      var cats = Array.isArray(x.categories)
+      var catList = Array.isArray(x.categories)
         ? x.categories
-        : Object.keys(x.categories).map(function (k) { return { category: k, amount: x.categories[k].amount, pct: x.categories[k].pct }; });
+        : Object.keys(x.categories).map(function (k) {
+            var v = x.categories[k] || {};
+            return { key: k, label: v.label, category: v.category, amount: v.amount, pct: v.pct, monthly: v.monthly };
+          });
+
+      var totalExp = (x.totals && typeof x.totals.totalExpense === "number") ? x.totals.totalExpense : 0;
+      var norm = catList.map(function (c) {
+        var amt = (typeof c.amount === "number") ? c.amount : 0;
+        if (typeof c.amount !== "number" && c.monthly) {
+          amt = Object.keys(c.monthly).reduce(function (sum, m) {
+            var v = c.monthly[m];
+            return sum + (typeof v === "number" ? v : 0);
+          }, 0);
+        }
+        var label = c.label || c.category || c.key || "\u2014";
+        var pctVal = (typeof c.pct === "number") ? c.pct : (totalExp ? (amt / totalExp) * 100 : 0);
+        return { label: label, amount: amt, pct: pctVal };
+      });
 
       var html = '<table class="cat-table"><thead><tr><th>Expense Category</th><th class="num">Jan\u2013Jun Total</th><th class="num">% of Total</th></tr></thead><tbody>';
-      cats.forEach(function (c) {
-        html += '<tr><td>' + c.category + '</td><td class="num">' + money(c.amount) + '</td><td class="num">' + c.pct.toFixed(1) + '%</td></tr>';
+      norm.forEach(function (c) {
+        html += '<tr><td>' + c.label + '</td><td class="num">' + money(c.amount) + '</td><td class="num">' + c.pct.toFixed(1) + '%</td></tr>';
       });
       html += '</tbody></table>';
       catBox.innerHTML = html;
