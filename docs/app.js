@@ -964,7 +964,7 @@
       { label: "Operations YTD (Run-Rate)", value: money(a.operationsYtd || 116333), meta: "Target " + money(a.operationsRunRate || 203166) + " (" + pct0(a.operationsPct || 57.3) + ")" },
       { label: "Annual Plan (5-Stream)", value: money(a.denominator), meta: "$783,074 AOP + $203,166 Ops" },
       { label: "Remaining to Plan", value: money(a.remaining), meta: "Needed across Aug\u2013Dec" },
-      { label: "August Streams Booked", value: "Coffee MTD (Aug 1\u20135)", meta: "Leasing/Event August pending month-end" }
+      { label: "August Streams Booked", value: "Coffee MTD (Aug 1\u20139)", meta: "Leasing/Event August pending month-end" }
     ];
 
     var kpisEl = document.getElementById("au-kpis");
