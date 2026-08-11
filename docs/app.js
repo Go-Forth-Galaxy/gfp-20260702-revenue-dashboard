@@ -7,8 +7,37 @@
   var CHARTS = {};
   var built = {};
 
-  var coffeeSelectedPeriod = "august";
+  var coffeeRangeStart = "2026-08-01";
+  var coffeeRangeEnd = "2026-08-10";
   var coffeeSelectedPerspective = "back";
+  var COFFEE_MONTH_GOALS = { "2026-07": 33000, "2026-08": 30450 };
+  var COFFEE_MONTH_NAMES = { "2026-07": "July", "2026-08": "August" };
+  var COFFEE_MONTH_DAYS = { "2026-07": 31, "2026-08": 31 };
+  function fmtCoffeeDate(iso) {
+    var mo = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var m = parseInt(iso.slice(5, 7), 10);
+    var d = parseInt(iso.slice(8, 10), 10);
+    return mo[m - 1] + " " + d;
+  }
+  function coffeeCatArr(c, start, end, periodRealized) {
+    if (start === "2026-07-01" && end === "2026-07-31") {
+      return [
+        { category: "Coffee", amount: 20981.83, units: (c.unitsCoffee || 0) },
+        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
+        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
+        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
+      ];
+    }
+    if (start === "2026-07-01" && end === "2026-08-10") {
+      return [
+        { category: "Coffee", amount: 28904.13, units: (c.unitsCoffee || 0) },
+        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
+        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
+        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
+      ];
+    }
+    return [ { category: "Coffee", amount: periodRealized, units: 0 } ];
+  }
 
   var COLORS = {
     navy: "#0e4d92",
@@ -326,16 +355,29 @@
   }
 
   function wireCoffeeControls() {
-    var periodSel = document.getElementById("cf-period-select");
-    if (periodSel && !periodSel.getAttribute("data-wired")) {
-      periodSel.setAttribute("data-wired", "true");
-      periodSel.addEventListener("change", function () {
-        coffeeSelectedPeriod = this.value;
+    var startInput = document.getElementById("cf-date-start");
+    var endInput = document.getElementById("cf-date-end");
+    if (startInput && endInput && !startInput.getAttribute("data-wired")) {
+      startInput.setAttribute("data-wired", "true");
+      var onRangeChange = function () {
+        var s = startInput.value || "2026-07-01";
+        var e = endInput.value || "2026-08-10";
+        if (s < "2026-07-01") s = "2026-07-01";
+        if (e < "2026-07-01") e = "2026-07-01";
+        if (s > "2026-08-10") s = "2026-08-10";
+        if (e > "2026-08-10") e = "2026-08-10";
+        if (s > e) { e = s; }
+        startInput.value = s;
+        endInput.value = e;
+        coffeeRangeStart = s;
+        coffeeRangeEnd = e;
         if (DATA && DATA.coffee) {
           renderCoffee(DATA.coffee);
           if (CHARTS.coffee) { CHARTS.coffee(); }
         }
-      });
+      };
+      startInput.addEventListener("change", onRangeChange);
+      endInput.addEventListener("change", onRangeChange);
     }
 
     var btnBack = document.getElementById("cf-view-back");
@@ -368,41 +410,30 @@
     wireCoffeeControls();
 
     var allDaily = c.daily || [];
+    var rangeStart = coffeeRangeStart;
+    var rangeEnd = coffeeRangeEnd;
     var filteredDaily = allDaily.filter(function (d) {
-      if (coffeeSelectedPeriod === "august") return d.date.startsWith("2026-08");
-      if (coffeeSelectedPeriod === "july") return d.date.startsWith("2026-07");
-      return true;
+      return d.date >= rangeStart && d.date <= rangeEnd;
     });
 
     var periodRealized = filteredDaily.reduce(function (a, b) { return a + b.revenue; }, 0);
     var periodGoalToDate = filteredDaily.reduce(function (a, b) { return a + b.goal; }, 0);
     var actualDays = filteredDaily.length;
 
-    var totalDaysInPeriod = 31;
-    var fullPeriodGoal = 30450;
-    var periodTitle = "August 2026";
-    var periodLabel = "Aug 1\u201310";
+    var periodLabel = fmtCoffeeDate(rangeStart) + " \u2013 " + fmtCoffeeDate(rangeEnd);
 
-    if (coffeeSelectedPeriod === "july") {
-      totalDaysInPeriod = 31;
-      fullPeriodGoal = 33000;
-      periodTitle = "July 2026";
-      periodLabel = "Jul 1\u201331";
-    } else if (coffeeSelectedPeriod === "august") {
-      totalDaysInPeriod = 31;
-      fullPeriodGoal = 30450;
-      periodTitle = "August 2026";
-      periodLabel = "Aug 1\u201310";
-    } else {
-      totalDaysInPeriod = 62;
-      fullPeriodGoal = 63450;
-      periodTitle = "Full Window";
-      periodLabel = "Jul 1\u2013Aug 10";
-    }
-
-    var remainingDays = Math.max(0, totalDaysInPeriod - actualDays);
+    // "Looking Forward" projects the month the END date falls in, vs that month's full AOP goal.
+    var endYm = rangeEnd.slice(0, 7);
+    var projMonthName = COFFEE_MONTH_NAMES[endYm] || "the period";
+    var fullPeriodGoal = COFFEE_MONTH_GOALS[endYm] || 0;
+    var daysInProjMonth = COFFEE_MONTH_DAYS[endYm] || 31;
+    var monthDays = filteredDaily.filter(function (d) { return d.date.slice(0, 7) === endYm; });
+    var realizedInMonth = monthDays.reduce(function (a, b) { return a + b.revenue; }, 0);
+    var recordedInMonth = monthDays.length;
     var dailyAvg = actualDays > 0 ? periodRealized / actualDays : 0;
-    var projectedTotal = actualDays >= totalDaysInPeriod ? periodRealized : (periodRealized + (dailyAvg * remainingDays));
+    var dailyAvgMonth = recordedInMonth > 0 ? realizedInMonth / recordedInMonth : 0;
+    var remainingDays = Math.max(0, daysInProjMonth - recordedInMonth);
+    var projectedTotal = remainingDays <= 0 ? realizedInMonth : (realizedInMonth + (dailyAvgMonth * remainingDays));
 
     // Progress Bar
     var bar = document.getElementById("cf-bar");
@@ -419,7 +450,9 @@
 
     var barTitle = document.getElementById("cf-bar-title");
     if (barTitle) {
-      barTitle.innerHTML = (isFwd ? "Looking Forward &#8212; " : "Looking Back &#8212; ") + periodTitle + " Coffee Revenue";
+      barTitle.innerHTML = isFwd
+        ? ("Looking Forward &#8212; " + projMonthName + " Projection")
+        : ("Looking Back &#8212; " + periodLabel + " Actuals");
     }
 
     var barLeft = document.getElementById("cf-bar-left");
@@ -427,21 +460,21 @@
     var barHint = document.getElementById("cf-bar-hint");
 
     if (isFwd) {
-      if (barLeft) barLeft.textContent = "Projected Total " + money(projectedTotal);
+      if (barLeft) barLeft.textContent = "Projected " + projMonthName + " " + money(projectedTotal);
       if (barRight) barRight.textContent = "Plan Goal " + money(fullPeriodGoal);
       if (barHint) {
         if (remainingDays > 0) {
-          var reqDaily = Math.max(0, fullPeriodGoal - periodRealized) / remainingDays;
-          barHint.textContent = "At current pace (" + money2(dailyAvg) + "/day across " + actualDays + " recorded days), " + periodTitle + " is projected to reach " + money(projectedTotal) + " vs. " + money(fullPeriodGoal) + " AOP plan (" + pct0((projectedTotal/fullPeriodGoal)*100) + "). Remaining " + remainingDays + " days require " + money2(reqDaily) + "/day average to hit plan.";
+          var reqDaily = Math.max(0, fullPeriodGoal - realizedInMonth) / remainingDays;
+          barHint.textContent = "Projecting " + projMonthName + " from its recorded days so far (" + money2(dailyAvgMonth) + "/day across " + recordedInMonth + " days): projected to reach " + money(projectedTotal) + " vs. " + money(fullPeriodGoal) + " AOP plan (" + pct0((projectedTotal / fullPeriodGoal) * 100) + "). Remaining " + remainingDays + " days require " + money2(reqDaily) + "/day to hit plan.";
         } else {
-          barHint.textContent = periodTitle + " is complete. Final result: " + money2(periodRealized) + " vs. " + money(fullPeriodGoal) + " plan (" + pct0((periodRealized/fullPeriodGoal)*100) + ").";
+          barHint.textContent = projMonthName + " is complete. Final result: " + money2(realizedInMonth) + " vs. " + money(fullPeriodGoal) + " plan (" + pct0((realizedInMonth / fullPeriodGoal) * 100) + ").";
         }
       }
     } else {
       if (barLeft) barLeft.textContent = "Realized " + money2(periodRealized);
-      if (barRight) barRight.textContent = "Goal-to-Date " + money(periodGoalToDate) + " (Full " + money(fullPeriodGoal) + ")";
+      if (barRight) barRight.textContent = "Goal-to-Date " + money(periodGoalToDate);
       if (barHint) {
-        barHint.textContent = periodTitle + " actual coffee store sales vs. AOP goal-to-date schedule. Realized " + money2(periodRealized) + " of " + money(periodGoalToDate) + " goal-to-date (" + pct0((periodRealized/periodGoalToDate)*100) + ").";
+        barHint.textContent = periodLabel + " actual coffee store sales vs. AOP goal-to-date schedule. Realized " + money2(periodRealized) + " of " + money(periodGoalToDate) + " goal-to-date (" + pct0(periodGoalToDate > 0 ? (periodRealized / periodGoalToDate) * 100 : 0) + ").";
       }
     }
 
@@ -449,22 +482,22 @@
     var provNote = document.getElementById("cf-provenance-note");
     if (provNote) {
       if (isFwd) {
-        provNote.innerHTML = "<strong>LOOKING FORWARD:</strong> Projections assume current daily pace (" + money2(dailyAvg) + "/day) continues across the remaining " + remainingDays + " days of " + periodTitle + ".";
+        provNote.innerHTML = "<strong>LOOKING FORWARD:</strong> Projection assumes " + projMonthName + "'s current daily pace (" + money2(dailyAvgMonth) + "/day) holds across the remaining " + remainingDays + " days of the month. The projected month is driven by the END date of your selected range.";
       } else {
-        provNote.innerHTML = "<strong>LOOKING BACK:</strong> " + periodTitle + " coffee/food revenue is sourced directly from Square item-level sales receipts (cash basis, gross sales).";
+        provNote.innerHTML = "<strong>LOOKING BACK:</strong> " + periodLabel + " coffee/food revenue is sourced directly from Square item-level sales receipts (cash basis, gross sales).";
       }
     }
 
     // Headings
     var dailyTitle = document.getElementById("cf-daily-heading");
-    if (dailyTitle) dailyTitle.innerHTML = "Daily Lookout &#8212; " + periodTitle + " Actuals vs. Goal";
+    if (dailyTitle) dailyTitle.innerHTML = "Daily Lookout &#8212; " + periodLabel + " Actuals vs. Goal";
     var catTitle = document.getElementById("cf-mix-heading");
-    if (catTitle) catTitle.innerHTML = "Revenue Mix &#8212; " + periodTitle;
+    if (catTitle) catTitle.innerHTML = "Revenue Mix &#8212; " + periodLabel;
 
     var catHint = document.getElementById("cf-mix-hint");
-    if (catHint) catHint.textContent = periodTitle + " sales by category (Square item-level import).";
+    if (catHint) catHint.textContent = periodLabel + " sales by category (Square item-level import).";
     var dailyHint = document.getElementById("cf-daily-hint");
-    if (dailyHint) dailyHint.textContent = periodTitle + " pace compared to daily target ($1,200 wkday / $600 Sat / $450 Sun). Cash basis (Square).";
+    if (dailyHint) dailyHint.textContent = periodLabel + " pace compared to daily target ($1,200 wkday / $600 Sat / $450 Sun). Cash basis (Square).";
 
     // Best day
     var bestDay = null;
@@ -476,45 +509,26 @@
     var kpis = [];
     if (!isFwd) {
       kpis = [
-        { label: periodTitle + " MTD (" + periodLabel + ")", value: money2(periodRealized), meta: pct0((periodRealized / periodGoalToDate) * 100) + " of " + money(periodGoalToDate) + " goal-to-date" },
+        { label: "Realized (" + periodLabel + ")", value: money2(periodRealized), meta: pct0(periodGoalToDate > 0 ? (periodRealized / periodGoalToDate) * 100 : 0) + " of " + money(periodGoalToDate) + " goal-to-date" },
         { label: "Daily Average (" + actualDays + " days)", value: money2(dailyAvg) + " / day", meta: "Across " + actualDays + " recorded days" },
-        { label: "Best Sales Day", value: bestDay ? money2(bestDay.revenue) : "$0", meta: bestDay ? (bestDay.dow + " " + bestDay.date.slice(5) + " (" + pct0((bestDay.revenue/bestDay.goal)*100) + " of goal)") : "" },
-        { label: "Full Period AOP Plan", value: money(fullPeriodGoal), meta: "Schedule target for " + periodTitle }
+        { label: "Best Sales Day", value: bestDay ? money2(bestDay.revenue) : "$0", meta: bestDay ? (bestDay.dow + " " + bestDay.date.slice(5) + " (" + pct0((bestDay.revenue / bestDay.goal) * 100) + " of goal)") : "" },
+        { label: "Days in Range", value: String(actualDays), meta: periodLabel }
       ];
     } else {
       var gap = fullPeriodGoal - projectedTotal;
       var isSurplus = gap <= 0;
       kpis = [
-        { label: periodTitle + " Projected Total", value: money(projectedTotal), meta: pct0((projectedTotal / fullPeriodGoal) * 100) + " of " + money(fullPeriodGoal) + " full plan", cls: projectedTotal >= fullPeriodGoal ? "up" : "down" },
-        { label: "Full Month Target", value: money(fullPeriodGoal), meta: "AOP monthly budget target" },
+        { label: projMonthName + " Projected Total", value: money(projectedTotal), meta: pct0(fullPeriodGoal > 0 ? (projectedTotal / fullPeriodGoal) * 100 : 0) + " of " + money(fullPeriodGoal) + " full plan", cls: projectedTotal >= fullPeriodGoal ? "up" : "down" },
+        { label: "Full Month Target", value: money(fullPeriodGoal), meta: projMonthName + " AOP monthly budget" },
         { label: isSurplus ? "Projected Surplus" : "Projected Shortfall", value: money(Math.abs(gap)), meta: isSurplus ? "Ahead of plan pace" : "Behind plan pace", cls: isSurplus ? "up" : "down" },
-        { label: "Required Daily Pace", value: remainingDays > 0 ? money2(Math.max(0, gap) / remainingDays) + " / day" : "Period Complete", meta: remainingDays > 0 ? "For remaining " + remainingDays + " days to hit plan" : "100% of days recorded" }
+        { label: "Required Daily Pace", value: remainingDays > 0 ? money2(Math.max(0, fullPeriodGoal - realizedInMonth) / remainingDays) + " / day" : "Month Complete", meta: remainingDays > 0 ? "For remaining " + remainingDays + " days to hit the " + money(fullPeriodGoal) + " plan" : "100% of days recorded" }
       ];
     }
 
     document.getElementById("cf-kpis").innerHTML = kpis.map(renderKpiCard).join("");
 
-    // Category calculation for period
-    var catArr = [];
-    if (coffeeSelectedPeriod === "august") {
-      catArr = [
-        { category: "Coffee", amount: periodRealized, units: c.unitsTotal || 0 }
-      ];
-    } else if (coffeeSelectedPeriod === "july") {
-      catArr = [
-        { category: "Coffee", amount: 20981.83, units: (c.unitsCoffee || 0) },
-        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
-        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
-        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
-      ];
-    } else {
-      catArr = [
-        { category: "Coffee", amount: 28904.13, units: (c.unitsCoffee || 0) },
-        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
-        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
-        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
-      ];
-    }
+    // Category calculation for the selected range
+    var catArr = coffeeCatArr(c, rangeStart, rangeEnd, periodRealized);
 
     CHARTS.coffee = function () {
       if (!chartReady()) return;
@@ -634,8 +648,8 @@
 
     var catNote = document.getElementById("cf-cat-note");
     if (catNote) {
-      if (coffeeSelectedPeriod === "august") {
-        catNote.textContent = "August transaction exports carry no product-mix category split; all $7,922.30 is recorded as Coffee.";
+      if (catArr.length === 1) {
+        catNote.textContent = "Per-category split (Food / Apparel / Alcohol) is only carried in the full-month exports, so the selected range shows total coffee-store sales as a single figure (" + money2(periodRealized) + "). Select all of July (Jul 1\u201331) or the full window (Jul 1\u2013Aug 10) to see the category breakdown.";
       } else {
         catNote.textContent = c.categoryNote || "Food is broken out as a 2nd core category (~20% of sales). Receipts for Jul 24\u201329 arrived without a category split, so all $4,302 across those six days was folded into Coffee.";
       }
