@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carolina Core Wellness &mdash; 2026 Revenue Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260811a">
-  <link rel="stylesheet" href="styles.css?v=20260811a">
-  <script src="config.js?v=20260811a"></script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260811b">
+  <link rel="stylesheet" href="styles.css?v=20260811b">
+  <script src="config.js?v=20260811b"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js';"></script>
 </head>
 <body>
@@ -100,8 +100,27 @@
       <!-- ===================== COFFEE TAB ===================== -->
       <section class="tabpanel" id="tab-coffee">
 
+        <!-- CONTROLS PANEL: PERIOD SELECTOR & LOOKING BACK/FORWARD TOGGLE -->
+        <div class="controls-panel">
+          <div class="controls-group">
+            <span class="controls-label">Review Period:</span>
+            <select id="cf-period-select" class="controls-select">
+              <option value="august" selected>August 2026 (Aug 1&ndash;10)</option>
+              <option value="july">July 2026 (Jul 1&ndash;31)</option>
+              <option value="all">Full Window (Jul 1&ndash;Aug 10)</option>
+            </select>
+          </div>
+          <div class="controls-group">
+            <span class="controls-label">Perspective:</span>
+            <div class="toggle-group">
+              <button id="cf-view-back" class="toggle-btn active">Looking Back</button>
+              <button id="cf-view-forward" class="toggle-btn">Looking Forward</button>
+            </div>
+          </div>
+        </div>
+
         <div class="panel" id="cf-prog-panel">
-          <h2>Current Week Performance</h2>
+          <h2 id="cf-bar-title">Current Week Performance</h2>
           <div class="progress-wrap">
             <div class="progress"><div class="bar" id="cf-bar">0%</div></div>
             <div class="progress-meta"><span id="cf-bar-left"></span><span id="cf-bar-right"></span></div>
@@ -109,21 +128,23 @@
           <p class="hint" id="cf-bar-hint"></p>
         </div>
 
+        <div class="forward-note" id="cf-provenance-note"></div>
+
         <section class="kpis" id="cf-kpis"></section>
 
         <div class="split-grid" style="margin-top: 20px;">
           <div class="panel">
             <h2 id="cf-daily-heading">Daily Lookout</h2>
             <div class="chart-wrap" style="height: 280px;">
-              <canvas id="cf-chart"></canvas>
+              <canvas id="cf-daily-chart"></canvas>
             </div>
-            <p class="hint">Bars color-coded by AOP daily goal attainment: Green = &ge;Goal, Amber = &ge;70%, Red = &lt;70%.</p>
+            <p class="hint" id="cf-daily-hint">Bars color-coded by AOP daily goal attainment: Green = &ge;Goal, Amber = &ge;70%, Red = &lt;70%.</p>
           </div>
 
           <div class="panel">
             <h2 id="cf-mix-heading">Revenue Mix</h2>
             <div class="chart-wrap" style="height: 200px;">
-              <canvas id="cf-mix-chart"></canvas>
+              <canvas id="cf-cat-chart"></canvas>
             </div>
             <div id="cf-cat-list" style="margin-top: 12px;"></div>
             <p class="hint" style="margin-top: 8px;" id="cf-mix-hint"></p>
@@ -335,6 +356,6 @@
     Carolina Core Wellness &mdash; 2026 Revenue Dashboard
   </footer>
 
-  <script src="app.js?v=20260811a"></script>
+  <script src="app.js?v=20260811b"></script>
 </body>
 </html>
