@@ -7,6 +7,9 @@
   var CHARTS = {};
   var built = {};
 
+  var coffeeSelectedPeriod = "august";
+  var coffeeSelectedPerspective = "back";
+
   var COLORS = {
     navy: "#0e4d92",
     green: "#1f8a4c",
@@ -244,7 +247,7 @@
         return v;
       });
 
-      new Chart(ctx.getContext("2d"), {
+      new window.Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
           labels: labels,
@@ -322,80 +325,214 @@
     }
   }
 
-  function renderCoffee(c) {
-    if (!c) return;
-
-    var catArr = [];
-    if (Array.isArray(c.byCategory)) {
-      catArr = c.byCategory;
-    } else if (c.byCategory && typeof c.byCategory === "object") {
-      var uCats = (c.units && c.units.byCategory) || {};
-      catArr = Object.keys(c.byCategory).map(function (k) {
-        return { category: k, amount: c.byCategory[k], units: uCats[k] || 0 };
+  function wireCoffeeControls() {
+    var periodSel = document.getElementById("cf-period-select");
+    if (periodSel && !periodSel.getAttribute("data-wired")) {
+      periodSel.setAttribute("data-wired", "true");
+      periodSel.addEventListener("change", function () {
+        coffeeSelectedPeriod = this.value;
+        if (DATA && DATA.coffee) {
+          renderCoffee(DATA.coffee);
+          if (CHARTS.coffee) { CHARTS.coffee(); }
+        }
       });
     }
 
-    var bar = document.getElementById("cf-bar");
-    var cw = c.currentWeek;
-    var wkPct = cw ? (cw.progressPct != null ? cw.progressPct : (cw.goalToDate > 0 ? (cw.realized / cw.goalToDate) * 100 : 0)) : 0;
-    if (bar) {
-      bar.className = "bar " + (wkPct >= 98 ? "green" : (wkPct >= 80 ? "amber" : "red"));
-      bar.style.width = Math.max(2, Math.min(100, wkPct)).toFixed(1) + "%";
-      bar.textContent = pct0(wkPct);
+    var btnBack = document.getElementById("cf-view-back");
+    var btnFwd = document.getElementById("cf-view-forward");
+    if (btnBack && btnFwd && !btnBack.getAttribute("data-wired")) {
+      btnBack.setAttribute("data-wired", "true");
+      btnBack.addEventListener("click", function () {
+        btnBack.classList.add("active");
+        btnFwd.classList.remove("active");
+        coffeeSelectedPerspective = "back";
+        if (DATA && DATA.coffee) {
+          renderCoffee(DATA.coffee);
+          if (CHARTS.coffee) { CHARTS.coffee(); }
+        }
+      });
+      btnFwd.addEventListener("click", function () {
+        btnFwd.classList.add("active");
+        btnBack.classList.remove("active");
+        coffeeSelectedPerspective = "forward";
+        if (DATA && DATA.coffee) {
+          renderCoffee(DATA.coffee);
+          if (CHARTS.coffee) { CHARTS.coffee(); }
+        }
+      });
+    }
+  }
+
+  function renderCoffee(c) {
+    if (!c) return;
+    wireCoffeeControls();
+
+    var allDaily = c.daily || [];
+    var filteredDaily = allDaily.filter(function (d) {
+      if (coffeeSelectedPeriod === "august") return d.date.startsWith("2026-08");
+      if (coffeeSelectedPeriod === "july") return d.date.startsWith("2026-07");
+      return true;
+    });
+
+    var periodRealized = filteredDaily.reduce(function (a, b) { return a + b.revenue; }, 0);
+    var periodGoalToDate = filteredDaily.reduce(function (a, b) { return a + b.goal; }, 0);
+    var actualDays = filteredDaily.length;
+
+    var totalDaysInPeriod = 31;
+    var fullPeriodGoal = 30450;
+    var periodTitle = "August 2026";
+    var periodLabel = "Aug 1\u201310";
+
+    if (coffeeSelectedPeriod === "july") {
+      totalDaysInPeriod = 31;
+      fullPeriodGoal = 33000;
+      periodTitle = "July 2026";
+      periodLabel = "Jul 1\u201331";
+    } else if (coffeeSelectedPeriod === "august") {
+      totalDaysInPeriod = 31;
+      fullPeriodGoal = 30450;
+      periodTitle = "August 2026";
+      periodLabel = "Aug 1\u201310";
+    } else {
+      totalDaysInPeriod = 62;
+      fullPeriodGoal = 63450;
+      periodTitle = "Full Window";
+      periodLabel = "Jul 1\u2013Aug 10";
     }
 
-    document.getElementById("cf-bar-left").textContent = cw ? cw.label + ": " + money2(cw.realized) : "Current Week";
-    document.getElementById("cf-bar-right").textContent = cw ? "Goal: " + money(cw.goalToDate) + " (Full " + money(cw.fullGoal) + ")" : "";
-    document.getElementById("cf-bar-hint").textContent =
-      cw ? "Current week coffee store sales vs. AOP goal-to-date schedule. Last complete week (" +
-      (c.lastWeek ? c.lastWeek.label : "Jul 13\u201319") + ") realized " +
-      money2(c.lastWeek ? c.lastWeek.realized : 5825.7) + " (" + pct0(c.lastWeek ? c.lastWeek.progressPct : 82.6) + " of $7,050 goal)." : "";
+    var remainingDays = Math.max(0, totalDaysInPeriod - actualDays);
+    var dailyAvg = actualDays > 0 ? periodRealized / actualDays : 0;
+    var projectedTotal = actualDays >= totalDaysInPeriod ? periodRealized : (periodRealized + (dailyAvg * remainingDays));
 
-    var mtdPct = (c.mtdRealized / c.mtdBudget) * 100;
-    var headEl = document.getElementById("cf-daily-heading");
-    if (headEl) headEl.textContent = "Daily Lookout &#8212; " + (c.windowLabel || "July 1\u201329");
-    var mixEl = document.getElementById("cf-mix-heading");
-    if (mixEl) mixEl.textContent = "Revenue Mix &#8212; " + (c.windowLabel || "July 1\u201329");
+    // Progress Bar
+    var bar = document.getElementById("cf-bar");
+    var isFwd = coffeeSelectedPerspective === "forward";
+    var pctVal = isFwd
+      ? (fullPeriodGoal > 0 ? (projectedTotal / fullPeriodGoal) * 100 : 0)
+      : (periodGoalToDate > 0 ? (periodRealized / periodGoalToDate) * 100 : 0);
 
-    var getUnits = function(name) {
-      var item = catArr.find(function(k) { return k.category === name; });
-      return item ? (item.units || 0) : 0;
-    };
-    var uCoffee = c.unitsCoffee || getUnits("Coffee");
-    var uFood = c.unitsFood || getUnits("Food");
-    var uApparel = c.unitsApparel || getUnits("Apparel");
-    var uAlcohol = c.unitsAlcohol || getUnits("Alcohol");
-    var uTotal = c.unitsTotal || (typeof c.units === "number" ? c.units : (uCoffee + uFood + uApparel + uAlcohol));
+    if (bar) {
+      bar.className = "bar " + (pctVal >= 98 ? "green" : (pctVal >= 80 ? "amber" : "red"));
+      bar.style.width = Math.max(2, Math.min(100, pctVal)).toFixed(1) + "%";
+      bar.textContent = pct0(pctVal);
+    }
 
-    var productsSoldMeta = "Coffee " + uCoffee.toLocaleString() +
-      " \u00b7 Food " + uFood.toLocaleString() +
-      " \u00b7 Apparel " + uApparel.toLocaleString() +
-      " \u00b7 Alcohol " + uAlcohol.toLocaleString();
+    var barTitle = document.getElementById("cf-bar-title");
+    if (barTitle) {
+      barTitle.innerHTML = (isFwd ? "Looking Forward &#8212; " : "Looking Back &#8212; ") + periodTitle + " Coffee Revenue";
+    }
 
-    var kpis = [
-      { label: "July MTD (" + (c.windowLabel ? c.windowLabel.replace("July ", "") : "1\u201329") + ")", value: money2(c.mtdRealized), meta: pct0(mtdPct) + " of " + money(c.mtdBudget) + " budget-to-date" },
-      { label: "Current Week vs. Goal", value: money2(cw ? cw.realized : 0), meta: pct0(wkPct) + " of " + money(cw ? cw.goalToDate : 0) + " goal-to-date", cls: wkPct >= 80 ? "up" : "down" },
-      { label: "Last Complete Week", value: money2(c.lastWeek ? c.lastWeek.realized : 5825.7), meta: pct0(c.lastWeek ? c.lastWeek.progressPct : 82.6) + " of $7,050 weekly goal" },
-      { label: "Products Sold (" + (c.windowLabel ? c.windowLabel : "Jul 1\u201329") + ")", value: uTotal.toLocaleString() + " units", meta: productsSoldMeta }
-    ];
+    var barLeft = document.getElementById("cf-bar-left");
+    var barRight = document.getElementById("cf-bar-right");
+    var barHint = document.getElementById("cf-bar-hint");
+
+    if (isFwd) {
+      if (barLeft) barLeft.textContent = "Projected Total " + money(projectedTotal);
+      if (barRight) barRight.textContent = "Plan Goal " + money(fullPeriodGoal);
+      if (barHint) {
+        if (remainingDays > 0) {
+          var reqDaily = Math.max(0, fullPeriodGoal - periodRealized) / remainingDays;
+          barHint.textContent = "At current pace (" + money2(dailyAvg) + "/day across " + actualDays + " recorded days), " + periodTitle + " is projected to reach " + money(projectedTotal) + " vs. " + money(fullPeriodGoal) + " AOP plan (" + pct0((projectedTotal/fullPeriodGoal)*100) + "). Remaining " + remainingDays + " days require " + money2(reqDaily) + "/day average to hit plan.";
+        } else {
+          barHint.textContent = periodTitle + " is complete. Final result: " + money2(periodRealized) + " vs. " + money(fullPeriodGoal) + " plan (" + pct0((periodRealized/fullPeriodGoal)*100) + ").";
+        }
+      }
+    } else {
+      if (barLeft) barLeft.textContent = "Realized " + money2(periodRealized);
+      if (barRight) barRight.textContent = "Goal-to-Date " + money(periodGoalToDate) + " (Full " + money(fullPeriodGoal) + ")";
+      if (barHint) {
+        barHint.textContent = periodTitle + " actual coffee store sales vs. AOP goal-to-date schedule. Realized " + money2(periodRealized) + " of " + money(periodGoalToDate) + " goal-to-date (" + pct0((periodRealized/periodGoalToDate)*100) + ").";
+      }
+    }
+
+    // Provenance Note
+    var provNote = document.getElementById("cf-provenance-note");
+    if (provNote) {
+      if (isFwd) {
+        provNote.innerHTML = "<strong>LOOKING FORWARD:</strong> Projections assume current daily pace (" + money2(dailyAvg) + "/day) continues across the remaining " + remainingDays + " days of " + periodTitle + ".";
+      } else {
+        provNote.innerHTML = "<strong>LOOKING BACK:</strong> " + periodTitle + " coffee/food revenue is sourced directly from Square item-level sales receipts (cash basis, gross sales).";
+      }
+    }
+
+    // Headings
+    var dailyTitle = document.getElementById("cf-daily-heading");
+    if (dailyTitle) dailyTitle.innerHTML = "Daily Lookout &#8212; " + periodTitle + " Actuals vs. Goal";
+    var catTitle = document.getElementById("cf-mix-heading");
+    if (catTitle) catTitle.innerHTML = "Revenue Mix &#8212; " + periodTitle;
+
+    var catHint = document.getElementById("cf-mix-hint");
+    if (catHint) catHint.textContent = periodTitle + " sales by category (Square item-level import).";
+    var dailyHint = document.getElementById("cf-daily-hint");
+    if (dailyHint) dailyHint.textContent = periodTitle + " pace compared to daily target ($1,200 wkday / $600 Sat / $450 Sun). Cash basis (Square).";
+
+    // Best day
+    var bestDay = null;
+    filteredDaily.forEach(function (d) {
+      if (!bestDay || d.revenue > bestDay.revenue) bestDay = d;
+    });
+
+    // KPIs
+    var kpis = [];
+    if (!isFwd) {
+      kpis = [
+        { label: periodTitle + " MTD (" + periodLabel + ")", value: money2(periodRealized), meta: pct0((periodRealized / periodGoalToDate) * 100) + " of " + money(periodGoalToDate) + " goal-to-date" },
+        { label: "Daily Average (" + actualDays + " days)", value: money2(dailyAvg) + " / day", meta: "Across " + actualDays + " recorded days" },
+        { label: "Best Sales Day", value: bestDay ? money2(bestDay.revenue) : "$0", meta: bestDay ? (bestDay.dow + " " + bestDay.date.slice(5) + " (" + pct0((bestDay.revenue/bestDay.goal)*100) + " of goal)") : "" },
+        { label: "Full Period AOP Plan", value: money(fullPeriodGoal), meta: "Schedule target for " + periodTitle }
+      ];
+    } else {
+      var gap = fullPeriodGoal - projectedTotal;
+      var isSurplus = gap <= 0;
+      kpis = [
+        { label: periodTitle + " Projected Total", value: money(projectedTotal), meta: pct0((projectedTotal / fullPeriodGoal) * 100) + " of " + money(fullPeriodGoal) + " full plan", cls: projectedTotal >= fullPeriodGoal ? "up" : "down" },
+        { label: "Full Month Target", value: money(fullPeriodGoal), meta: "AOP monthly budget target" },
+        { label: isSurplus ? "Projected Surplus" : "Projected Shortfall", value: money(Math.abs(gap)), meta: isSurplus ? "Ahead of plan pace" : "Behind plan pace", cls: isSurplus ? "up" : "down" },
+        { label: "Required Daily Pace", value: remainingDays > 0 ? money2(Math.max(0, gap) / remainingDays) + " / day" : "Period Complete", meta: remainingDays > 0 ? "For remaining " + remainingDays + " days to hit plan" : "100% of days recorded" }
+      ];
+    }
 
     document.getElementById("cf-kpis").innerHTML = kpis.map(renderKpiCard).join("");
 
+    // Category calculation for period
+    var catArr = [];
+    if (coffeeSelectedPeriod === "august") {
+      catArr = [
+        { category: "Coffee", amount: periodRealized, units: c.unitsTotal || 0 }
+      ];
+    } else if (coffeeSelectedPeriod === "july") {
+      catArr = [
+        { category: "Coffee", amount: 20981.83, units: (c.unitsCoffee || 0) },
+        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
+        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
+        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
+      ];
+    } else {
+      catArr = [
+        { category: "Coffee", amount: 28904.13, units: (c.unitsCoffee || 0) },
+        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
+        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
+        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
+      ];
+    }
+
     CHARTS.coffee = function () {
       if (!chartReady()) return;
-      var ctxDaily = document.getElementById("cf-chart");
+
+      var ctxDaily = document.getElementById("cf-daily-chart");
       if (ctxDaily) {
-        var labels = c.daily.map(function (d) { return d.day; });
-        var act = c.daily.map(function (d) { return d.realized; });
-        var goals = c.daily.map(function (d) { return d.goal; });
-        var bgColors = c.daily.map(function (d) {
-          var ratio = d.realized / d.goal;
+        if (window.cfDailyChartInstance) { window.cfDailyChartInstance.destroy(); }
+        var labels = filteredDaily.map(function (d) { return d.date.slice(5) + " " + d.dow; });
+        var act = filteredDaily.map(function (d) { return d.revenue; });
+        var goals = filteredDaily.map(function (d) { return d.goal; });
+        var bgColors = filteredDaily.map(function (d) {
+          var ratio = d.revenue / d.goal;
           if (ratio >= 0.98) return COLORS.green;
           if (ratio >= 0.70) return COLORS.amber;
           return COLORS.red;
         });
 
-        new Chart(ctxDaily.getContext("2d"), {
+        window.cfDailyChartInstance = new window.Chart(ctxDaily.getContext("2d"), {
           type: "bar",
           data: {
             labels: labels,
@@ -432,13 +569,14 @@
         });
       }
 
-      var ctxMix = document.getElementById("cf-mix-chart");
+      var ctxMix = document.getElementById("cf-cat-chart");
       if (ctxMix) {
+        if (window.cfMixChartInstance) { window.cfMixChartInstance.destroy(); }
         var catLabels = catArr.map(function (k) { return k.category; });
         var catVals = catArr.map(function (k) { return k.amount; });
         var mixColors = catLabels.map(function (lbl) { return CAT_COLORS[lbl] || COLORS.subtle; });
 
-        new Chart(ctxMix.getContext("2d"), {
+        window.cfMixChartInstance = new window.Chart(ctxMix.getContext("2d"), {
           type: "doughnut",
           data: {
             labels: catLabels,
@@ -496,11 +634,11 @@
 
     var catNote = document.getElementById("cf-cat-note");
     if (catNote) {
-      catNote.textContent = c.categoryNote || "Food is broken out as a 2nd core category (~20% of sales). Note: Receipts for Jul 24\u201329 arrived without a category split, so all $4,302 across those six days was folded into Coffee (Food/Apparel slightly understated for that window).";
-    }
-    var mixHint = document.getElementById("cf-mix-hint");
-    if (mixHint) {
-      mixHint.textContent = c.mixHint || (c.windowLabel ? c.windowLabel + " sales by category (Square item-level import, v2)" : "July 1\u201329 sales by category (Square item-level import, v2)");
+      if (coffeeSelectedPeriod === "august") {
+        catNote.textContent = "August transaction exports carry no product-mix category split; all $7,922.30 is recorded as Coffee.";
+      } else {
+        catNote.textContent = c.categoryNote || "Food is broken out as a 2nd core category (~20% of sales). Receipts for Jul 24\u201329 arrived without a category split, so all $4,302 across those six days was folded into Coffee.";
+      }
     }
   }
 
@@ -542,7 +680,7 @@
         return (m.forecast !== undefined ? m.forecast : m.is_forecast) ? m.revenue : null;
       });
 
-      new Chart(ctx.getContext("2d"), {
+      new window.Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
           labels: labels,
@@ -654,7 +792,7 @@
         var matData = [45.1, 41.2, 42.8, 48.0, 32.5, 50.2, 35.2];
         var matColors = matData.map(function (v) { return v <= 30 ? COLORS.green : COLORS.red; });
 
-        new Chart(matCtx.getContext("2d"), {
+        new window.Chart(matCtx.getContext("2d"), {
           type: "bar",
           data: {
             labels: matLabels,
@@ -710,7 +848,7 @@
         var labData = [35.9, 63.8, 44.3, 39.1, 39.7, 19.5, 25.5];
         var labColors = labData.map(function (v) { return v <= 30 ? COLORS.green : COLORS.red; });
 
-        new Chart(labCtx.getContext("2d"), {
+        new window.Chart(labCtx.getContext("2d"), {
           type: "bar",
           data: {
             labels: labLabels,
@@ -877,7 +1015,7 @@
         };
       });
 
-      new Chart(ctx.getContext("2d"), {
+      new window.Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
           labels: labels,
@@ -978,7 +1116,7 @@
       var actData = a.months.map(function (m) { return m.partial ? null : m.revenue; });
       var partData = a.months.map(function (m) { return m.partial ? m.revenue : null; });
 
-      new Chart(ctx.getContext("2d"), {
+      new window.Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
           labels: labels,
@@ -1025,7 +1163,7 @@
       var revData = s.months.map(function (m) { return m.revenue; });
       var avgData = s.months.map(function () { return s.avgMonth; });
 
-      new Chart(ctx.getContext("2d"), {
+      new window.Chart(ctx.getContext("2d"), {
         type: "bar",
         data: {
           labels: labels,
@@ -1110,7 +1248,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260807b";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260811b";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
