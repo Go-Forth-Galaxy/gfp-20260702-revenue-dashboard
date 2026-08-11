@@ -130,3 +130,14 @@ footer{max-width:1160px;margin:0 auto;padding:0 22px 40px;color:var(--muted);fon
 .panel-header h3 { margin-top: 0; font-size: 15px; color: var(--gfp-blue-dark); margin-bottom: 12px; }
 .cat-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 .kpi.down .kpi-val, .kpi.down .kpi-meta { color: #b3261e; }
+
+/* ---------- Control Panel & Toggles ---------- */
+.controls-panel { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 14px 20px; margin-bottom: 22px; }
+.controls-group { display: flex; align-items: center; gap: 10px; }
+.controls-label { font-size: 13px; font-weight: 700; color: var(--gfp-blue-dark); text-transform: uppercase; letter-spacing: 0.5px; }
+.controls-select { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); font-weight: 600; background: var(--bg); color: var(--ink); font-size: 13.5px; cursor: pointer; }
+.controls-select:focus { outline: 2px solid var(--gfp-blue); }
+.toggle-group { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--bg); }
+.toggle-btn { padding: 6px 14px; border: none; background: transparent; color: var(--muted); font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s ease; }
+.toggle-btn.active { background: var(--gfp-blue); color: #fff; }
+.toggle-btn:hover:not(.active) { color: var(--ink); background: var(--line); }
