@@ -7,5 +7,5 @@
    can view these figures.
    ============================================================ */
 window.GFP_CONFIG = {
-  DATA_URL: "data.json?v=20260811c"
+  DATA_URL: "data.json?v=20260812a"
 };
