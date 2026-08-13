@@ -8,7 +8,7 @@
   var built = {};
 
   var coffeeRangeStart = "2026-08-01";
-  var coffeeRangeEnd = "2026-08-11";
+  var coffeeRangeEnd = "2026-08-12";
   var coffeeSelectedPerspective = "back";
   var COFFEE_MONTH_GOALS = { "2026-07": 33000, "2026-08": 30450 };
   var COFFEE_MONTH_NAMES = { "2026-07": "July", "2026-08": "August" };
@@ -28,9 +28,9 @@
         { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
       ];
     }
-    if (start === "2026-07-01" && end === "2026-08-11") {
+    if (start === "2026-07-01" && end === "2026-08-12") {
       return [
-        { category: "Coffee", amount: 29967.13, units: (c.unitsCoffee || 0) },
+        { category: "Coffee", amount: 30851.63, units: (c.unitsCoffee || 0) },
         { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
         { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
         { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
@@ -361,11 +361,11 @@
       startInput.setAttribute("data-wired", "true");
       var onRangeChange = function () {
         var s = startInput.value || "2026-07-01";
-        var e = endInput.value || "2026-08-11";
+        var e = endInput.value || "2026-08-12";
         if (s < "2026-07-01") s = "2026-07-01";
         if (e < "2026-07-01") e = "2026-07-01";
-        if (s > "2026-08-11") s = "2026-08-11";
-        if (e > "2026-08-11") e = "2026-08-11";
+        if (s > "2026-08-12") s = "2026-08-12";
+        if (e > "2026-08-12") e = "2026-08-12";
         if (s > e) { e = s; }
         startInput.value = s;
         endInput.value = e;
@@ -649,7 +649,7 @@
     var catNote = document.getElementById("cf-cat-note");
     if (catNote) {
       if (catArr.length === 1) {
-        catNote.textContent = "Per-category split (Food / Apparel / Alcohol) is only carried in the full-month exports, so the selected range shows total coffee-store sales as a single figure (" + money2(periodRealized) + "). Select all of July (Jul 1\u201331) or the full window (Jul 1\u2013Aug 11) to see the category breakdown.";
+        catNote.textContent = "Per-category split (Food / Apparel / Alcohol) is only carried in the full-month exports, so the selected range shows total coffee-store sales as a single figure (" + money2(periodRealized) + "). Select all of July (Jul 1\u201331) or the full window (Jul 1\u2013Aug 12) to see the category breakdown.";
       } else {
         catNote.textContent = c.categoryNote || "Food is broken out as a 2nd core category (~20% of sales). Receipts for Jul 24\u201329 arrived without a category split, so all $4,302 across those six days was folded into Coffee.";
       }
@@ -1116,7 +1116,7 @@
       { label: "Operations YTD (Run-Rate)", value: money(a.operationsYtd || 116333), meta: "Target " + money(a.operationsRunRate || 203166) + " (" + pct0(a.operationsPct || 57.3) + ")" },
       { label: "Annual Plan (5-Stream)", value: money(a.denominator), meta: "$783,074 AOP + $203,166 Ops" },
       { label: "Remaining to Plan", value: money(a.remaining), meta: "Needed across Aug\u2013Dec" },
-      { label: "August Streams Booked", value: "Coffee MTD (Aug 1\u201311)", meta: "Leasing/Event August pending month-end" }
+      { label: "August Streams Booked", value: "Coffee MTD (Aug 1\u201312)", meta: "Leasing/Event August pending month-end" }
     ];
 
     var kpisEl = document.getElementById("au-kpis");
@@ -1262,7 +1262,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260811b";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260812a";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
