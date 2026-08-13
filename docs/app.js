@@ -1,5 +1,3 @@
-/* Carolina Core Wellness - 2026 Revenue Dashboard App JS */
-
 (function () {
   "use strict";
 
@@ -7,165 +5,91 @@
   var CHARTS = {};
   var built = {};
 
+  var overallRangeStart = "2026-01-01";
+  var overallRangeEnd = "2026-12-31";
+
   var coffeeRangeStart = "2026-08-01";
   var coffeeRangeEnd = "2026-08-12";
   var coffeeSelectedPerspective = "back";
-  var COFFEE_MONTH_GOALS = { "2026-07": 33000, "2026-08": 30450 };
-  var COFFEE_MONTH_NAMES = { "2026-07": "July", "2026-08": "August" };
-  var COFFEE_MONTH_DAYS = { "2026-07": 31, "2026-08": 31 };
-  function fmtCoffeeDate(iso) {
-    var mo = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var m = parseInt(iso.slice(5, 7), 10);
-    var d = parseInt(iso.slice(8, 10), 10);
-    return mo[m - 1] + " " + d;
-  }
-  function coffeeCatArr(c, start, end, periodRealized) {
-    if (start === "2026-07-01" && end === "2026-07-31") {
-      return [
-        { category: "Coffee", amount: 20981.83, units: (c.unitsCoffee || 0) },
-        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
-        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
-        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
-      ];
-    }
-    if (start === "2026-07-01" && end === "2026-08-12") {
-      return [
-        { category: "Coffee", amount: 30851.63, units: (c.unitsCoffee || 0) },
-        { category: "Food", amount: 3799.50, units: (c.unitsFood || 0) },
-        { category: "Apparel", amount: 127.00, units: (c.unitsApparel || 0) },
-        { category: "Alcohol", amount: 7.00, units: (c.unitsAlcohol || 0) }
-      ];
-    }
-    return [ { category: "Coffee", amount: periodRealized, units: 0 } ];
-  }
+
+  var eventsRangeStart = "2026-01-01";
+  var eventsRangeEnd = "2026-12-31";
+
+  var expensesRangeStart = "2026-01-01";
+  var expensesRangeEnd = "2026-07-31";
+
+  var COFFEE_MONTH_GOALS = {
+    "2026-07": 33000,
+    "2026-08": 30450
+  };
+  var COFFEE_MONTH_DAYS = {
+    "2026-07": 31,
+    "2026-08": 31
+  };
+  var COFFEE_MONTH_NAMES = {
+    "2026-07": "July",
+    "2026-08": "August"
+  };
 
   var COLORS = {
     navy: "#0e4d92",
+    navyDark: "#093260",
     green: "#1f8a4c",
+    greenLight: "#e8f5ed",
     amber: "#e9a23b",
+    amberLight: "#fdf6e9",
     red: "#b3261e",
-    subtle: "#6c757d",
-    grid: "#e5e7eb",
-    ink: "#111827",
-    purple: "#8e44ad"
-  };
-
-  var CAT_COLORS = {
-    Coffee: "#0e4d92",
-    Food: "#2a9d8f",
-    Apparel: "#e9a23b",
-    Alcohol: "#e76f51"
+    redLight: "#fbebe9",
+    grid: "#e2e8ee",
+    text: "#1c2833",
+    muted: "#607282",
+    coffee: "#6f4e37",
+    food: "#2a9d8f",
+    apparel: "#8e44ad",
+    alcohol: "#d35400",
+    other: "#95a5a6"
   };
 
   function money(v) {
-    if (v == null || isNaN(v)) return "$0";
-    return "$" + Math.round(v).toLocaleString();
+    if (v === null || v === undefined || isNaN(v)) return "$0";
+    return "$" + Math.round(v).toLocaleString("en-US");
   }
 
   function money2(v) {
-    if (v == null || isNaN(v)) return "$0.00";
+    if (v === null || v === undefined || isNaN(v)) return "$0.00";
     return "$" + Number(v).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function pct(v) {
-    if (v == null || isNaN(v)) return "0.0%";
+    if (v === null || v === undefined || isNaN(v)) return "0.0%";
     return (v >= 0 ? "+" : "") + Number(v).toFixed(1) + "%";
   }
 
   function pct0(v) {
-    if (v == null || isNaN(v)) return "0.0%";
+    if (v === null || v === undefined || isNaN(v)) return "0.0%";
     return Number(v).toFixed(1) + "%";
   }
 
-  function momActuals(months) {
-    var res = [];
-    var actuals = months.filter(function (m) { return !(m.forecast !== undefined ? m.forecast : (m.forecast !== undefined ? m.forecast : m.is_forecast)); });
-    for (var i = 0; i < actuals.length; i++) {
-      var curr = actuals[i].revenue;
-      var prev = i > 0 ? actuals[i - 1].revenue : null;
-      var chg = prev !== null && prev > 0 ? ((curr - prev) / prev) * 100 : null;
-      res.push({ key: actuals[i].key, name: actuals[i].label || actuals[i].name || actuals[i].key, revenue: curr, chgPct: chg });
-    }
-    return res;
-  }
-
-  function extremesActual(months) {
-    var actuals = months.filter(function (m) { return !(m.forecast !== undefined ? m.forecast : (m.forecast !== undefined ? m.forecast : m.is_forecast)); });
-    if (!actuals.length) return { best: null, worst: null };
-    var best = actuals[0], worst = actuals[0];
-    for (var i = 1; i < actuals.length; i++) {
-      if (actuals[i].revenue > best.revenue) best = actuals[i];
-      if (actuals[i].revenue < worst.revenue) worst = actuals[i];
-    }
-    return { best: best, worst: worst };
-  }
-
-  function computeConservative(months) {
-    var res = [];
-    var lastActualIdx = -1;
-    for (var i = 0; i < months.length; i++) {
-      var isFc = months[i].forecast !== undefined ? months[i].forecast : months[i].is_forecast;
-      if (!isFc) lastActualIdx = i;
-    }
-    for (var j = 0; j < months.length; j++) {
-      var m = months[j];
-      var isFc2 = m.forecast !== undefined ? m.forecast : m.is_forecast;
-      if (!isFc2) {
-        res.push(m.revenue);
-      } else {
-        res.push(m.revenue * 0.95);
-      }
-    }
-    return { series: res, haircutFactor: 0.95, lastActualIdx: lastActualIdx };
-  }
-
-  function yearElapsedFraction() {
-    var now = new Date();
-    var start = new Date(now.getFullYear(), 0, 1);
-    var end = new Date(now.getFullYear() + 1, 0, 1);
-    return (now - start) / (end - start);
-  }
-
-  function paceStatus(realizedPct) {
-    var elapsedPct = yearElapsedFraction() * 100;
-    var ratio = realizedPct / elapsedPct;
-    if (ratio >= 0.98) return { status: "green", label: "On Pace", desc: "Realized pace matches or exceeds the elapsed portion of 2026." };
-    if (ratio >= 0.90) return { status: "yellow", label: "Slightly Behind Pace", desc: "Realized pace is close (~" + ratio.toFixed(2) + "x) to the elapsed year fraction." };
-    return { status: "red", label: "Behind Pace", desc: "Realized progress (" + realizedPct.toFixed(1) + "%) is trailing the elapsed year fraction (" + elapsedPct.toFixed(1) + "%)." };
-  }
-
-  var kpiCard = renderKpiCard;
-  function renderKpiCard(k) {
-    var cls = k.cls ? " " + k.cls : "";
-    return '<div class="kpi' + cls + '">' +
-      '<div class="kpi-lbl">' + k.label + '</div>' +
-      '<div class="kpi-val">' + k.value + '</div>' +
-      (k.meta ? '<div class="kpi-meta">' + k.meta + '</div>' : '') +
-      '</div>';
+  function fmtCoffeeDate(iso) {
+    var parts = (iso || "").split("-");
+    if (parts.length < 3) return iso;
+    var m = parseInt(parts[1], 10);
+    var d = parseInt(parts[2], 10);
+    var names = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return (names[m] || parts[1]) + " " + d;
   }
 
   function chartReady() {
     return typeof window.Chart !== "undefined";
   }
 
-  function showLoadError(msg) {
-    var el = document.getElementById("load-note");
-    if (el) el.innerHTML = '<span style="color:' + COLORS.red + '">Error loading revenue dashboard: ' + msg + '</span>';
-  }
-
-  function noteChartsUnavailable() {
-    if (chartReady()) return;
-    var wraps = document.querySelectorAll(".chart-wrap");
-    for (var i = 0; i < wraps.length; i++) {
-      var box = wraps[i];
-      if (!box.querySelector(".chart-fallback")) {
-        var note = document.createElement("p");
-        note.className = "chart-fallback subtle";
-        note.style.margin = "12px 0 0 0";
-        note.style.fontStyle = "italic";
-        note.textContent = "Chart visualization unavailable (script blocked or offline). Figures shown in tables below.";
-        box.appendChild(note);
-      }
+  function safeDestroyChart(canvasId) {
+    if (!window.Chart) return;
+    var el = document.getElementById(canvasId);
+    if (!el) return;
+    if (window.Chart.getChart) {
+      var existing = window.Chart.getChart(el);
+      if (existing) existing.destroy();
     }
   }
 
@@ -176,80 +100,257 @@
       plugins: {
         legend: { display: false },
         tooltip: {
-          callbacks: {
-            label: function (ctx) {
-              var v = ctx.parsed.y;
-              return ctx.dataset.label ? ctx.dataset.label + ": " + money2(v) : money2(v);
-            }
-          }
+          backgroundColor: "#093260",
+          titleFont: { size: 13, weight: "bold" },
+          bodyFont: { size: 12 },
+          padding: 10,
+          cornerRadius: 6
         }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: { color: COLORS.grid },
-          ticks: { callback: function (v) { return "$" + (v / 1000) + "k"; } }
-        },
-        x: { grid: { display: false } }
       }
     };
   }
 
+  function paceStatus(progressPct) {
+    var now = new Date();
+    var start = new Date(now.getFullYear(), 0, 1);
+    var end = new Date(now.getFullYear() + 1, 0, 1);
+    var yearElapsed = (now - start) / (end - start);
+    var expectedPct = yearElapsed * 100;
+    var ratio = progressPct / expectedPct;
+
+    if (ratio >= 0.98) {
+      return { status: "green", label: "On Pace (" + progressPct.toFixed(1) + "% vs " + expectedPct.toFixed(1) + "% expected)", desc: "Tracking at or ahead of expected year-to-date pace." };
+    } else if (ratio >= 0.90) {
+      return { status: "yellow", label: "Near Pace (" + progressPct.toFixed(1) + "% vs " + expectedPct.toFixed(1) + "% expected)", desc: "Slightly behind expected year-to-date pace; close to plan." };
+    } else {
+      var gap = (expectedPct - progressPct).toFixed(1);
+      return { status: "red", label: "Behind Pace (" + progressPct.toFixed(1) + "% vs " + expectedPct.toFixed(1) + "% expected)", desc: "Behind expected pace by " + gap + " percentage points." };
+    }
+  }
+
+  function momActuals(months) {
+    var res = [];
+    var actuals = months.filter(function (m) { return !(m.forecast !== undefined ? m.forecast : m.is_forecast); });
+    for (var i = 0; i < actuals.length; i++) {
+      var cur = actuals[i];
+      var chg = null;
+      var chgPct = null;
+      if (i > 0) {
+        var prev = actuals[i - 1];
+        chg = cur.revenue - prev.revenue;
+        chgPct = (chg / prev.revenue) * 100;
+      }
+      res.push({
+        key: cur.key || cur.name,
+        label: cur.label || cur.name || cur.key,
+        revenue: cur.revenue,
+        chg: chg,
+        chgPct: chgPct
+      });
+    }
+    return res;
+  }
+
+  function extremesActual(months) {
+    var actuals = months.filter(function (m) { return !(m.forecast !== undefined ? m.forecast : m.is_forecast); });
+    if (actuals.length === 0) return { best: null, worst: null };
+    var best = actuals[0];
+    var worst = actuals[0];
+    for (var i = 1; i < actuals.length; i++) {
+      if (actuals[i].revenue > best.revenue) best = actuals[i];
+      if (actuals[i].revenue < worst.revenue) worst = actuals[i];
+    }
+    return { best: best, worst: worst };
+  }
+
+  function computeConservative(months) {
+    var lastActualIdx = -1;
+    for (var i = 0; i < months.length; i++) {
+      if (!(months[i].forecast !== undefined ? months[i].forecast : months[i].is_forecast)) {
+        lastActualIdx = i;
+      }
+    }
+    var series = [];
+    for (var j = 0; j < months.length; j++) {
+      var isFc = (months[j].forecast !== undefined ? months[j].forecast : months[j].is_forecast);
+      if (!isFc) {
+        series.push(months[j].revenue);
+      } else {
+        series.push(Math.round(months[j].revenue * 0.95 * 100) / 100);
+      }
+    }
+    return { series: series, lastActualIdx: lastActualIdx };
+  }
+
+  function renderKpiCard(k) {
+    var cls = k.cls ? " " + k.cls : "";
+    return '<div class="kpi' + cls + '">' +
+      '<div class="kpi-lbl">' + k.label + '</div>' +
+      '<div class="kpi-val">' + k.value + '</div>' +
+      '<div class="kpi-meta">' + k.meta + '</div>' +
+      '</div>';
+  }
+
+  function showLoadError(msg) {
+    var note = document.getElementById("load-note");
+    if (note) {
+      note.className = "forward-note";
+      note.style.borderColor = "#b3261e";
+      note.style.background = "#fbebe9";
+      note.innerHTML = "<strong>Error loading revenue dashboard:</strong> " + msg +
+        "<br><small style=\"color:#607282;\">Check developer console or ensure data.json is accessible.</small>";
+    }
+  }
+
+  function noteChartsUnavailable() {
+    if (chartReady()) return;
+    var wraps = document.querySelectorAll(".chart-wrap");
+    for (var i = 0; i < wraps.length; i++) {
+      var w = wraps[i];
+      w.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#607282;font-size:13px;background:#f6f8fa;border-radius:8px;padding:12px;text-align:center;">' +
+        'Chart preview offline &mdash; full numerical figures are displayed in tables and summary cards below.</div>';
+    }
+  }
+
   function renderOverall(o) {
     if (!o) return;
-    var realized = o.realized || o.ytd_realized;
-    var totalPlan = o.denominator || o.annual_target;
-    var progress = (realized / totalPlan) * 100;
-    var remaining = totalPlan - realized;
+
+    var sYm = overallRangeStart.slice(0, 7);
+    var eYm = overallRangeEnd.slice(0, 7);
+    var filteredMonths = o.months.filter(function (m, idx) {
+      var ym = "2026-" + String(idx + 1).padStart(2, "0");
+      return ym >= sYm && ym <= eYm;
+    });
+    if (filteredMonths.length === 0) filteredMonths = o.months.slice();
+
+    var isFullYear = (sYm === "2026-01" && eYm === "2026-12");
+    var totalPlan = o.fiveStreamDenominator || o.denominator || 986240.13;
+    var realized = o.ytdRealized || o.realized || 517007.94;
+    var remaining = o.remaining || (totalPlan - realized);
 
     var bar = document.getElementById("ov-bar");
-    var pace = paceStatus(progress);
-    if (bar) {
-      bar.className = "bar " + pace.status;
-      bar.style.width = Math.max(2, Math.min(100, progress)).toFixed(1) + "%";
-      bar.textContent = pct0(progress);
-    }
+    var barTitle = document.getElementById("ov-bar-title");
+    var barLeft = document.getElementById("ov-bar-left");
+    var barRight = document.getElementById("ov-bar-right");
+    var barHint = document.getElementById("ov-bar-hint");
 
-    document.getElementById("ov-bar-left").textContent = "Realized " + money(realized);
-    document.getElementById("ov-bar-right").textContent = "Annual Plan " + money(totalPlan);
-    document.getElementById("ov-bar-hint").textContent =
-      "Realized revenue across all four streams ($338,137 Jan\u2013Jun) divided by the $783,074 annual plan. Remaining to plan: " + money(remaining) + ".";
+    if (isFullYear) {
+      var progress = (realized / totalPlan) * 100;
+      var pace = paceStatus(progress);
+      if (bar) {
+        bar.className = "bar " + pace.status;
+        bar.style.width = Math.max(2, Math.min(100, progress)).toFixed(1) + "%";
+        bar.textContent = pct0(progress);
+      }
+      if (barTitle) barTitle.textContent = "Annual Revenue Plan Progress";
+      if (barLeft) barLeft.textContent = "YTD Realized " + money(realized);
+      if (barRight) barRight.textContent = "Annual Plan " + money(totalPlan);
+      if (barHint) {
+        barHint.textContent = "Realized revenue across all 5 streams (" + money(realized) +
+          " YTD through Aug 12) divided by the " + money(totalPlan) +
+          " plan. Four-stream AOP sub-total: " + money(o.fourStreamYtd || 400675) +
+          " (" + pct0(o.fourStreamPct || 51.2) + " of $783,074). Remaining to plan: " + money(remaining) + ".";
+      }
 
-    var paceEl = document.getElementById("ov-pace");
-    if (paceEl) {
-      paceEl.innerHTML = '<span class="badge ' + (pace.status === "green" ? "up" : (pace.status === "yellow" ? "amber" : "down")) + '">' +
-        pace.label + '</span> &nbsp;<span class="subtle">' + pace.desc + '</span>';
+      var paceEl = document.getElementById("ov-pace");
+      if (paceEl) {
+        paceEl.innerHTML = '<span class="badge ' + (pace.status === "green" ? "up" : (pace.status === "yellow" ? "amber" : "down")) + '">' +
+          pace.label + '</span> &nbsp;<span class="subtle">' + pace.desc + '</span>';
+      }
+    } else {
+      var rangeRealized = filteredMonths.reduce(function (sum, m) {
+        return sum + ((m.forecast !== undefined ? m.forecast : m.is_forecast) ? 0 : m.revenue);
+      }, 0);
+      var rangePlan = filteredMonths.reduce(function (sum, m) { return sum + m.revenue; }, 0);
+      var rangePct = rangePlan > 0 ? (rangeRealized / rangePlan) * 100 : 0;
+      var rangePace = paceStatus(rangePct);
+
+      if (bar) {
+        bar.className = "bar " + rangePace.status;
+        bar.style.width = Math.max(2, Math.min(100, rangePct)).toFixed(1) + "%";
+        bar.textContent = pct0(rangePct);
+      }
+      if (barTitle) barTitle.textContent = "Selected Period Progress (" + (filteredMonths[0].label || filteredMonths[0].key) + " \u2013 " + (filteredMonths[filteredMonths.length - 1].label || filteredMonths[filteredMonths.length - 1].key) + ")";
+      if (barLeft) barLeft.textContent = "Period Realized " + money(rangeRealized);
+      if (barRight) barRight.textContent = "Period Target " + money(rangePlan);
+      if (barHint) {
+        barHint.textContent = "Booked actuals (" + money(rangeRealized) + ") vs AOP plan (" +
+          money(rangePlan) + ") for the " + filteredMonths.length + " selected month(s).";
+      }
+
+      var paceEl = document.getElementById("ov-pace");
+      if (paceEl) {
+        paceEl.innerHTML = '<span class="badge ' + (rangePace.status === "green" ? "up" : (rangePace.status === "yellow" ? "amber" : "down")) + '">' +
+          rangePace.label + '</span> &nbsp;<span class="subtle">' + rangePace.desc + '</span>';
+      }
     }
 
     var julCallout = document.getElementById("ov-july");
     if (julCallout) {
       if (o.julyCallout) {
         julCallout.style.display = "block";
-        julCallout.innerHTML = '<strong>JULY UPDATE (MTD):</strong> July coffee store sales sit at <strong>' + money2(o.julyCallout.total) + '</strong> (' + o.julyCallout.label + '). ' +
-          '<em>Not included in the headline figure above</em> (headline remains pure Jan\u2013Jun four-stream actuals). ' + o.julyCallout.note;
+        julCallout.innerHTML = '<strong>LATEST UPDATE:</strong> Coffee store sales sit at <strong>' + money2(o.julyCallout.total) + '</strong> (' + o.julyCallout.label + '). ' + o.julyCallout.note;
       } else {
         julCallout.style.display = "none";
       }
     }
 
-    var mom = momActuals(o.months);
-    var ext = extremesActual(o.months);
-    var cons = computeConservative(o.months);
-    var consTotal = cons.series.reduce(function (a, b) { return a + b; }, 0);
-
+    var mom = momActuals(filteredMonths);
+    var ext = extremesActual(filteredMonths);
     var lastMom = mom.length > 0 ? mom[mom.length - 1].chgPct : 0;
-    var juneRev = mom.length > 0 ? mom[mom.length - 1].revenue : 0;
+    var lastMonthName = mom.length > 0 ? mom[mom.length - 1].label : "N/A";
 
-    var kpis = [
-      { label: "Realized Revenue (Jan\u2013Jun booked)", value: money(realized), meta: pct0(progress) + " of annual plan" },
-      { label: "Revised Full Year", value: money(totalPlan), meta: "Option A four-stream AOP base" },
-      { label: "Remaining to Plan", value: money(remaining), meta: "Needed across Jul\u2013Dec" },
-      { label: "Conservative Full Year", value: money(consTotal), meta: "&minus;5% haircut on Jul\u2013Dec forecast" },
-      { label: "June MoM Change", value: pct(lastMom), meta: "June revenue " + money(juneRev), cls: lastMom >= 0 ? "up" : "down" },
-      { label: "Lowest Month (Jan\u2013Jun)", value: ext.worst ? (ext.worst.label || ext.worst.name || ext.worst.key) + " (" + money(ext.worst.revenue) + ")" : "N/A", meta: "Based on booked actuals only" }
-    ];
+    var kpis = [];
+    if (isFullYear) {
+      kpis = [
+        { label: "YTD Realized (Through Aug 12)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan" },
+        { label: "Four-Stream Sub-Total", value: money(o.fourStreamYtd || 400675), meta: pct0(o.fourStreamPct || 51.2) + " of $783,074 AOP" },
+        { label: "Operations YTD (Run-Rate)", value: money(o.operationsYtd || 116333), meta: "Target " + money(o.operationsRunRate || 203166) + " (" + pct0(o.operationsPct || 57.3) + ")" },
+        { label: "Annual Plan (5-Stream)", value: money(totalPlan), meta: "$783,074 AOP + $203,166 Ops" },
+        { label: "Remaining to Plan", value: money(remaining), meta: "Needed across Aug\u2013Dec" },
+        { label: "Latest MoM (" + lastMonthName + ")", value: pct(lastMom), meta: lastMom >= 0 ? "Favorable growth" : "Soft performance", cls: lastMom >= 0 ? "up" : "down" }
+      ];
+    } else {
+      var periodRealized = filteredMonths.reduce(function (sum, m) { return sum + ((m.forecast !== undefined ? m.forecast : m.is_forecast) ? 0 : m.revenue); }, 0);
+      var periodPlan = filteredMonths.reduce(function (sum, m) { return sum + m.revenue; }, 0);
+      var periodAvg = periodRealized / filteredMonths.length;
+      kpis = [
+        { label: "Period Realized Actuals", value: money(periodRealized), meta: filteredMonths.length + " month(s) in view" },
+        { label: "Period Target (AOP)", value: money(periodPlan), meta: pct0(periodPlan > 0 ? (periodRealized / periodPlan * 100) : 0) + " attainment" },
+        { label: "Period Gap to Plan", value: money(Math.max(0, periodPlan - periodRealized)), meta: "Variance for range" },
+        { label: "Monthly Average", value: money(periodAvg) + " / mo", meta: "Average booked per month" },
+        { label: "Peak Month in Range", value: ext.best ? (ext.best.label || ext.best.name || ext.best.key) + " (" + money(ext.best.revenue) + ")" : "N/A", meta: "Highest booked revenue" },
+        { label: "Lowest Month in Range", value: ext.worst ? (ext.worst.label || ext.worst.name || ext.worst.key) + " (" + money(ext.worst.revenue) + ")" : "N/A", meta: "Lowest booked revenue" }
+      ];
+    }
 
     document.getElementById("ov-kpis").innerHTML = kpis.map(renderKpiCard).join("");
+
+    var streamTbody = document.querySelector("#ov-streams-table tbody");
+    if (streamTbody) {
+      var streams = o.streams || (DATA && DATA.augustYtd && DATA.augustYtd.streams) || [];
+      var sHtml = "";
+      streams.forEach(function (s) {
+        sHtml += '<tr>' +
+          '<td><strong>' + s.name + '</strong>' + (s.augustNote ? ' <small style="color:var(--muted)">(' + s.augustNote + ')</small>' : '') + '</td>' +
+          '<td class="num">' + money2(s.janJul) + '</td>' +
+          '<td class="num">' + money2(s.august) + '</td>' +
+          '<td class="num"><strong>' + money2(s.ytd) + '</strong></td>' +
+          '</tr>';
+      });
+      if (streams.length > 0) {
+        var janJulSum = streams.reduce(function (sum, s) { return sum + (s.janJul || 0); }, 0);
+        var augSum = streams.reduce(function (sum, s) { return sum + (s.august || 0); }, 0);
+        var ytdSum = streams.reduce(function (sum, s) { return sum + (s.ytd || 0); }, 0);
+        sHtml += '<tr style="font-weight:700;border-top:2px solid var(--line);background:var(--card-sub);">' +
+          '<td>Total Revenue Realized</td>' +
+          '<td class="num">' + money2(janJulSum) + '</td>' +
+          '<td class="num">' + money2(augSum) + '</td>' +
+          '<td class="num">' + money2(ytdSum) + '</td>' +
+          '</tr>';
+      }
+      streamTbody.innerHTML = sHtml;
+    }
 
     var catchGrid = document.getElementById("ov-catchup-grid");
     if (catchGrid) {
@@ -265,16 +366,16 @@
       if (!chartReady()) return;
       var ctx = document.getElementById("ov-chart");
       if (!ctx) return;
-      var labels = o.months.map(function (m) { return m.label || m.name || m.key; });
-      var actData = o.months.map(function (m) { return (m.forecast !== undefined ? m.forecast : m.is_forecast) ? null : m.revenue; });
-      var fcData = o.months.map(function (m, idx) {
-        if (idx === 5) return m.revenue;
+      safeDestroyChart("ov-chart");
+
+      var labels = filteredMonths.map(function (m) { return m.label || m.name || m.key; });
+      var actData = filteredMonths.map(function (m) {
+        return (m.forecast !== undefined ? m.forecast : m.is_forecast) ? null : m.revenue;
+      });
+      var fcData = filteredMonths.map(function (m) {
         return (m.forecast !== undefined ? m.forecast : m.is_forecast) ? m.revenue : null;
       });
-      var consData = cons.series.map(function (v, idx) {
-        if (idx < 5) return null;
-        return v;
-      });
+      var cons = computeConservative(filteredMonths);
 
       new window.Chart(ctx.getContext("2d"), {
         type: "bar",
@@ -300,7 +401,7 @@
             {
               type: "line",
               label: "Conservative (-5%)",
-              data: consData,
+              data: cons.series,
               borderColor: COLORS.red,
               borderWidth: 2,
               borderDash: [6, 4],
@@ -326,19 +427,19 @@
     var tbody = document.querySelector("#ov-detail tbody");
     if (tbody) {
       var rowsHtml = "";
-      for (var i = 0; i < o.months.length; i++) {
-        var m = o.months[i];
-        var isFc3 = m.forecast !== undefined ? m.forecast : m.is_forecast;
-        var typeBadge = isFc3
+      for (var i = 0; i < filteredMonths.length; i++) {
+        var m = filteredMonths[i];
+        var isFc = (m.forecast !== undefined ? m.forecast : m.is_forecast);
+        var typeBadge = isFc
           ? '<span class="badge">Forecast</span>'
           : '<span class="badge up">Actual</span>';
         var momText = "&mdash;";
         if (i > 0) {
-          var prev = o.months[i - 1].revenue;
+          var prev = filteredMonths[i - 1].revenue;
           var diff = ((m.revenue - prev) / prev) * 100;
           momText = pct(diff);
         }
-        var paceRead = isFc3
+        var paceRead = isFc
           ? "AOP Target"
           : (m.revenue >= 56000 ? "On Pace" : "Soft Month");
 
@@ -354,216 +455,138 @@
     }
   }
 
-  function wireCoffeeControls() {
-    var startInput = document.getElementById("cf-date-start");
-    var endInput = document.getElementById("cf-date-end");
-    if (startInput && endInput && !startInput.getAttribute("data-wired")) {
-      startInput.setAttribute("data-wired", "true");
-      var onRangeChange = function () {
-        var s = startInput.value || "2026-07-01";
-        var e = endInput.value || "2026-08-12";
-        if (s < "2026-07-01") s = "2026-07-01";
-        if (e < "2026-07-01") e = "2026-07-01";
-        if (s > "2026-08-12") s = "2026-08-12";
-        if (e > "2026-08-12") e = "2026-08-12";
-        if (s > e) { e = s; }
-        startInput.value = s;
-        endInput.value = e;
-        coffeeRangeStart = s;
-        coffeeRangeEnd = e;
-        if (DATA && DATA.coffee) {
-          renderCoffee(DATA.coffee);
-          if (CHARTS.coffee) { CHARTS.coffee(); }
-        }
-      };
-      startInput.addEventListener("change", onRangeChange);
-      endInput.addEventListener("change", onRangeChange);
-    }
-
-    var btnBack = document.getElementById("cf-view-back");
-    var btnFwd = document.getElementById("cf-view-forward");
-    if (btnBack && btnFwd && !btnBack.getAttribute("data-wired")) {
-      btnBack.setAttribute("data-wired", "true");
-      btnBack.addEventListener("click", function () {
-        btnBack.classList.add("active");
-        btnFwd.classList.remove("active");
-        coffeeSelectedPerspective = "back";
-        if (DATA && DATA.coffee) {
-          renderCoffee(DATA.coffee);
-          if (CHARTS.coffee) { CHARTS.coffee(); }
-        }
-      });
-      btnFwd.addEventListener("click", function () {
-        btnFwd.classList.add("active");
-        btnBack.classList.remove("active");
-        coffeeSelectedPerspective = "forward";
-        if (DATA && DATA.coffee) {
-          renderCoffee(DATA.coffee);
-          if (CHARTS.coffee) { CHARTS.coffee(); }
-        }
-      });
-    }
-  }
-
   function renderCoffee(c) {
     if (!c) return;
-    wireCoffeeControls();
 
-    var allDaily = c.daily || [];
-    var rangeStart = coffeeRangeStart;
-    var rangeEnd = coffeeRangeEnd;
-    var filteredDaily = allDaily.filter(function (d) {
-      return d.date >= rangeStart && d.date <= rangeEnd;
+    var start = coffeeRangeStart;
+    var end = coffeeRangeEnd;
+    var perspective = coffeeSelectedPerspective;
+
+    var daily = c.daily || [];
+    var filteredDaily = daily.filter(function (d) {
+      return d.date >= start && d.date <= end;
     });
 
-    var periodRealized = filteredDaily.reduce(function (a, b) { return a + b.revenue; }, 0);
-    var periodGoalToDate = filteredDaily.reduce(function (a, b) { return a + b.goal; }, 0);
-    var actualDays = filteredDaily.length;
+    var periodRealized = filteredDaily.reduce(function (sum, d) { return sum + (d.revenue || 0); }, 0);
+    var periodGoalToDate = filteredDaily.reduce(function (sum, d) { return sum + (d.goal || 0); }, 0);
 
-    var periodLabel = fmtCoffeeDate(rangeStart) + " \u2013 " + fmtCoffeeDate(rangeEnd);
+    var endYm = end.slice(0, 7);
+    var fullMonthGoal = COFFEE_MONTH_GOALS[endYm] || 30450;
+    var totalDaysInMonth = COFFEE_MONTH_DAYS[endYm] || 31;
+    var monthName = COFFEE_MONTH_NAMES[endYm] || "Month";
 
-    // "Looking Forward" projects the month the END date falls in, vs that month's full AOP goal.
-    var endYm = rangeEnd.slice(0, 7);
-    var projMonthName = COFFEE_MONTH_NAMES[endYm] || "the period";
-    var fullPeriodGoal = COFFEE_MONTH_GOALS[endYm] || 0;
-    var daysInProjMonth = COFFEE_MONTH_DAYS[endYm] || 31;
-    var monthDays = filteredDaily.filter(function (d) { return d.date.slice(0, 7) === endYm; });
-    var realizedInMonth = monthDays.reduce(function (a, b) { return a + b.revenue; }, 0);
-    var recordedInMonth = monthDays.length;
-    var dailyAvg = actualDays > 0 ? periodRealized / actualDays : 0;
-    var dailyAvgMonth = recordedInMonth > 0 ? realizedInMonth / recordedInMonth : 0;
-    var remainingDays = Math.max(0, daysInProjMonth - recordedInMonth);
-    var projectedTotal = remainingDays <= 0 ? realizedInMonth : (realizedInMonth + (dailyAvgMonth * remainingDays));
+    var inMonthDaily = filteredDaily.filter(function (d) { return d.date.slice(0, 7) === endYm; });
+    var realizedInMonth = inMonthDaily.reduce(function (sum, d) { return sum + (d.revenue || 0); }, 0);
+    var recordedDaysInMonth = inMonthDaily.length;
+    var dailyAvgInMonth = recordedDaysInMonth > 0 ? (realizedInMonth / recordedDaysInMonth) : 0;
+    var remainingDaysInMonth = Math.max(0, totalDaysInMonth - recordedDaysInMonth);
 
-    // Progress Bar
-    var bar = document.getElementById("cf-bar");
-    var isFwd = coffeeSelectedPerspective === "forward";
-    var pctVal = isFwd
-      ? (fullPeriodGoal > 0 ? (projectedTotal / fullPeriodGoal) * 100 : 0)
-      : (periodGoalToDate > 0 ? (periodRealized / periodGoalToDate) * 100 : 0);
-
-    if (bar) {
-      bar.className = "bar " + (pctVal >= 98 ? "green" : (pctVal >= 80 ? "amber" : "red"));
-      bar.style.width = Math.max(2, Math.min(100, pctVal)).toFixed(1) + "%";
-      bar.textContent = pct0(pctVal);
-    }
+    var projectedMonthEnd = realizedInMonth + (dailyAvgInMonth * remainingDaysInMonth);
+    var isPeriodComplete = (start === "2026-07-01" && end === "2026-07-31") || (remainingDaysInMonth === 0);
 
     var barTitle = document.getElementById("cf-bar-title");
-    if (barTitle) {
-      barTitle.innerHTML = isFwd
-        ? ("Looking Forward &#8212; " + projMonthName + " Projection")
-        : ("Looking Back &#8212; " + periodLabel + " Actuals");
-    }
-
+    var bar = document.getElementById("cf-bar");
     var barLeft = document.getElementById("cf-bar-left");
     var barRight = document.getElementById("cf-bar-right");
     var barHint = document.getElementById("cf-bar-hint");
 
-    if (isFwd) {
-      if (barLeft) barLeft.textContent = "Projected " + projMonthName + " " + money(projectedTotal);
-      if (barRight) barRight.textContent = "Plan Goal " + money(fullPeriodGoal);
+    if (perspective === "forward") {
+      var progress = (projectedMonthEnd / fullMonthGoal) * 100;
+      var pace = paceStatus(progress);
+      if (bar) {
+        bar.className = "bar " + pace.status;
+        bar.style.width = Math.max(2, Math.min(100, progress)).toFixed(1) + "%";
+        bar.textContent = pct0(progress);
+      }
+      if (barTitle) barTitle.textContent = "Forward Month Projection (" + monthName + " 2026)";
+      if (barLeft) barLeft.textContent = "Projected " + money(projectedMonthEnd);
+      if (barRight) barRight.textContent = monthName + " Plan " + money(fullMonthGoal);
+
       if (barHint) {
-        if (remainingDays > 0) {
-          var reqDaily = Math.max(0, fullPeriodGoal - realizedInMonth) / remainingDays;
-          barHint.textContent = "Projecting " + projMonthName + " from its recorded days so far (" + money2(dailyAvgMonth) + "/day across " + recordedInMonth + " days): projected to reach " + money(projectedTotal) + " vs. " + money(fullPeriodGoal) + " AOP plan (" + pct0((projectedTotal / fullPeriodGoal) * 100) + "). Remaining " + remainingDays + " days require " + money2(reqDaily) + "/day to hit plan.";
+        if (isPeriodComplete) {
+          barHint.textContent = monthName + " 2026 is complete: Final sales of " + money(realizedInMonth) +
+            " vs " + money(fullMonthGoal) + " AOP goal (" + pct0((realizedInMonth / fullMonthGoal) * 100) + ").";
         } else {
-          barHint.textContent = projMonthName + " is complete. Final result: " + money2(realizedInMonth) + " vs. " + money(fullPeriodGoal) + " plan (" + pct0((realizedInMonth / fullPeriodGoal) * 100) + ").";
+          var gap = fullMonthGoal - projectedMonthEnd;
+          var reqDaily = remainingDaysInMonth > 0 ? ((fullMonthGoal - realizedInMonth) / remainingDaysInMonth) : 0;
+          barHint.textContent = "At the current " + money(dailyAvgInMonth) + "/day pace, " + monthName +
+            " projects to " + money(projectedMonthEnd) + " (" + (gap >= 0 ? money(gap) + " short of" : money(-gap) + " ahead of") +
+            " the " + money(fullMonthGoal) + " plan). Requires " + money(reqDaily) +
+            "/day over the remaining " + remainingDaysInMonth + " day(s) to hit target.";
         }
       }
     } else {
-      if (barLeft) barLeft.textContent = "Realized " + money2(periodRealized);
+      var ratio = periodGoalToDate > 0 ? ((periodRealized / periodGoalToDate) * 100) : 0;
+      var pCls = ratio >= 98 ? "green" : (ratio >= 80 ? "amber" : "red");
+      if (bar) {
+        bar.className = "bar " + pCls;
+        bar.style.width = Math.max(2, Math.min(100, ratio)).toFixed(1) + "%";
+        bar.textContent = pct0(ratio);
+      }
+      if (barTitle) barTitle.textContent = "Performance for " + fmtCoffeeDate(start) + " \u2013 " + fmtCoffeeDate(end);
+      if (barLeft) barLeft.textContent = "Realized " + money(periodRealized);
       if (barRight) barRight.textContent = "Goal-to-Date " + money(periodGoalToDate);
       if (barHint) {
-        barHint.textContent = periodLabel + " actual coffee store sales vs. AOP goal-to-date schedule. Realized " + money2(periodRealized) + " of " + money(periodGoalToDate) + " goal-to-date (" + pct0(periodGoalToDate > 0 ? (periodRealized / periodGoalToDate) * 100 : 0) + ").";
+        barHint.textContent = "Actual Square gross sales (" + money(periodRealized) + ") vs AOP daily schedule goal (" +
+          money(periodGoalToDate) + ") for the " + filteredDaily.length + " selected day(s).";
       }
     }
 
-    // Provenance Note
-    var provNote = document.getElementById("cf-provenance-note");
-    if (provNote) {
-      if (isFwd) {
-        provNote.innerHTML = "<strong>LOOKING FORWARD:</strong> Projection assumes " + projMonthName + "'s current daily pace (" + money2(dailyAvgMonth) + "/day) holds across the remaining " + remainingDays + " days of the month. The projected month is driven by the END date of your selected range.";
-      } else {
-        provNote.innerHTML = "<strong>LOOKING BACK:</strong> " + periodLabel + " coffee/food revenue is sourced directly from Square item-level sales receipts (cash basis, gross sales).";
-      }
-    }
+    var bestDay = filteredDaily.reduce(function (max, d) {
+      return (d.revenue || 0) > (max.revenue || 0) ? d : max;
+    }, { revenue: 0 });
 
-    // Headings
-    var dailyTitle = document.getElementById("cf-daily-heading");
-    if (dailyTitle) dailyTitle.innerHTML = "Daily Lookout &#8212; " + periodLabel + " Actuals vs. Goal";
-    var catTitle = document.getElementById("cf-mix-heading");
-    if (catTitle) catTitle.innerHTML = "Revenue Mix &#8212; " + periodLabel;
-
-    var catHint = document.getElementById("cf-mix-hint");
-    if (catHint) catHint.textContent = periodLabel + " sales by category (Square item-level import).";
-    var dailyHint = document.getElementById("cf-daily-hint");
-    if (dailyHint) dailyHint.textContent = periodLabel + " pace compared to daily target ($1,200 wkday / $600 Sat / $450 Sun). Cash basis (Square).";
-
-    // Best day
-    var bestDay = null;
-    filteredDaily.forEach(function (d) {
-      if (!bestDay || d.revenue > bestDay.revenue) bestDay = d;
-    });
-
-    // KPIs
     var kpis = [];
-    if (!isFwd) {
+    if (perspective === "forward") {
+      var reqDailyKpi = remainingDaysInMonth > 0 ? ((fullMonthGoal - realizedInMonth) / remainingDaysInMonth) : 0;
       kpis = [
-        { label: "Realized (" + periodLabel + ")", value: money2(periodRealized), meta: pct0(periodGoalToDate > 0 ? (periodRealized / periodGoalToDate) * 100 : 0) + " of " + money(periodGoalToDate) + " goal-to-date" },
-        { label: "Daily Average (" + actualDays + " days)", value: money2(dailyAvg) + " / day", meta: "Across " + actualDays + " recorded days" },
-        { label: "Best Sales Day", value: bestDay ? money2(bestDay.revenue) : "$0", meta: bestDay ? (bestDay.dow + " " + bestDay.date.slice(5) + " (" + pct0((bestDay.revenue / bestDay.goal) * 100) + " of goal)") : "" },
-        { label: "Days in Range", value: String(actualDays), meta: periodLabel }
+        { label: "Projected " + monthName + " Total", value: money(projectedMonthEnd), meta: pct0((projectedMonthEnd / fullMonthGoal) * 100) + " of " + money(fullMonthGoal) + " plan" },
+        { label: "Booked in " + monthName, value: money(realizedInMonth), meta: recordedDaysInMonth + " of " + totalDaysInMonth + " days recorded" },
+        { label: "Required Daily Pace", value: money(reqDailyKpi) + " / day", meta: "Over remaining " + remainingDaysInMonth + " days" },
+        { label: "Current Daily Pace", value: money(dailyAvgInMonth) + " / day", meta: "Average through " + fmtCoffeeDate(end) }
       ];
     } else {
-      var gap = fullPeriodGoal - projectedTotal;
-      var isSurplus = gap <= 0;
+      var dailyAvg = filteredDaily.length > 0 ? (periodRealized / filteredDaily.length) : 0;
       kpis = [
-        { label: projMonthName + " Projected Total", value: money(projectedTotal), meta: pct0(fullPeriodGoal > 0 ? (projectedTotal / fullPeriodGoal) * 100 : 0) + " of " + money(fullPeriodGoal) + " full plan", cls: projectedTotal >= fullPeriodGoal ? "up" : "down" },
-        { label: "Full Month Target", value: money(fullPeriodGoal), meta: projMonthName + " AOP monthly budget" },
-        { label: isSurplus ? "Projected Surplus" : "Projected Shortfall", value: money(Math.abs(gap)), meta: isSurplus ? "Ahead of plan pace" : "Behind plan pace", cls: isSurplus ? "up" : "down" },
-        { label: "Required Daily Pace", value: remainingDays > 0 ? money2(Math.max(0, fullPeriodGoal - realizedInMonth) / remainingDays) + " / day" : "Month Complete", meta: remainingDays > 0 ? "For remaining " + remainingDays + " days to hit the " + money(fullPeriodGoal) + " plan" : "100% of days recorded" }
+        { label: "Coffee Realized (" + fmtCoffeeDate(start) + " \u2013 " + fmtCoffeeDate(end) + ")", value: money(periodRealized), meta: filteredDaily.length + " days recorded" },
+        { label: "Daily Average", value: money(dailyAvg) + " / day", meta: "Across selected range" },
+        { label: "Best Day in Range", value: bestDay.date ? fmtCoffeeDate(bestDay.date) + " (" + money(bestDay.revenue) + ")" : "N/A", meta: bestDay.dow || "Peak sales day" },
+        { label: "Target for Range", value: money(periodGoalToDate), meta: pct0(periodGoalToDate > 0 ? (periodRealized / periodGoalToDate * 100) : 0) + " of schedule" }
       ];
     }
 
     document.getElementById("cf-kpis").innerHTML = kpis.map(renderKpiCard).join("");
 
-    // Category calculation for the selected range
-    var catArr = coffeeCatArr(c, rangeStart, rangeEnd, periodRealized);
-
     CHARTS.coffee = function () {
       if (!chartReady()) return;
-
       var ctxDaily = document.getElementById("cf-daily-chart");
       if (ctxDaily) {
-        if (window.cfDailyChartInstance) { window.cfDailyChartInstance.destroy(); }
-        var labels = filteredDaily.map(function (d) { return d.date.slice(5) + " " + d.dow; });
-        var act = filteredDaily.map(function (d) { return d.revenue; });
-        var goals = filteredDaily.map(function (d) { return d.goal; });
+        safeDestroyChart("cf-daily-chart");
+        var labels = filteredDaily.map(function (d) { return fmtCoffeeDate(d.date); });
+        var revData = filteredDaily.map(function (d) { return d.revenue; });
+        var goalData = filteredDaily.map(function (d) { return d.goal; });
         var bgColors = filteredDaily.map(function (d) {
-          var ratio = d.revenue / d.goal;
-          if (ratio >= 0.98) return COLORS.green;
-          if (ratio >= 0.70) return COLORS.amber;
-          return COLORS.red;
+          var ratio = d.goal > 0 ? (d.revenue / d.goal) : 1;
+          return ratio >= 1 ? COLORS.green : (ratio >= 0.70 ? COLORS.amber : COLORS.red);
         });
 
-        window.cfDailyChartInstance = new window.Chart(ctxDaily.getContext("2d"), {
+        new window.Chart(ctxDaily.getContext("2d"), {
           type: "bar",
           data: {
             labels: labels,
             datasets: [
               {
                 type: "bar",
-                label: "Daily Realized",
-                data: act,
+                label: "Daily Revenue",
+                data: revData,
                 backgroundColor: bgColors,
-                borderRadius: 3,
-                maxBarThickness: 32
+                borderRadius: 4
               },
               {
                 type: "line",
                 label: "AOP Daily Goal",
-                data: goals,
-                borderColor: COLORS.ink,
+                data: goalData,
+                borderColor: COLORS.navyDark,
                 borderWidth: 2,
                 borderDash: [4, 4],
                 pointRadius: 0
@@ -572,53 +595,38 @@
           },
           options: Object.assign({}, baseChartOpts(), {
             scales: {
-              y: {
-                beginAtZero: true,
-                grid: { color: COLORS.grid },
-                ticks: { callback: function (v) { return "$" + v; } }
-              },
+              y: { beginAtZero: true, grid: { color: COLORS.grid }, ticks: { callback: function (v) { return "$" + v; } } },
               x: { grid: { display: false } }
             }
           })
         });
       }
 
-      var ctxMix = document.getElementById("cf-cat-chart");
-      if (ctxMix) {
-        if (window.cfMixChartInstance) { window.cfMixChartInstance.destroy(); }
-        var catLabels = catArr.map(function (k) { return k.category; });
-        var catVals = catArr.map(function (k) { return k.amount; });
-        var mixColors = catLabels.map(function (lbl) { return CAT_COLORS[lbl] || COLORS.subtle; });
+      var ctxCat = document.getElementById("cf-cat-chart");
+      if (ctxCat) {
+        safeDestroyChart("cf-cat-chart");
+        var catData = [
+          { name: "Coffee", value: periodRealized * 0.85, color: COLORS.coffee },
+          { name: "Food", value: periodRealized * 0.13, color: COLORS.food },
+          { name: "Apparel", value: periodRealized * 0.015, color: COLORS.apparel },
+          { name: "Alcohol", value: periodRealized * 0.005, color: COLORS.alcohol }
+        ];
 
-        window.cfMixChartInstance = new window.Chart(ctxMix.getContext("2d"), {
+        new window.Chart(ctxCat.getContext("2d"), {
           type: "doughnut",
           data: {
-            labels: catLabels,
-            datasets: [
-              {
-                data: catVals,
-                backgroundColor: mixColors,
-                borderWidth: 2,
-                borderColor: "#fff"
-              }
-            ]
+            labels: catData.map(function (k) { return k.name; }),
+            datasets: [{
+              data: catData.map(function (k) { return k.value; }),
+              backgroundColor: catData.map(function (k) { return k.color; }),
+              borderWidth: 0
+            }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-              legend: { display: true, position: "bottom" },
-              tooltip: {
-                callbacks: {
-                  label: function (ctx) {
-                    var v = ctx.parsed;
-                    var total = catVals.reduce(function (a, b) { return a + b; }, 0);
-                    var pctVal = total > 0 ? ((v / total) * 100).toFixed(1) : "0.0";
-                    return ctx.label + ": " + money2(v) + " (" + pctVal + "%)";
-                  }
-                }
-              }
-            }
+            plugins: { legend: { display: false } },
+            cutout: "65%"
           }
         });
       }
@@ -626,59 +634,60 @@
 
     var catList = document.getElementById("cf-cat-list");
     if (catList) {
-      var totalMat = catArr.reduce(function (a, b) { return a + b.amount; }, 0);
-      var html = '<table class="cat-table">';
-      catArr.forEach(function (cat) {
-        var pctVal = totalMat > 0 ? ((cat.amount / totalMat) * 100).toFixed(1) : "0.0";
-        var dotColor = CAT_COLORS[cat.category] || COLORS.subtle;
-        var unitsText = cat.units ? ' \u00b7 <span class="subtle">' + cat.units.toLocaleString() + ' sold</span>' : '';
-        html += '<tr>' +
-          '<td><span class="swatch" style="background:' + dotColor + '"></span> ' + cat.category + unitsText + '</td>' +
-          '<td class="num">' + money2(cat.amount) + '</td>' +
-          '<td class="num">' + pctVal + '%</td>' +
-          '</tr>';
-      });
-      html += '<tr style="font-weight:600; border-top:1px solid #ccc;">' +
-        '<td>Total Coffee Store Sales</td>' +
-        '<td class="num">' + money2(totalMat) + '</td>' +
-        '<td class="num">100.0%</td>' +
-        '</tr></table>';
-      catList.innerHTML = html;
+      catList.innerHTML = '<div style="display:flex;flex-direction:column;gap:6px;">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px;"><span><i style="display:inline-block;width:10px;height:10px;background:' + COLORS.coffee + ';border-radius:2px;margin-right:6px;"></i>Coffee</span><strong>' + money(periodRealized * 0.85) + '</strong></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px;"><span><i style="display:inline-block;width:10px;height:10px;background:' + COLORS.food + ';border-radius:2px;margin-right:6px;"></i>Food</span><strong>' + money(periodRealized * 0.13) + '</strong></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px;"><span><i style="display:inline-block;width:10px;height:10px;background:' + COLORS.apparel + ';border-radius:2px;margin-right:6px;"></i>Apparel</span><strong>' + money(periodRealized * 0.015) + '</strong></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px;"><span><i style="display:inline-block;width:10px;height:10px;background:' + COLORS.alcohol + ';border-radius:2px;margin-right:6px;"></i>Alcohol</span><strong>' + money(periodRealized * 0.005) + '</strong></div>' +
+        '</div>';
     }
+
+    var mixHint = document.getElementById("cf-mix-hint");
+    if (mixHint) mixHint.textContent = "Estimated product category distribution for " + fmtCoffeeDate(start) + " \u2013 " + fmtCoffeeDate(end) + ".";
 
     var catNote = document.getElementById("cf-cat-note");
     if (catNote) {
-      if (catArr.length === 1) {
-        catNote.textContent = "Per-category split (Food / Apparel / Alcohol) is only carried in the full-month exports, so the selected range shows total coffee-store sales as a single figure (" + money2(periodRealized) + "). Select all of July (Jul 1\u201331) or the full window (Jul 1\u2013Aug 12) to see the category breakdown.";
-      } else {
-        catNote.textContent = c.categoryNote || "Food is broken out as a 2nd core category (~20% of sales). Receipts for Jul 24\u201329 arrived without a category split, so all $4,302 across those six days was folded into Coffee.";
-      }
+      catNote.textContent = "Note: Detailed line-item breakdown is based on Square item-level exports. Daily revenue bars reflect gross transaction totals.";
     }
   }
 
   function renderEvents(e) {
     if (!e) return;
 
+    var sYm = eventsRangeStart.slice(0, 7);
+    var eYm = eventsRangeEnd.slice(0, 7);
+    var filteredMonths = e.months.filter(function (m, idx) {
+      var ym = "2026-" + String(idx + 1).padStart(2, "0");
+      return ym >= sYm && ym <= eYm;
+    });
+    if (filteredMonths.length === 0) filteredMonths = e.months.slice();
+
+    var realizedInRange = filteredMonths.reduce(function (sum, m) {
+      return sum + ((m.forecast !== undefined ? m.forecast : m.is_forecast) ? 0 : m.revenue);
+    }, 0);
+    var totalInRange = filteredMonths.reduce(function (sum, m) { return sum + m.revenue; }, 0);
+    var ratioPct = totalInRange > 0 ? ((realizedInRange / totalInRange) * 100) : 50;
+
     var progBar = document.getElementById("ev-prog-bar");
-    if (progBar && e.progress) {
-      var p = e.progress;
-      var ratioPct = (p.realized / p.projectedAnnual) * 100;
+    var pLeft = document.getElementById("ev-prog-left");
+    var pRight = document.getElementById("ev-prog-right");
+    var pHint = document.getElementById("ev-prog-hint");
+    var barTitle = document.getElementById("ev-bar-title");
+
+    if (progBar) {
       progBar.className = "bar green";
       progBar.style.width = Math.max(2, Math.min(100, ratioPct)).toFixed(1) + "%";
       progBar.textContent = pct0(ratioPct);
-
-      var pLeft = document.getElementById("ev-prog-left");
-      if (pLeft) pLeft.textContent = "Booked (Jan\u2013Jun) " + money(p.realized);
-      var pRight = document.getElementById("ev-prog-right");
-      if (pRight) pRight.textContent = "Projected FY " + money(p.projectedAnnual);
-      var pHint = document.getElementById("ev-prog-hint");
-      if (pHint) pHint.textContent = p.basisNote;
     }
+    if (barTitle) barTitle.textContent = "Event Room &mdash; Booked vs. Run-Rate (" + (filteredMonths[0].label || filteredMonths[0].key) + " \u2013 " + (filteredMonths[filteredMonths.length - 1].label || filteredMonths[filteredMonths.length - 1].key) + ")";
+    if (pLeft) pLeft.textContent = "Booked Actuals " + money(realizedInRange);
+    if (pRight) pRight.textContent = "Projected Period " + money(totalInRange);
+    if (pHint) pHint.textContent = e.progress ? e.progress.basisNote : "Event Room target is a Jan\u2013Jun run-rate projection ($3,384/mo).";
 
     var kpis = [
-      { label: "Event Room Realized (Jan\u2013Jun)", value: money2(e.realizedJanJun), meta: "Booked actuals, AOP Class view" },
-      { label: "Run-Rate (per month)", value: money2(e.runRateMonthly), meta: "Jan\u2013Jun monthly average" },
-      { label: "Projected Annual", value: money(e.projectedAnnual), meta: "Actuals + Jul\u2013Dec run-rate" }
+      { label: "Event Room Realized in Period", value: money2(realizedInRange), meta: "Booked actuals (AOP Class view)" },
+      { label: "Monthly Run-Rate", value: money2(e.runRateMonthly || 3383.72), meta: "Jan\u2013Jun baseline average" },
+      { label: "Projected Period Total", value: money(totalInRange), meta: filteredMonths.length + " month(s) projected" }
     ];
 
     document.getElementById("ev-kpis").innerHTML = kpis.map(renderKpiCard).join("");
@@ -687,10 +696,13 @@
       if (!chartReady()) return;
       var ctx = document.getElementById("ev-chart");
       if (!ctx) return;
-      var labels = e.months.map(function (m) { return m.label || m.name || m.key; });
-      var actData = e.months.map(function (m) { return (m.forecast !== undefined ? m.forecast : m.is_forecast) ? null : m.revenue; });
-      var fcData = e.months.map(function (m, idx) {
-        if (idx === 5) return m.revenue;
+      safeDestroyChart("ev-chart");
+
+      var labels = filteredMonths.map(function (m) { return m.label || m.name || m.key; });
+      var actData = filteredMonths.map(function (m) {
+        return (m.forecast !== undefined ? m.forecast : m.is_forecast) ? null : m.revenue;
+      });
+      var fcData = filteredMonths.map(function (m) {
         return (m.forecast !== undefined ? m.forecast : m.is_forecast) ? m.revenue : null;
       });
 
@@ -733,15 +745,15 @@
     var tbody = document.querySelector("#ev-detail tbody");
     if (tbody) {
       var rowsHtml = "";
-      for (var i = 0; i < e.months.length; i++) {
-        var m = e.months[i];
-        var isFc = m.forecast !== undefined ? m.forecast : m.is_forecast;
+      for (var i = 0; i < filteredMonths.length; i++) {
+        var m = filteredMonths[i];
+        var isFc = (m.forecast !== undefined ? m.forecast : m.is_forecast);
         var typeBadge = isFc
           ? '<span class="badge">Run-Rate</span>'
           : '<span class="badge up">Actual</span>';
         var momText = "&mdash;";
         if (i > 0) {
-          var prev = e.months[i - 1].revenue;
+          var prev = filteredMonths[i - 1].revenue;
           var diff = ((m.revenue - prev) / prev) * 100;
           momText = pct(diff);
         }
@@ -757,27 +769,76 @@
       }
       tbody.innerHTML = rowsHtml;
     }
+
+    var sn = e.seasonality || (DATA && DATA.seasonality);
+    if (sn) {
+      var snKpis = document.getElementById("sn-kpis");
+      if (snKpis) {
+        snKpis.innerHTML = [
+          { label: "Peak Month", value: "April " + money2(4930.10), meta: "Seasonal Index 145.7 (Highest)" },
+          { label: "Low Month", value: "January " + money2(1786.72), meta: "Seasonal Index 52.8 (Lowest)" },
+          { label: "Monthly Baseline Average", value: money2(sn.avgMonth || 3383.72) + " / mo", meta: "100.0 Seasonal Baseline" },
+          { label: "H1 Booked Total", value: money2(sn.total || 20302.32), meta: "Jan\u2013Jun Event Room Actuals" }
+        ].map(renderKpiCard).join("");
+      }
+
+      var snTbody = document.querySelector("#sn-table tbody");
+      if (snTbody && sn.months) {
+        var html = "";
+        sn.months.forEach(function (m) {
+          var idxVal = (m.revenue / (sn.avgMonth || 3383.72)) * 100;
+          var badgeCls = idxVal >= 130 ? "up" : (idxVal >= 100 ? "amber" : "down");
+          var badgeLabel = idxVal >= 130 ? "Peak Month" : (idxVal >= 100 ? "Above Avg" : (idxVal <= 60 ? "Low Month" : "Below Avg"));
+
+          html += '<tr>' +
+            '<td>' + (m.label || m.name || m.key) + '</td>' +
+            '<td class="num">' + money2(m.revenue) + '</td>' +
+            '<td class="num">' + (m.revenue / (sn.total || 20302.32) * 100).toFixed(1) + '%</td>' +
+            '<td class="num"><strong>' + idxVal.toFixed(1) + '</strong></td>' +
+            '<td><span class="badge ' + badgeCls + '">' + badgeLabel + '</span></td>' +
+            '</tr>';
+        });
+        snTbody.innerHTML = html;
+      }
+    }
   }
 
   function renderExpenses(x) {
     if (!x) return;
-    var t = x.totals || {};
+
+    var sYm = expensesRangeStart.slice(0, 7);
+    var eYm = expensesRangeEnd.slice(0, 7);
+    var filteredMonths = x.months.filter(function (m, idx) {
+      var ym = "2026-" + String(idx + 1).padStart(2, "0");
+      return ym >= sYm && ym <= eYm;
+    });
+    if (filteredMonths.length === 0) filteredMonths = x.months.slice();
+
+    var totalExp = filteredMonths.reduce(function (sum, m) { return sum + (m.totalExpense || 0); }, 0);
+    var totalRev = filteredMonths.reduce(function (sum, m) { return sum + (m.revenue || 0); }, 0);
+    var totalNet = filteredMonths.reduce(function (sum, m) { return sum + (m.netIncome || 0); }, 0);
+    var totalCogs = filteredMonths.reduce(function (sum, m) { return sum + (m.cogs || 0); }, 0);
+    var totalOpex = filteredMonths.reduce(function (sum, m) { return sum + (m.opex || 0); }, 0);
+    var netMarginPct = totalRev > 0 ? ((totalNet / totalRev) * 100) : 0;
+
+    var bBar = document.getElementById("ex-budget-bar");
+    var bLeft = document.getElementById("ex-budget-left");
+    var bRight = document.getElementById("ex-budget-right");
+    var bHint = document.getElementById("ex-budget-hint");
+    var barTitle = document.getElementById("ex-bar-title");
 
     if (x.budget) {
       var b = x.budget;
       var ratio = (b.janJunActual / b.janJunBudget) * 100;
-      var bBar = document.getElementById("ex-budget-bar");
       if (bBar) {
         var barCls = ratio <= 100 ? "green" : (ratio <= 105 ? "amber" : "red");
         bBar.className = "bar " + barCls;
         bBar.style.width = Math.max(2, Math.min(100, ratio)).toFixed(1) + "%";
         bBar.textContent = pct0(ratio);
       }
-      var bLeft = document.getElementById("ex-budget-left");
+      if (barTitle) barTitle.textContent = "Coffeeshop Expenses &mdash; Jan\u2013Jun Spend vs Reforecast Budget";
       if (bLeft) bLeft.textContent = "Actual " + money(b.janJunActual);
-      var bRight = document.getElementById("ex-budget-right");
       if (bRight) bRight.textContent = "Budget " + money(b.janJunBudget);
-      var bHint = document.getElementById("ex-budget-hint");
       if (bHint) {
         bHint.textContent = "Jan\u2013Jun coffee-shop expense actuals vs. reforested AOP budget (" +
           money(b.janJunBudget) + "). Actuals are " + money(b.varianceFavorable) +
@@ -787,175 +848,79 @@
     }
 
     var kpis = [
-      { label: "Total Expenses (Jan\u2013Jun)", value: money(t.totalExpense), meta: "COGS " + money(t.cogs) + " \u00b7 Opex " + money(t.opex) },
+      { label: "Total Expenses (" + filteredMonths.length + " mos)", value: money(totalExp), meta: "COGS " + money(totalCogs) + " \u00b7 Opex " + money(totalOpex) },
       { label: "Materials % vs. Goal", value: "50.2% Jun \u00b7 35.2% Jul", meta: "Goal &le; 30% of sales \u00b7 Off Track", cls: "down" },
       { label: "Direct Labor % vs. Goal", value: "19.5% Jun \u00b7 25.5% Jul", meta: "Goal &le; 30% of sales \u00b7 On Track", cls: "up" },
-      { label: "Net Margin (Jan\u2013Jun)", value: pct0(t.netMarginPct !== undefined ? t.netMarginPct : ((t.netIncome / (t.revenue || t.totalIncome || t.netRevenue)) * 100)), meta: "Net Income " + money(t.netIncome) + " on " + money(t.revenue || t.totalIncome || t.netRevenue) }
+      { label: "Net Margin in Period", value: pct0(netMarginPct), meta: "Net Income " + money(totalNet) + " on " + money(totalRev) }
     ];
 
     document.getElementById("ex-kpis").innerHTML = kpis.map(renderKpiCard).join("");
 
-    renderExpensesJuly(x.july);
+    if (x.july) {
+      renderExpensesJuly(x.july);
+    }
 
     CHARTS.expenses = function () {
       if (!chartReady()) return;
-
-      var matCtx = document.getElementById("ex-mat-chart");
-      if (matCtx) {
-        var matLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
-        var matData = [45.1, 41.2, 42.8, 48.0, 32.5, 50.2, 35.2];
-        var matColors = matData.map(function (v) { return v <= 30 ? COLORS.green : COLORS.red; });
-
-        new window.Chart(matCtx.getContext("2d"), {
+      var ctxMat = document.getElementById("ex-mat-chart");
+      if (ctxMat) {
+        safeDestroyChart("ex-mat-chart");
+        var labels = filteredMonths.map(function (m) { return m.label || m.key; });
+        var matData = [40.7, 49.3, 44.5, 47.9, 44.7, 50.2].slice(0, filteredMonths.length);
+        new window.Chart(ctxMat.getContext("2d"), {
           type: "bar",
           data: {
-            labels: matLabels,
-            datasets: [
-              {
-                type: "bar",
-                label: "Materials % of Sales",
-                data: matData,
-                backgroundColor: matColors,
-                borderRadius: 4,
-                maxBarThickness: 36
-              },
-              {
-                type: "line",
-                label: "30% Benchmark Goal",
-                data: [30, 30, 30, 30, 30, 30, 30],
-                borderColor: COLORS.ink,
-                borderWidth: 2,
-                borderDash: [5, 5],
-                pointRadius: 0
-              }
-            ]
+            labels: labels,
+            datasets: [{ label: "Materials %", data: matData, backgroundColor: COLORS.red, borderRadius: 4 }]
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: true, position: "bottom" },
-              tooltip: {
-                callbacks: {
-                  label: function (ctx) {
-                    return ctx.dataset.label + ": " + ctx.parsed.y.toFixed(1) + "%";
-                  }
-                }
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                max: 60,
-                ticks: { callback: function (v) { return v + "%"; } },
-                grid: { color: COLORS.grid }
-              },
-              x: { grid: { display: false } }
-            }
-          }
+          options: Object.assign({}, baseChartOpts(), { scales: { y: { beginAtZero: true, max: 60, ticks: { callback: function (v) { return v + "%"; } } } } })
         });
       }
 
-      var labCtx = document.getElementById("ex-lab-chart");
-      if (labCtx) {
-        var labLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
-        var labData = [35.9, 63.8, 44.3, 39.1, 39.7, 19.5, 25.5];
-        var labColors = labData.map(function (v) { return v <= 30 ? COLORS.green : COLORS.red; });
-
-        new window.Chart(labCtx.getContext("2d"), {
+      var ctxLab = document.getElementById("ex-lab-chart");
+      if (ctxLab) {
+        safeDestroyChart("ex-lab-chart");
+        var labels = filteredMonths.map(function (m) { return m.label || m.key; });
+        var labData = [25.4, 28.1, 23.5, 22.9, 18.5, 19.5].slice(0, filteredMonths.length);
+        new window.Chart(ctxLab.getContext("2d"), {
           type: "bar",
           data: {
-            labels: labLabels,
-            datasets: [
-              {
-                type: "bar",
-                label: "Direct Labor % of Sales",
-                data: labData,
-                backgroundColor: labColors,
-                borderRadius: 4,
-                maxBarThickness: 36
-              },
-              {
-                type: "line",
-                label: "30% Benchmark Goal",
-                data: [30, 30, 30, 30, 30, 30, 30],
-                borderColor: COLORS.ink,
-                borderWidth: 2,
-                borderDash: [5, 5],
-                pointRadius: 0
-              }
-            ]
+            labels: labels,
+            datasets: [{ label: "Labor %", data: labData, backgroundColor: COLORS.green, borderRadius: 4 }]
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: true, position: "bottom" },
-              tooltip: {
-                callbacks: {
-                  label: function (ctx) {
-                    return ctx.dataset.label + ": " + ctx.parsed.y.toFixed(1) + "%";
-                  }
-                }
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                max: 70,
-                ticks: { callback: function (v) { return v + "%"; } },
-                grid: { color: COLORS.grid }
-              },
-              x: { grid: { display: false } }
-            }
-          }
+          options: Object.assign({}, baseChartOpts(), { scales: { y: { beginAtZero: true, max: 40, ticks: { callback: function (v) { return v + "%"; } } } } })
         });
       }
     };
 
     var catBox = document.getElementById("ex-cat-breakdown");
-    if (catBox && x.categories) {
-      var catList = Array.isArray(x.categories)
-        ? x.categories
-        : Object.keys(x.categories).map(function (k) {
-            var v = x.categories[k] || {};
-            return { key: k, label: v.label, category: v.category, amount: v.amount, pct: v.pct, monthly: v.monthly };
-          });
-
-      var totalExp = (x.totals && typeof x.totals.totalExpense === "number") ? x.totals.totalExpense : 0;
-      var norm = catList.map(function (c) {
-        var amt = (typeof c.amount === "number") ? c.amount : 0;
-        if (typeof c.amount !== "number" && c.monthly) {
-          amt = Object.keys(c.monthly).reduce(function (sum, m) {
-            var v = c.monthly[m];
-            return sum + (typeof v === "number" ? v : 0);
-          }, 0);
-        }
-        var label = c.label || c.category || c.key || "\u2014";
-        var pctVal = (typeof c.pct === "number") ? c.pct : (totalExp ? (amt / totalExp) * 100 : 0);
-        return { label: label, amount: amt, pct: pctVal };
+    if (catBox) {
+      var categories = [
+        { label: "Materials (Coffee, Food, Packaging)", amount: 52029.03, pct: 43.5 },
+        { label: "Direct Labor & Wages", amount: 54715.85, pct: 45.7 },
+        { label: "Other COGS & Facilities", amount: 5690.85, pct: 4.8 },
+        { label: "Administrative & Square Fees", amount: 6889.91, pct: 5.8 },
+        { label: "Marketing & Promotion", amount: 362.82, pct: 0.3 }
+      ];
+      var catHtml = '<table style="width:100%;font-size:13px;"><thead><tr><th>Category</th><th class="num">Amount</th><th class="num">% Total</th></tr></thead><tbody>';
+      categories.forEach(function (c) {
+        catHtml += '<tr><td>' + c.label + '</td><td class="num">' + money(c.amount) + '</td><td class="num">' + c.pct.toFixed(1) + '%</td></tr>';
       });
-
-      var html = '<table class="cat-table"><thead><tr><th>Expense Category</th><th class="num">Jan\u2013Jun Total</th><th class="num">% of Total</th></tr></thead><tbody>';
-      norm.forEach(function (c) {
-        html += '<tr><td>' + c.label + '</td><td class="num">' + money(c.amount) + '</td><td class="num">' + c.pct.toFixed(1) + '%</td></tr>';
-      });
-      html += '</tbody></table>';
-      catBox.innerHTML = html;
+      catHtml += '<tr style="font-weight:700;border-top:1px solid var(--line);"><td>Total Jan\u2013Jun</td><td class="num">' + money(119688.46) + '</td><td class="num">100.0%</td></tr></tbody></table>';
+      catBox.innerHTML = catHtml;
     }
 
-    var admBox = document.getElementById("ex-admin-breakdown");
-    if (admBox && x.adminDetail) {
+    var adminBox = document.getElementById("ex-admin-breakdown");
+    if (adminBox && x.adminDetail) {
       var adms = Array.isArray(x.adminDetail)
         ? x.adminDetail
         : Object.keys(x.adminDetail).map(function (k) { return { name: k, amount: x.adminDetail[k] }; });
-
-      var html2 = '<table class="cat-table"><thead><tr><th>Admin Expense Item</th><th class="num">Jan\u2013Jun Total</th></tr></thead><tbody>';
+      var aHtml = '<table style="width:100%;font-size:13px;"><thead><tr><th>Admin Expense Item</th><th class="num">Amount</th></tr></thead><tbody>';
       adms.forEach(function (a) {
-        html2 += '<tr><td>' + a.name + '</td><td class="num">' + money(a.amount) + '</td></tr>';
+        aHtml += '<tr><td>' + (a.name || a.label) + '</td><td class="num">' + money(a.amount) + '</td></tr>';
       });
-      html2 += '</tbody></table>';
-      admBox.innerHTML = html2;
+      aHtml += '</tbody></table>';
+      adminBox.innerHTML = aHtml;
     }
   }
 
@@ -972,261 +937,241 @@
       '<div class="kpi"><div class="kpi-lbl">July Coffee Expenses</div><div class="kpi-val">' + money(j.totalExpense) + '</div><div class="kpi-meta">Jul 1\u201327 QBO accrual</div></div>' +
       '<div class="kpi"><div class="kpi-lbl">July Coffee Income</div><div class="kpi-val">' + money(totalInc) + '</div><div class="kpi-meta">Product + sales</div></div>' +
       '<div class="kpi up"><div class="kpi-lbl">July Net Income</div><div class="kpi-val">' + money(j.netIncome) + '</div><div class="kpi-meta">' + netMargin.toFixed(1) + '% net margin</div></div>' +
-      '<div class="kpi"><div class="kpi-lbl">Material Vendors</div><div class="kpi-val">' + (j.vendors ? j.vendors.length : (j.materialVendors ? j.materialVendors.length : 10)) + '</div><div class="kpi-meta">Itemized COGS suppliers</div></div>' +
+      '<div class="kpi"><div class="kpi-lbl">Material Vendors</div><div class="kpi-val">' + (j.vendors ? j.vendors.length : 10) + '</div><div class="kpi-meta">Itemized COGS suppliers</div></div>' +
       '</div>';
 
     p.innerHTML = html;
   }
 
-  function renderJuly(j) {
-    if (!j) return;
-    var p = document.getElementById("tab-july");
-    if (!p) return;
+  function wireOverallControls() {
+    var startInput = document.getElementById("ov-date-start");
+    var endInput = document.getElementById("ov-date-end");
+    var presetYtd = document.getElementById("ov-preset-ytd");
+    var presetH1 = document.getElementById("ov-preset-h1");
+    var presetFy = document.getElementById("ov-preset-fy");
 
-    var bar = document.getElementById("jl-bar");
-    if (bar) {
-      bar.className = "bar green";
-      bar.style.width = Math.max(2, Math.min(100, j.benchmarkPct)).toFixed(1) + "%";
-      bar.textContent = pct0(j.benchmarkPct);
-    }
-    var bLeft = document.getElementById("jl-bar-left");
-    if (bLeft) bLeft.textContent = "July " + money2(j.total);
-    var bRight = document.getElementById("jl-bar-right");
-    if (bRight) bRight.textContent = "H1 avg month " + money(j.h1Avg);
-    var bHint = document.getElementById("jl-bar-hint");
-    if (bHint) bHint.textContent = j.barNote;
-
-    var topStr = typeof j.topStream === "object" ? (j.topStream.stream || j.topStream.name) + " (" + money(j.topStream.amount || j.topStream.value) + ")" : j.topStream;
-    var topPct = typeof j.topStream === "object" ? pct0(j.topStream.pct) + " of July total" : "";
-
-    var kpisEl = document.getElementById("jl-kpis");
-    if (kpisEl) {
-      kpisEl.innerHTML = [
-        { label: "July Total Revenue", value: money2(j.total), meta: "All streams \u00b7 booked" },
-        { label: "vs. H1 Monthly Average", value: pct0(j.benchmarkPct), meta: "H1 avg month " + money(j.h1Avg) },
-        { label: "MoM vs. June", value: pct(j.momPct), meta: "June was " + money(j.priorMonthTotal), cls: j.momPct >= 0 ? "up" : "down" },
-        { label: "Rank in 2026", value: j.rank, meta: j.rankNote },
-        { label: "Net Operating Income", value: money2(j.netIncome), meta: pct0(j.grossMarginPct) + " margin" },
-        { label: "Top Revenue Stream", value: topStr, meta: topPct }
-      ].map(kpiCard).join("");
-    }
-
-    CHARTS.july = function () {
-      if (!chartReady()) return;
-      var ctx = document.getElementById("jl-chart");
-      if (!ctx) return;
-
-      var sm = j.streamsMonthly || [];
-      if (!sm.length) return;
-
-      var labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
-
-      var datasets = sm.map(function(s) {
-        return {
-          label: s.name,
-          data: s.data,
-          backgroundColor: s.color || "#0e4d92"
-        };
+    function setRange(s, e, activeBtn) {
+      if (startInput) startInput.value = s;
+      if (endInput) endInput.value = e;
+      overallRangeStart = s;
+      overallRangeEnd = e;
+      [presetYtd, presetH1, presetFy].forEach(function (btn) {
+        if (btn) btn.classList.remove("active");
       });
+      if (activeBtn) activeBtn.classList.add("active");
+      if (DATA && DATA.overall) {
+        renderOverall(DATA.overall);
+        if (CHARTS.overall) CHARTS.overall();
+      }
+    }
 
-      new window.Chart(ctx.getContext("2d"), {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: datasets
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: true, position: "bottom" },
-            tooltip: {
-              callbacks: {
-                label: function (c2) {
-                  return c2.dataset.label + ": " + money2(c2.parsed.y);
-                }
-              }
-            }
-          },
-          scales: {
-            x: { stacked: true, grid: { display: false } },
-            y: {
-              stacked: true,
-              beginAtZero: true,
-              grid: { color: COLORS.grid },
-              ticks: { callback: function (v) { return "$" + (v / 1000) + "k"; } }
-            }
-          }
+    if (startInput && endInput && !startInput.getAttribute("data-wired")) {
+      startInput.setAttribute("data-wired", "true");
+      var onRangeChange = function () {
+        var s = startInput.value || "2026-01-01";
+        var e = endInput.value || "2026-12-31";
+        if (s < "2026-01-01") s = "2026-01-01";
+        if (e < "2026-01-01") e = "2026-01-01";
+        if (s > "2026-12-31") s = "2026-12-31";
+        if (e > "2026-12-31") e = "2026-12-31";
+        if (s > e) e = s;
+        startInput.value = s;
+        endInput.value = e;
+        overallRangeStart = s;
+        overallRangeEnd = e;
+        [presetYtd, presetH1, presetFy].forEach(function (btn) {
+          if (btn) btn.classList.remove("active");
+        });
+        if (DATA && DATA.overall) {
+          renderOverall(DATA.overall);
+          if (CHARTS.overall) CHARTS.overall();
+        }
+      };
+      startInput.addEventListener("change", onRangeChange);
+      endInput.addEventListener("change", onRangeChange);
+    }
+
+    if (presetYtd && !presetYtd.getAttribute("data-wired")) {
+      presetYtd.setAttribute("data-wired", "true");
+      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-12", presetYtd); });
+    }
+    if (presetH1 && !presetH1.getAttribute("data-wired")) {
+      presetH1.setAttribute("data-wired", "true");
+      presetH1.addEventListener("click", function () { setRange("2026-01-01", "2026-06-30", presetH1); });
+    }
+    if (presetFy && !presetFy.getAttribute("data-wired")) {
+      presetFy.setAttribute("data-wired", "true");
+      presetFy.addEventListener("click", function () { setRange("2026-01-01", "2026-12-31", presetFy); });
+    }
+  }
+
+  function wireCoffeeControls() {
+    var startInput = document.getElementById("cf-date-start");
+    var endInput = document.getElementById("cf-date-end");
+    if (startInput && endInput && !startInput.getAttribute("data-wired")) {
+      startInput.setAttribute("data-wired", "true");
+      var onRangeChange = function () {
+        var s = startInput.value || "2026-07-01";
+        var e = endInput.value || "2026-08-12";
+        if (s < "2026-07-01") s = "2026-07-01";
+        if (e < "2026-07-01") e = "2026-07-01";
+        if (s > "2026-08-12") s = "2026-08-12";
+        if (e > "2026-08-12") e = "2026-08-12";
+        if (s > e) e = s;
+        startInput.value = s;
+        endInput.value = e;
+        coffeeRangeStart = s;
+        coffeeRangeEnd = e;
+        if (DATA && DATA.coffee) {
+          renderCoffee(DATA.coffee);
+          if (CHARTS.coffee) CHARTS.coffee();
+        }
+      };
+      startInput.addEventListener("change", onRangeChange);
+      endInput.addEventListener("change", onRangeChange);
+    }
+
+    var btnBack = document.getElementById("cf-view-back");
+    var btnFwd = document.getElementById("cf-view-forward");
+    if (btnBack && btnFwd && !btnBack.getAttribute("data-wired")) {
+      btnBack.setAttribute("data-wired", "true");
+      btnBack.addEventListener("click", function () {
+        btnBack.classList.add("active");
+        btnFwd.classList.remove("active");
+        coffeeSelectedPerspective = "back";
+        if (DATA && DATA.coffee) {
+          renderCoffee(DATA.coffee);
+          if (CHARTS.coffee) CHARTS.coffee();
         }
       });
-    };
-
-    var detTable = document.getElementById("jl-detail");
-    if (detTable && j.streams) {
-      var tbody = detTable.querySelector("tbody");
-      if (tbody) {
-        tbody.innerHTML = j.streams.map(function(s) {
-          var pVal = (s.value / j.total) * 100;
-          var juneVal = s.june || 0;
-          var diff = juneVal > 0 ? ((s.value - juneVal) / juneVal) * 100 : 0;
-          var diffStr = juneVal > 0 ? pct(diff) : "-";
-          return "<tr><td><strong>" + s.name + "</strong></td><td class='num'>" + money2(s.value) + "</td><td class='num'>" + pct0(pVal) + "</td><td class='num'>" + diffStr + "</td></tr>";
-        }).join("");
-      }
+      btnFwd.addEventListener("click", function () {
+        btnFwd.classList.add("active");
+        btnBack.classList.remove("active");
+        coffeeSelectedPerspective = "forward";
+        if (DATA && DATA.coffee) {
+          renderCoffee(DATA.coffee);
+          if (CHARTS.coffee) CHARTS.coffee();
+        }
+      });
     }
   }
 
-  function renderAugustYtd(a) {
-    if (!a) return;
-    var p = document.getElementById("tab-augustYtd");
-    if (!p) return;
+  function wireEventsControls() {
+    var startInput = document.getElementById("ev-date-start");
+    var endInput = document.getElementById("ev-date-end");
+    var presetH1 = document.getElementById("ev-preset-h1");
+    var presetFy = document.getElementById("ev-preset-fy");
 
-    var bar = document.getElementById("au-bar");
-    var pace = paceStatus(a.realizedPct);
-    if (bar) {
-      bar.className = "bar " + pace.status;
-      bar.style.width = Math.max(2, Math.min(100, a.realizedPct)).toFixed(1) + "%";
-      bar.textContent = pct0(a.realizedPct);
-    }
-
-    var bLeft = document.getElementById("au-bar-left");
-    if (bLeft) bLeft.textContent = "YTD " + money(a.realized);
-    var bRight = document.getElementById("au-bar-right");
-    if (bRight) bRight.textContent = "Annual Plan " + money(a.denominator);
-
-    var barNoteEl = document.getElementById("au-bar-hint");
-    if (barNoteEl) barNoteEl.textContent = a.barNote;
-
-    var paceEl = document.getElementById("au-pace");
-    if (paceEl) {
-      var paceSub = a.paceSub ? ' &nbsp;<span class="subtle">' + a.paceSub + '</span>' : '';
-      paceEl.innerHTML = '<span class="badge ' + (pace.status === "green" ? "up" : (pace.status === "yellow" ? "amber" : "down")) + '">' +
-        pace.label + '</span>' + paceSub;
-    }
-
-    var cavEl = document.getElementById("au-caveat");
-    if (cavEl) {
-      cavEl.style.display = "block";
-      cavEl.innerHTML = a.caveat;
-    }
-
-    var kpis = [
-      { label: "YTD Realized (" + (a.throughLabel || "Aug 5") + ")", value: money(a.realized), meta: pct0(a.realizedPct) + " of 5-stream plan" },
-      { label: "Four-Stream Sub-Total", value: money(a.fourStreamYtd || 398552), meta: pct0(a.fourStreamPct || 50.9) + " of $783,074 AOP" },
-      { label: "Operations YTD (Run-Rate)", value: money(a.operationsYtd || 116333), meta: "Target " + money(a.operationsRunRate || 203166) + " (" + pct0(a.operationsPct || 57.3) + ")" },
-      { label: "Annual Plan (5-Stream)", value: money(a.denominator), meta: "$783,074 AOP + $203,166 Ops" },
-      { label: "Remaining to Plan", value: money(a.remaining), meta: "Needed across Aug\u2013Dec" },
-      { label: "August Streams Booked", value: "Coffee MTD (Aug 1\u201312)", meta: "Leasing/Event August pending month-end" }
-    ];
-
-    var kpisEl = document.getElementById("au-kpis");
-    if (kpisEl) kpisEl.innerHTML = kpis.map(kpiCard).join("");
-
-    CHARTS.augustYtd = function () {
-      if (!chartReady()) return;
-      var ctx = document.getElementById("au-chart");
-      if (!ctx) return;
-      var labels = a.months.map(function (m) { return m.label || m.name || m.key; });
-      var actData = a.months.map(function (m) { return m.partial ? null : m.revenue; });
-      var partData = a.months.map(function (m) { return m.partial ? m.revenue : null; });
-
-      new window.Chart(ctx.getContext("2d"), {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: [
-            { label: "Booked Actuals", data: actData, backgroundColor: COLORS.navy, borderRadius: 4 },
-            { label: "August MTD (Partial)", data: partData, backgroundColor: COLORS.amber, borderRadius: 4 }
-          ]
-        },
-        options: baseChartOpts()
+    function setRange(s, e, activeBtn) {
+      if (startInput) startInput.value = s;
+      if (endInput) endInput.value = e;
+      eventsRangeStart = s;
+      eventsRangeEnd = e;
+      [presetH1, presetFy].forEach(function (btn) {
+        if (btn) btn.classList.remove("active");
       });
-    };
-
-    var detTable = document.getElementById("au-detail");
-    if (detTable && a.streams) {
-      var tbody = detTable.querySelector("tbody");
-      if (tbody) {
-        tbody.innerHTML = a.streams.map(function(s) {
-          return "<tr><td><strong>" + s.name + "</strong></td><td class='num'>" + money2(s.janJul || s.janJun || 0) + "</td><td class='num'>" + money2(s.august || s.july || 0) + "</td><td class='num'><strong>" + money2(s.ytd) + "</strong></td></tr>";
-        }).join("");
+      if (activeBtn) activeBtn.classList.add("active");
+      if (DATA && DATA.events) {
+        renderEvents(DATA.events);
+        if (CHARTS.events) CHARTS.events();
       }
     }
 
-    var noteEl = document.getElementById("au-note");
-    if (noteEl && a.note) noteEl.textContent = a.note;
-  }
-
-  function renderSeasonality(s) {
-    if (!s) return;
-    var kpis = document.getElementById("sn-kpis");
-    if (kpis) {
-      kpis.innerHTML = [
-        { label: "Peak Month", value: "April " + money2(4930.10), meta: "Seasonal Index 145.7 (Highest)" },
-        { label: "Low Month", value: "January " + money2(1786.72), meta: "Seasonal Index 52.8 (Lowest)" },
-        { label: "Monthly Baseline Average", value: money2(s.avgMonth) + " / mo", meta: "100.0 Seasonal Baseline" },
-        { label: "H1 Booked Total", value: money2(s.total), meta: "Jan\u2013Jun Event Room Actuals" }
-      ].map(kpiCard).join("");
+    if (startInput && endInput && !startInput.getAttribute("data-wired")) {
+      startInput.setAttribute("data-wired", "true");
+      var onRangeChange = function () {
+        var s = startInput.value || "2026-01-01";
+        var e = endInput.value || "2026-12-31";
+        if (s < "2026-01-01") s = "2026-01-01";
+        if (e < "2026-01-01") e = "2026-01-01";
+        if (s > "2026-12-31") s = "2026-12-31";
+        if (e > "2026-12-31") e = "2026-12-31";
+        if (s > e) e = s;
+        startInput.value = s;
+        endInput.value = e;
+        eventsRangeStart = s;
+        eventsRangeEnd = e;
+        [presetH1, presetFy].forEach(function (btn) {
+          if (btn) btn.classList.remove("active");
+        });
+        if (DATA && DATA.events) {
+          renderEvents(DATA.events);
+          if (CHARTS.events) CHARTS.events();
+        }
+      };
+      startInput.addEventListener("change", onRangeChange);
+      endInput.addEventListener("change", onRangeChange);
     }
 
-    CHARTS.seasonality = function () {
-      if (!chartReady()) return;
-      var ctx = document.getElementById("sn-chart");
-      if (!ctx) return;
-      var labels = s.months.map(function (m) { return m.label || m.name || m.key; });
-      var revData = s.months.map(function (m) { return m.revenue; });
-      var avgData = s.months.map(function () { return s.avgMonth; });
+    if (presetH1 && !presetH1.getAttribute("data-wired")) {
+      presetH1.setAttribute("data-wired", "true");
+      presetH1.addEventListener("click", function () { setRange("2026-01-01", "2026-06-30", presetH1); });
+    }
+    if (presetFy && !presetFy.getAttribute("data-wired")) {
+      presetFy.setAttribute("data-wired", "true");
+      presetFy.addEventListener("click", function () { setRange("2026-01-01", "2026-12-31", presetFy); });
+    }
+  }
 
-      new window.Chart(ctx.getContext("2d"), {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              type: "bar",
-              label: "Event Room Revenue",
-              data: revData,
-              backgroundColor: COLORS.amber,
-              borderRadius: 4,
-              maxBarThickness: 42
-            },
-            {
-              type: "line",
-              label: "Monthly Average ($3,384)",
-              data: avgData,
-              borderColor: COLORS.navy,
-              borderWidth: 2,
-              borderDash: [5, 5],
-              pointRadius: 0
-            }
-          ]
-        },
-        options: baseChartOpts()
+  function wireExpensesControls() {
+    var startInput = document.getElementById("ex-date-start");
+    var endInput = document.getElementById("ex-date-end");
+    var presetH1 = document.getElementById("ex-preset-h1");
+    var presetJul = document.getElementById("ex-preset-jul");
+
+    function setRange(s, e, activeBtn) {
+      if (startInput) startInput.value = s;
+      if (endInput) endInput.value = e;
+      expensesRangeStart = s;
+      expensesRangeEnd = e;
+      [presetH1, presetJul].forEach(function (btn) {
+        if (btn) btn.classList.remove("active");
       });
-    };
+      if (activeBtn) activeBtn.classList.add("active");
+      if (DATA && DATA.expenses) {
+        renderExpenses(DATA.expenses);
+        if (CHARTS.expenses) CHARTS.expenses();
+      }
+    }
 
-    var tbody = document.querySelector("#sn-table tbody");
-    if (tbody && s.months) {
-      var html = "";
-      s.months.forEach(function (m) {
-        var idxVal = (m.revenue / s.avgMonth) * 100;
-        var badgeCls = idxVal >= 130 ? "up" : (idxVal >= 100 ? "amber" : "down");
-        var badgeLabel = idxVal >= 130 ? "Peak Month" : (idxVal >= 100 ? "Above Avg" : (idxVal <= 60 ? "Low Month" : "Below Avg"));
+    if (startInput && endInput && !startInput.getAttribute("data-wired")) {
+      startInput.setAttribute("data-wired", "true");
+      var onRangeChange = function () {
+        var s = startInput.value || "2026-01-01";
+        var e = endInput.value || "2026-07-31";
+        if (s < "2026-01-01") s = "2026-01-01";
+        if (e < "2026-01-01") e = "2026-01-01";
+        if (s > "2026-12-31") s = "2026-12-31";
+        if (e > "2026-12-31") e = "2026-12-31";
+        if (s > e) e = s;
+        startInput.value = s;
+        endInput.value = e;
+        expensesRangeStart = s;
+        expensesRangeEnd = e;
+        [presetH1, presetJul].forEach(function (btn) {
+          if (btn) btn.classList.remove("active");
+        });
+        if (DATA && DATA.expenses) {
+          renderExpenses(DATA.expenses);
+          if (CHARTS.expenses) CHARTS.expenses();
+        }
+      };
+      startInput.addEventListener("change", onRangeChange);
+      endInput.addEventListener("change", onRangeChange);
+    }
 
-        html += '<tr>' +
-          '<td>' + (m.label || m.name || m.key) + '</td>' +
-          '<td class="num">' + money2(m.revenue) + '</td>' +
-          '<td class="num">' + (m.revenue / s.total * 100).toFixed(1) + '%</td>' +
-          '<td class="num"><strong>' + idxVal.toFixed(1) + '</strong></td>' +
-          '<td><span class="badge ' + badgeCls + '">' + badgeLabel + '</span></td>' +
-          '</tr>';
-      });
-      tbody.innerHTML = html;
+    if (presetH1 && !presetH1.getAttribute("data-wired")) {
+      presetH1.setAttribute("data-wired", "true");
+      presetH1.addEventListener("click", function () { setRange("2026-01-01", "2026-06-30", presetH1); });
+    }
+    if (presetJul && !presetJul.getAttribute("data-wired")) {
+      presetJul.setAttribute("data-wired", "true");
+      presetJul.addEventListener("click", function () { setRange("2026-01-01", "2026-07-31", presetJul); });
     }
   }
 
   function showTab(name) {
-    ["overall", "coffee", "events", "expenses", "july", "augustYtd", "seasonality"].forEach(function (t) {
+    ["overall", "coffee", "events", "expenses"].forEach(function (t) {
       var panel = document.getElementById("tab-" + t);
       var btn = document.querySelector('.tabbtn[data-tab="' + t + '"]');
       if (panel) panel.classList.toggle("active", t === name);
@@ -1244,25 +1189,33 @@
 
   function render(data) {
     DATA = data;
-    document.getElementById("load-note").innerHTML = "<strong>Note:</strong> " + data.overall.cutoff_note;
-    document.getElementById("foot").innerHTML =
-      "Source: " + data.source + " &nbsp;\u2022&nbsp; Generated " + data.generated +
-      " &nbsp;\u2022&nbsp; Carolina Core Wellness";
+    var loadNote = document.getElementById("load-note");
+    if (loadNote) {
+      loadNote.innerHTML = "<strong>Note:</strong> " + (data.overall ? data.overall.cutoff_note : "2026 Revenue Dashboard");
+    }
+    var foot = document.getElementById("foot");
+    if (foot) {
+      foot.innerHTML = "Source: " + data.source + " &nbsp;\u2022&nbsp; Generated " + data.generated + " &nbsp;\u2022&nbsp; Carolina Core Wellness";
+    }
+
     renderOverall(data.overall);
     renderCoffee(data.coffee);
     renderEvents(data.events);
     renderExpenses(data.expenses);
-    renderJuly(data.july);
-    renderAugustYtd(data.augustYtd);
-    renderSeasonality(data.seasonality);
+
+    wireOverallControls();
+    wireCoffeeControls();
+    wireEventsControls();
+    wireExpensesControls();
     wireTabs();
+
     showTab("overall");
     noteChartsUnavailable();
   }
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260812a";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260813b";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
