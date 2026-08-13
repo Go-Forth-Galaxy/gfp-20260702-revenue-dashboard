@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carolina Core Wellness &mdash; 2026 Revenue Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260813a">
-  <link rel="stylesheet" href="styles.css?v=20260813a">
-  <script src="config.js?v=20260813a"></script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260813b">
+  <link rel="stylesheet" href="styles.css?v=20260813b">
+  <script src="config.js?v=20260813b"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js';"></script>
 </head>
 <body>
@@ -31,16 +31,31 @@
         <button class="tabbtn" data-tab="coffee">Coffee</button>
         <button class="tabbtn" data-tab="events">Events</button>
         <button class="tabbtn" data-tab="expenses">Coffeeshop Expenses</button>
-        <button class="tabbtn" data-tab="july">July</button>
-        <button class="tabbtn" data-tab="augustYtd">August YTD</button>
-        <button class="tabbtn" data-tab="seasonality">Seasonality</button>
       </div>
 
       <!-- ===================== OVERALL TAB ===================== -->
       <section class="tabpanel active" id="tab-overall">
 
+        <!-- CONTROLS PANEL: DATE RANGE & PRESETS -->
+        <div class="controls-panel">
+          <div class="controls-group">
+            <span class="controls-label">Date range:</span>
+            <input type="date" id="ov-date-start" class="controls-select" min="2026-01-01" max="2026-12-31" value="2026-01-01">
+            <span class="controls-label" style="margin:0 4px;">to</span>
+            <input type="date" id="ov-date-end" class="controls-select" min="2026-01-01" max="2026-12-31" value="2026-12-31">
+          </div>
+          <div class="controls-group">
+            <span class="controls-label">Presets:</span>
+            <div class="toggle-group">
+              <button type="button" class="toggle-btn" id="ov-preset-ytd">YTD (Aug 12)</button>
+              <button type="button" class="toggle-btn" id="ov-preset-h1">H1 (Jan&ndash;Jun)</button>
+              <button type="button" class="toggle-btn active" id="ov-preset-fy">Full Year</button>
+            </div>
+          </div>
+        </div>
+
         <div class="panel" id="ov-prog-panel">
-          <h2>Annual Revenue Plan Progress</h2>
+          <h2 id="ov-bar-title">Annual Revenue Plan Progress</h2>
           <div class="progress-wrap">
             <div class="progress"><div class="bar" id="ov-bar">0%</div></div>
             <div class="progress-meta"><span id="ov-bar-left"></span><span id="ov-bar-right"></span></div>
@@ -58,12 +73,25 @@
 
         <section class="kpis" id="ov-kpis"></section>
 
-        <div class="panel" style="margin-top: 16px;">
-          <h2>H2 Target Catch-Up Schedule</h2>
-          <p class="hint">Average run-rates required across Jul&ndash;Dec to reach the $783,074 four-stream AOP plan.</p>
-          <div class="kpi-grid" id="ov-catchup-grid"></div>
+        <!-- REVENUE BY STREAM TABLE -->
+        <div class="panel">
+          <h2>2026 Revenue by Stream</h2>
+          <p class="hint">Includes Jan&ndash;Jul all-stream booked revenue + August MTD Coffee sales (through Aug 12).</p>
+          <table id="ov-streams-table">
+            <thead>
+              <tr>
+                <th>Revenue Stream</th>
+                <th class="num">Jan&ndash;Jul Actual</th>
+                <th class="num">August Booked</th>
+                <th class="num">YTD Realized</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p class="hint" style="margin-top: 14px;" id="ov-streams-note">August non-coffee streams (Event Room, Leasing, Operations, Wellness) pending month-end QBO close.</p>
         </div>
 
+        <!-- REVENUE TREND CHART -->
         <div class="panel">
           <h2>2026 Revenue Trend &mdash; Actuals &amp; AOP Budget</h2>
           <div class="chart-wrap" style="height: 380px;">
@@ -79,6 +107,7 @@
           </p>
         </div>
 
+        <!-- MONTHLY REVENUE DETAIL TABLE -->
         <div class="panel">
           <h2>Monthly Revenue Detail</h2>
           <table id="ov-detail">
@@ -93,6 +122,13 @@
             </thead>
             <tbody></tbody>
           </table>
+        </div>
+
+        <!-- H2 TARGET CATCH-UP SCHEDULE -->
+        <div class="panel" style="margin-top: 16px;">
+          <h2>H2 Target Catch-Up Schedule</h2>
+          <p class="hint">Average run-rates required across Jul&ndash;Dec to reach the $783,074 four-stream AOP plan.</p>
+          <div class="kpi-grid" id="ov-catchup-grid"></div>
         </div>
 
       </section>
@@ -111,8 +147,8 @@
           <div class="controls-group">
             <span class="controls-label">Perspective:</span>
             <div class="toggle-group">
-              <button id="cf-view-back" class="toggle-btn active">Looking Back</button>
-              <button id="cf-view-forward" class="toggle-btn">Looking Forward</button>
+              <button type="button" id="cf-view-back" class="toggle-btn active">Looking Back</button>
+              <button type="button" id="cf-view-forward" class="toggle-btn">Looking Forward</button>
             </div>
           </div>
         </div>
@@ -156,8 +192,25 @@
       <!-- ===================== EVENTS TAB ===================== -->
       <section class="tabpanel" id="tab-events">
 
+        <!-- CONTROLS PANEL: DATE RANGE & PRESETS -->
+        <div class="controls-panel">
+          <div class="controls-group">
+            <span class="controls-label">Date range:</span>
+            <input type="date" id="ev-date-start" class="controls-select" min="2026-01-01" max="2026-12-31" value="2026-01-01">
+            <span class="controls-label" style="margin:0 4px;">to</span>
+            <input type="date" id="ev-date-end" class="controls-select" min="2026-01-01" max="2026-12-31" value="2026-12-31">
+          </div>
+          <div class="controls-group">
+            <span class="controls-label">Presets:</span>
+            <div class="toggle-group">
+              <button type="button" class="toggle-btn" id="ev-preset-h1">H1 Booked</button>
+              <button type="button" class="toggle-btn active" id="ev-preset-fy">Full Year</button>
+            </div>
+          </div>
+        </div>
+
         <div class="panel">
-          <h2>Event Room &mdash; YTD Booked vs. Full-Year Run-Rate</h2>
+          <h2 id="ev-bar-title">Event Room &mdash; YTD Booked vs. Full-Year Run-Rate</h2>
           <div class="progress-wrap">
             <div class="progress"><div class="bar green" id="ev-prog-bar" style="width: 50.0%;">50.0%</div></div>
             <div class="progress-meta"><span id="ev-prog-left">Booked (Jan&ndash;Jun) $20,302</span><span id="ev-prog-right">Projected FY $40,605</span></div>
@@ -194,13 +247,53 @@
           </table>
         </div>
 
+        <!-- CONSOLIDATED SEASONALITY & DEMAND INDEX SECTION -->
+        <div class="panel" style="margin-top: 20px;">
+          <h2>Event Room &mdash; Seasonal Demand Index &amp; Baseline</h2>
+          <p class="hint">Monthly demand index comparing each booked month against the baseline monthly average ($3,384 = Index 100.0).</p>
+          <div class="kpi-grid" id="sn-kpis" style="margin-top: 14px;"></div>
+        </div>
+
+        <div class="panel" style="margin-top: 20px;">
+          <h2>Seasonal Demand Detail Table</h2>
+          <table id="sn-table">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th class="num">Booked Revenue</th>
+                <th class="num">% of H1 Total</th>
+                <th class="num">Seasonal Index</th>
+                <th>Performance Rating</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
       </section>
 
       <!-- ===================== COFFEESHOP EXPENSES ===================== -->
       <section class="tabpanel" id="tab-expenses">
 
+        <!-- CONTROLS PANEL: DATE RANGE & PRESETS -->
+        <div class="controls-panel">
+          <div class="controls-group">
+            <span class="controls-label">Date range:</span>
+            <input type="date" id="ex-date-start" class="controls-select" min="2026-01-01" max="2026-12-31" value="2026-01-01">
+            <span class="controls-label" style="margin:0 4px;">to</span>
+            <input type="date" id="ex-date-end" class="controls-select" min="2026-01-01" max="2026-12-31" value="2026-07-31">
+          </div>
+          <div class="controls-group">
+            <span class="controls-label">Presets:</span>
+            <div class="toggle-group">
+              <button type="button" class="toggle-btn" id="ex-preset-h1">Jan&ndash;Jun (AOP)</button>
+              <button type="button" class="toggle-btn active" id="ex-preset-jul">Through July (QBO)</button>
+            </div>
+          </div>
+        </div>
+
         <div class="panel" id="ex-budget-panel">
-          <h2>Coffeeshop Expenses &mdash; Jan&ndash;Jun Spend vs Reforecast Budget</h2>
+          <h2 id="ex-bar-title">Coffeeshop Expenses &mdash; Spend vs Budget</h2>
           <div class="progress-wrap">
             <div class="progress"><div class="bar" id="ex-budget-bar">0%</div></div>
             <div class="progress-meta"><span id="ex-budget-left"></span><span id="ex-budget-right"></span></div>
@@ -240,112 +333,6 @@
 
       </section>
 
-      <!-- ===================== JULY TAB ===================== -->
-      <section class="tabpanel" id="tab-july">
-        <div class="panel" id="jl-prog-panel">
-          <h2>July Total Revenue &mdash; Pacing vs H1 Average</h2>
-          <div class="progress-wrap">
-            <div class="progress"><div class="bar" id="jl-bar">0%</div></div>
-            <div class="progress-meta"><span id="jl-bar-left"></span><span id="jl-bar-right"></span></div>
-          </div>
-          <p class="hint" id="jl-bar-hint"></p>
-        </div>
-        <div class="forward-note">
-          <strong>NOTE:</strong> July was the highest revenue month of 2026 so far ($67,668 vs $56,356 H1 avg, ranked 1st of 7). Below is the 2026 trend broken down by revenue stream.
-        </div>
-        <section class="kpis" id="jl-kpis"></section>
-        <div class="panel">
-          <h2>2026 Monthly Revenue by Stream</h2>
-          <div class="chart-wrap" style="height:360px"><canvas id="jl-chart"></canvas></div>
-          <div class="legend" style="justify-content:center;margin-top:16px">
-            <span><i style="background:#1f8a4c"></i>Monthly Leasing</span>
-            <span><i style="background:#0e4d92"></i>Coffee</span>
-            <span><i style="background:#d97706"></i>Operations</span>
-            <span><i style="background:#e9a23b"></i>Event Room</span>
-            <span><i style="background:#8e44ad"></i>Wellness</span>
-            <span><i style="background:#2563eb"></i>Other</span>
-            <span><i style="background:#b3261e"></i>Discounts</span>
-          </div>
-        </div>
-        <div class="panel">
-          <h2>July Streams Detail</h2>
-          <table id="jl-detail">
-            <thead><tr><th>Revenue Stream</th><th class="num">July Actual</th><th class="num">% of July Total</th><th class="num">vs. June</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div id="jl-review"></div>
-      </section>
-
-      <!-- ===================== AUGUST YTD ===================== -->
-      <section class="tabpanel" id="tab-augustYtd">
-        <div class="panel" id="au-prog-panel">
-          <h2>August YTD vs. Annual Plan</h2>
-          <div class="progress-wrap">
-            <div class="progress"><div class="bar" id="au-bar">0%</div></div>
-            <div class="progress-meta"><span id="au-bar-left"></span><span id="au-bar-right"></span></div>
-          </div>
-          <p class="hint" id="au-bar-hint"></p>
-        </div>
-        <div class="forward-note" id="au-caveat"></div>
-        <div id="au-pace"></div>
-        <section class="kpis" id="au-kpis"></section>
-        <div class="panel">
-          <h2>Revenue vs. Annual Plan</h2>
-          <p class="hint">Includes Jan&#8211;Jul all-stream revenue + August MTD Coffee sales (through Aug 12).</p>
-          <div class="chart-wrap" style="height:300px"><canvas id="au-chart"></canvas></div>
-          <div class="legend">
-            <span><i style="background:#0e4d92"></i>Booked Full Month</span>
-            <span><i style="background:#e9a23b"></i>Partial Month Booked</span>
-            <span><i style="background:#e2e8ee"></i>Remaining to Plan</span>
-          </div>
-        </div>
-        <div class="panel">
-          <h2>August YTD by Revenue Stream</h2>
-          <table id="au-detail">
-            <thead><tr><th>Revenue Stream</th><th class="num">Jan&#8211;Jul Actual</th><th class="num">August Booked</th><th class="num">YTD Realized</th></tr></thead>
-            <tbody></tbody>
-          </table>
-          <p class="hint" style="margin-top:16px" id="au-note"></p>
-        </div>
-        <div id="au-review"></div>
-      </section>
-
-      <!-- ===================== SEASONALITY ===================== -->
-      <section class="tabpanel" id="tab-seasonality">
-        <div class="panel">
-          <h2>Event Room &mdash; Seasonal Demand Index</h2>
-          <p class="hint">Monthly demand index comparing each booked month against the baseline monthly average ($3,384 = Index 100.0).</p>
-        </div>
-
-        <section class="kpis" id="sn-kpis"></section>
-
-        <div class="panel" style="margin-top:20px">
-          <h2>Booked Monthly Revenue vs Baseline Average</h2>
-          <div class="chart-wrap" style="height:320px"><canvas id="sn-chart"></canvas></div>
-          <div class="legend" style="justify-content:center;margin-top:16px">
-            <span><i style="background:#e9a23b"></i>Event Room Revenue</span>
-            <span><i style="background:#0e4d92"></i>Baseline Monthly Average ($3,384)</span>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2>Event Room Monthly Seasonality Detail</h2>
-          <table id="sn-table">
-            <thead>
-              <tr>
-                <th>Month</th>
-                <th class="num">Booked Revenue</th>
-                <th class="num">% of H1 Total</th>
-                <th class="num">Seasonal Index</th>
-                <th>Performance Rating</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
     </div>
 
   </main>
@@ -354,6 +341,6 @@
     Carolina Core Wellness &mdash; 2026 Revenue Dashboard
   </footer>
 
-  <script src="app.js?v=20260813a"></script>
+  <script src="app.js?v=20260813b"></script>
 </body>
 </html>
