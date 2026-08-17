@@ -6,7 +6,7 @@
   var built = {};
 
   var overallRangeStart = "2026-01-01";
-  var overallRangeEnd = "2026-12-31";
+  var overallRangeEnd = "2026-08-16";
 
   var coffeeRangeStart = "2026-08-01";
   var coffeeRangeEnd = "2026-08-16";
@@ -946,15 +946,16 @@
     var startInput = document.getElementById("ov-date-start");
     var endInput = document.getElementById("ov-date-end");
     var presetYtd = document.getElementById("ov-preset-ytd");
-    var presetH1 = document.getElementById("ov-preset-h1");
-    var presetFy = document.getElementById("ov-preset-fy");
+    var presetYtlm = document.getElementById("ov-preset-ytlm");
+    var presetLm = document.getElementById("ov-preset-lm");
+    var presetTtm = document.getElementById("ov-preset-ttm");
 
     function setRange(s, e, activeBtn) {
       if (startInput) startInput.value = s;
       if (endInput) endInput.value = e;
       overallRangeStart = s;
       overallRangeEnd = e;
-      [presetYtd, presetH1, presetFy].forEach(function (btn) {
+      [presetYtd, presetYtlm, presetLm, presetTtm].forEach(function (btn) {
         if (btn) btn.classList.remove("active");
       });
       if (activeBtn) activeBtn.classList.add("active");
@@ -969,8 +970,8 @@
       var onRangeChange = function () {
         var s = startInput.value || "2026-01-01";
         var e = endInput.value || "2026-12-31";
-        if (s < "2026-01-01") s = "2026-01-01";
-        if (e < "2026-01-01") e = "2026-01-01";
+        if (s < "2025-01-01") s = "2025-01-01";
+        if (e < "2025-01-01") e = "2025-01-01";
         if (s > "2026-12-31") s = "2026-12-31";
         if (e > "2026-12-31") e = "2026-12-31";
         if (s > e) e = s;
@@ -978,7 +979,7 @@
         endInput.value = e;
         overallRangeStart = s;
         overallRangeEnd = e;
-        [presetYtd, presetH1, presetFy].forEach(function (btn) {
+        [presetYtd, presetYtlm, presetLm, presetTtm].forEach(function (btn) {
           if (btn) btn.classList.remove("active");
         });
         if (DATA && DATA.overall) {
@@ -994,13 +995,17 @@
       presetYtd.setAttribute("data-wired", "true");
       presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-16", presetYtd); });
     }
-    if (presetH1 && !presetH1.getAttribute("data-wired")) {
-      presetH1.setAttribute("data-wired", "true");
-      presetH1.addEventListener("click", function () { setRange("2026-01-01", "2026-06-30", presetH1); });
+    if (presetYtlm && !presetYtlm.getAttribute("data-wired")) {
+      presetYtlm.setAttribute("data-wired", "true");
+      presetYtlm.addEventListener("click", function () { setRange("2026-01-01", "2026-07-31", presetYtlm); });
     }
-    if (presetFy && !presetFy.getAttribute("data-wired")) {
-      presetFy.setAttribute("data-wired", "true");
-      presetFy.addEventListener("click", function () { setRange("2026-01-01", "2026-12-31", presetFy); });
+    if (presetLm && !presetLm.getAttribute("data-wired")) {
+      presetLm.setAttribute("data-wired", "true");
+      presetLm.addEventListener("click", function () { setRange("2026-07-01", "2026-07-31", presetLm); });
+    }
+    if (presetTtm && !presetTtm.getAttribute("data-wired")) {
+      presetTtm.setAttribute("data-wired", "true");
+      presetTtm.addEventListener("click", function () { setRange("2025-08-01", "2026-07-31", presetTtm); });
     }
   }
 
@@ -1214,7 +1219,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260817a";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260817b";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
