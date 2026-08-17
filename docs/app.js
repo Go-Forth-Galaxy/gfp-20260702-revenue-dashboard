@@ -9,7 +9,7 @@
   var overallRangeEnd = "2026-12-31";
 
   var coffeeRangeStart = "2026-08-01";
-  var coffeeRangeEnd = "2026-08-12";
+  var coffeeRangeEnd = "2026-08-16";
   var coffeeSelectedPerspective = "back";
 
   var eventsRangeStart = "2026-01-01";
@@ -150,7 +150,6 @@
     }
     return res;
   }
-
   function extremesActual(months) {
     var actuals = months.filter(function (m) { return !(m.forecast !== undefined ? m.forecast : m.is_forecast); });
     if (actuals.length === 0) return { best: null, worst: null };
@@ -247,7 +246,7 @@
       if (barRight) barRight.textContent = "Annual Plan " + money(totalPlan);
       if (barHint) {
         barHint.textContent = "Realized revenue across all 5 streams (" + money(realized) +
-          " YTD through Aug 12) divided by the " + money(totalPlan) +
+          " YTD through Aug 16) divided by the " + money(totalPlan) +
           " plan. Four-stream AOP sub-total: " + money(o.fourStreamYtd || 400675) +
           " (" + pct0(o.fourStreamPct || 51.2) + " of $783,074). Remaining to plan: " + money(remaining) + ".";
       }
@@ -303,7 +302,7 @@
     var kpis = [];
     if (isFullYear) {
       kpis = [
-        { label: "YTD Realized (Through Aug 12)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan" },
+        { label: "YTD Realized (Through Aug 16)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan" },
         { label: "Four-Stream Sub-Total", value: money(o.fourStreamYtd || 400675), meta: pct0(o.fourStreamPct || 51.2) + " of $783,074 AOP" },
         { label: "Operations YTD (Run-Rate)", value: money(o.operationsYtd || 116333), meta: "Target " + money(o.operationsRunRate || 203166) + " (" + pct0(o.operationsPct || 57.3) + ")" },
         { label: "Annual Plan (5-Stream)", value: money(totalPlan), meta: "$783,074 AOP + $203,166 Ops" },
@@ -679,7 +678,7 @@
       progBar.style.width = Math.max(2, Math.min(100, ratioPct)).toFixed(1) + "%";
       progBar.textContent = pct0(ratioPct);
     }
-    if (barTitle) barTitle.textContent = "Event Room &mdash; Booked vs. Run-Rate (" + (filteredMonths[0].label || filteredMonths[0].key) + " \u2013 " + (filteredMonths[filteredMonths.length - 1].label || filteredMonths[filteredMonths.length - 1].key) + ")";
+    if (barTitle) barTitle.textContent = "Event Room \u2014 Booked vs. Run-Rate (" + (filteredMonths[0].label || filteredMonths[0].key) + " \u2013 " + (filteredMonths[filteredMonths.length - 1].label || filteredMonths[filteredMonths.length - 1].key) + ")";
     if (pLeft) pLeft.textContent = "Booked Actuals " + money(realizedInRange);
     if (pRight) pRight.textContent = "Projected Period " + money(totalInRange);
     if (pHint) pHint.textContent = e.progress ? e.progress.basisNote : "Event Room target is a Jan\u2013Jun run-rate projection ($3,384/mo).";
@@ -836,11 +835,11 @@
         bBar.style.width = Math.max(2, Math.min(100, ratio)).toFixed(1) + "%";
         bBar.textContent = pct0(ratio);
       }
-      if (barTitle) barTitle.textContent = "Coffeeshop Expenses &mdash; Jan\u2013Jun Spend vs Reforecast Budget";
+      if (barTitle) barTitle.textContent = "Coffeeshop Expenses \u2014 Jan\u2013Jun Spend vs Reforecast Budget";
       if (bLeft) bLeft.textContent = "Actual " + money(b.janJunActual);
       if (bRight) bRight.textContent = "Budget " + money(b.janJunBudget);
       if (bHint) {
-        bHint.textContent = "Jan\u2013Jun coffee-shop expense actuals vs. reforested AOP budget (" +
+        bHint.textContent = "Jan\u2013Jun coffee-shop expense actuals vs. reforecasted AOP budget (" +
           money(b.janJunBudget) + "). Actuals are " + money(b.varianceFavorable) +
           " under budget (favorable). Full-year expense budget: " + money(b.annualBudget) +
           " (YTD spend " + (b.janJunActual / b.annualBudget * 100).toFixed(1) + "%). For expenses, at or under 100% is good.";
@@ -993,7 +992,7 @@
 
     if (presetYtd && !presetYtd.getAttribute("data-wired")) {
       presetYtd.setAttribute("data-wired", "true");
-      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-12", presetYtd); });
+      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-16", presetYtd); });
     }
     if (presetH1 && !presetH1.getAttribute("data-wired")) {
       presetH1.setAttribute("data-wired", "true");
@@ -1012,11 +1011,11 @@
       startInput.setAttribute("data-wired", "true");
       var onRangeChange = function () {
         var s = startInput.value || "2026-07-01";
-        var e = endInput.value || "2026-08-12";
+        var e = endInput.value || "2026-08-16";
         if (s < "2026-07-01") s = "2026-07-01";
         if (e < "2026-07-01") e = "2026-07-01";
-        if (s > "2026-08-12") s = "2026-08-12";
-        if (e > "2026-08-12") e = "2026-08-12";
+        if (s > "2026-08-16") s = "2026-08-16";
+        if (e > "2026-08-16") e = "2026-08-16";
         if (s > e) e = s;
         startInput.value = s;
         endInput.value = e;
@@ -1215,7 +1214,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260813b";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260817a";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
