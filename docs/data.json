@@ -123,8 +123,8 @@
       "total": 37889.58,
       "coffee": 33956.08,
       "food": 3799.5,
-      "apparel": 127.0,
-      "alcohol": 7.0,
+      "apparel": 127,
+      "alcohol": 7,
       "note": "Shown for visibility only — it is NOT included in the 43.2% headline above, which is Jan–Jun booked actuals across all four revenue streams. July actuals for Wellness, Monthly Leasing and Event Room aren't in yet, so folding one stream's partial month into the four-stream pace would understate true progress."
     },
     "streams": [
@@ -138,42 +138,42 @@
       {
         "name": "Event Room",
         "janJul": 22002.32,
-        "august": 0.0,
+        "august": 0,
         "ytd": 22002.32,
         "augustNote": "August not booked yet"
       },
       {
         "name": "Monthly Leasing",
         "janJul": 143060.01,
-        "august": 0.0,
+        "august": 0,
         "ytd": 143060.01,
         "augustNote": "August not booked yet"
       },
       {
         "name": "Operations",
         "janJul": 116333.24,
-        "august": 0.0,
+        "august": 0,
         "ytd": 116333.24,
         "augustNote": "Jan–Jul property/operations"
       },
       {
         "name": "Wellness",
-        "janJul": 60000.0,
-        "august": 0.0,
-        "ytd": 60000.0,
+        "janJul": 60000,
+        "august": 0,
+        "ytd": 60000,
         "augustNote": "August not booked yet"
       },
       {
         "name": "Other",
-        "janJul": 3850.0,
-        "august": 0.0,
-        "ytd": 3850.0,
+        "janJul": 3850,
+        "august": 0,
+        "ytd": 3850,
         "augustNote": "2 unclassified ACH deposits"
       },
       {
         "name": "Discounts",
         "janJul": -7116.25,
-        "august": 0.0,
+        "august": 0,
         "ytd": -7116.25,
         "augustNote": "CCYS In Kind"
       }
@@ -182,7 +182,7 @@
     "fourStreamYtd": 403779.15,
     "fourStreamDenominator": 783074.13,
     "operationsYtd": 116333.24,
-    "operationsRunRate": 203166.0,
+    "operationsRunRate": 203166,
     "fiveStreamDenominator": 986240.13,
     "remaining": 466127.74
   },
@@ -197,7 +197,7 @@
       {
         "date": "2026-07-02",
         "dow": "Thu",
-        "revenue": 845.0,
+        "revenue": 845,
         "goal": 1200
       },
       {
@@ -221,13 +221,13 @@
       {
         "date": "2026-07-06",
         "dow": "Mon",
-        "revenue": 873.0,
+        "revenue": 873,
         "goal": 1200
       },
       {
         "date": "2026-07-07",
         "dow": "Tue",
-        "revenue": 913.0,
+        "revenue": 913,
         "goal": 1200
       },
       {
@@ -359,7 +359,7 @@
       {
         "date": "2026-07-29",
         "dow": "Wed",
-        "revenue": 1025.0,
+        "revenue": 1025,
         "goal": 1200
       },
       {
@@ -437,7 +437,7 @@
       {
         "date": "2026-08-11",
         "dow": "Tue",
-        "revenue": 1063.0,
+        "revenue": 1063,
         "goal": 1200
       },
       {
@@ -456,13 +456,15 @@
         "date": "2026-08-14",
         "dow": "Fri",
         "revenue": 981.15,
-        "goal": 1200
+        "goal": 1200,
+        "hasEvent": true
       },
       {
         "date": "2026-08-15",
         "dow": "Sat",
         "revenue": 477.5,
-        "goal": 600
+        "goal": 600,
+        "hasEvent": true
       },
       {
         "date": "2026-08-16",
@@ -474,8 +476,8 @@
     "byCategory": {
       "Coffee": 33956.08,
       "Food": 3799.5,
-      "Apparel": 127.0,
-      "Alcohol": 7.0
+      "Apparel": 127,
+      "Alcohol": 7
     },
     "mtdRealized": 37889.58,
     "mtdBudget": 46950,
@@ -490,7 +492,7 @@
       "realized": 6343.7,
       "goalToDate": 7050,
       "fullGoal": 7050,
-      "progressPct": 90.0
+      "progressPct": 90
     },
     "lastWeek": {
       "label": "Aug 3–9 (complete)",
@@ -570,12 +572,12 @@
       {
         "key": "May",
         "label": "May",
-        "revenue": 2175.0,
+        "revenue": 2175,
         "forecast": false
       },
       {
         "key": "Jun",
-        "revenue": 2910.0,
+        "revenue": 2910,
         "forecast": false
       },
       {
@@ -651,11 +653,11 @@
         {
           "key": "May",
           "label": "May",
-          "revenue": 2175.0
+          "revenue": 2175
         },
         {
           "key": "Jun",
-          "revenue": 2910.0
+          "revenue": 2910
         }
       ],
       "avgMonth": 3383.72,
@@ -823,9 +825,9 @@
       "Computer Supplies & Maint.": 1214.9,
       "Meals & Entertainment": 527.87,
       "Depreciation": 539.81,
-      "Licenses & Fees": 800.0,
-      "Taxes & Fees": 327.0,
-      "Shared Services (credit)": -2200.0
+      "Licenses & Fees": 800,
+      "Taxes & Fees": 327,
+      "Shared Services (credit)": -2200
     },
     "note": "Revenue shown here is the Coffee P&L Total Income (net of discounts), so gross margin and net income tie out within the same statement. It differs slightly from the Coffee tab's gross sales figure by the discount/refund line.",
     "budget": {
@@ -855,14 +857,14 @@
         {
           "key": "admin",
           "label": "Computer Supplies & Maintenance",
-          "amount": 343.0
+          "amount": 343
         }
       ],
       "materialTotal": 7670.07,
       "vendors": [
         {
           "name": "Nurture by Naya",
-          "amount": 2313.0,
+          "amount": 2313,
           "note": "resale goods for the shop"
         },
         {
@@ -882,7 +884,7 @@
         },
         {
           "name": "Odeko",
-          "amount": 388.0,
+          "amount": 388,
           "note": ""
         },
         {
@@ -892,7 +894,7 @@
         },
         {
           "name": "PayPal",
-          "amount": 160.0,
+          "amount": 160,
           "note": ""
         },
         {
@@ -929,15 +931,15 @@
     "topStream": {
       "name": "Monthly Leasing",
       "stream": "Monthly Leasing",
-      "value": 27203.0,
-      "amount": 27203.0,
+      "value": 27203,
+      "amount": 27203,
       "pct": 40.2
     },
     "streams": [
       {
         "name": "Monthly Leasing",
-        "value": 27203.0,
-        "june": 17169.0
+        "value": 27203,
+        "june": 17169
       },
       {
         "name": "Coffee",
@@ -946,28 +948,28 @@
       },
       {
         "name": "Operations",
-        "value": 15000.0,
-        "june": 0.0
+        "value": 15000,
+        "june": 0
       },
       {
         "name": "Other",
-        "value": 3850.0,
-        "june": 0.0
+        "value": 3850,
+        "june": 0
       },
       {
         "name": "Event Room",
-        "value": 1700.0,
-        "june": 2910.0
+        "value": 1700,
+        "june": 2910
       },
       {
         "name": "Wellness",
-        "value": 0.0,
-        "june": 10000.0
+        "value": 0,
+        "june": 10000
       },
       {
         "name": "Discounts",
-        "value": -5000.0,
-        "june": 0.0
+        "value": -5000,
+        "june": 0
       }
     ],
     "h1": [
@@ -1008,12 +1010,12 @@
         "color": "#1f8a4c",
         "data": [
           20736.51,
-          20089.0,
-          19094.0,
+          20089,
+          19094,
           18199.5,
-          20569.0,
-          17169.0,
-          27203.0
+          20569,
+          17169,
+          27203
         ]
       },
       {
@@ -1039,7 +1041,7 @@
           0,
           0,
           0,
-          15000.0
+          15000
         ]
       },
       {
@@ -1050,9 +1052,9 @@
           4613.85,
           3886.65,
           4930.1,
-          2175.0,
-          2910.0,
-          1700.0
+          2175,
+          2910,
+          1700
         ]
       },
       {
@@ -1078,7 +1080,7 @@
           0,
           0,
           0,
-          3850.0
+          3850
         ]
       },
       {
@@ -1089,9 +1091,9 @@
           -581.18,
           -529.87,
           -575.5,
-          48.0,
-          0.0,
-          -5000.0
+          48,
+          0,
+          -5000
         ]
       }
     ]
@@ -1109,7 +1111,7 @@
     "fourStreamDenominator": 783074.13,
     "fourStreamPct": 51.6,
     "operationsYtd": 116333.24,
-    "operationsRunRate": 203166.0,
+    "operationsRunRate": 203166,
     "operationsPct": 57.3,
     "janJulTotal": 507138.14,
     "streams": [
@@ -1123,42 +1125,42 @@
       {
         "name": "Event Room",
         "janJul": 22002.32,
-        "august": 0.0,
+        "august": 0,
         "ytd": 22002.32,
         "augustNote": "August not booked yet"
       },
       {
         "name": "Monthly Leasing",
         "janJul": 143060.01,
-        "august": 0.0,
+        "august": 0,
         "ytd": 143060.01,
         "augustNote": "August not booked yet"
       },
       {
         "name": "Operations",
         "janJul": 116333.24,
-        "august": 0.0,
+        "august": 0,
         "ytd": 116333.24,
         "augustNote": "Jan–Jul property/operations"
       },
       {
         "name": "Wellness",
-        "janJul": 60000.0,
-        "august": 0.0,
-        "ytd": 60000.0,
+        "janJul": 60000,
+        "august": 0,
+        "ytd": 60000,
         "augustNote": "August not booked yet"
       },
       {
         "name": "Other",
-        "janJul": 3850.0,
-        "august": 0.0,
-        "ytd": 3850.0,
+        "janJul": 3850,
+        "august": 0,
+        "ytd": 3850,
         "augustNote": "2 unclassified ACH deposits"
       },
       {
         "name": "Discounts",
         "janJul": -7116.25,
-        "august": 0.0,
+        "august": 0,
         "ytd": -7116.25,
         "augustNote": "CCYS In Kind"
       }
@@ -1238,11 +1240,11 @@
       {
         "key": "May",
         "label": "May",
-        "revenue": 2175.0
+        "revenue": 2175
       },
       {
         "key": "Jun",
-        "revenue": 2910.0
+        "revenue": 2910
       }
     ],
     "avgMonth": 3383.72,
