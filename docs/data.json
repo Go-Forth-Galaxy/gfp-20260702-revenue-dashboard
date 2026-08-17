@@ -1,10 +1,10 @@
 {
   "generated": "2026-08-06",
-  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) \u00b7 Square item-level sales Jul 1\u201321 (v2) + Jul 22, plus Jul 23\u201326 QuickBooks Sync + Jul 27 Square \u2014 coffee-store sales, 2,636 lines (Jul 24\u201327 all-Coffee, no split) \u00b7 Coffee P&L expense actuals by category (Jan\u2013Jun) | July coffee-shop expenses (QBO accrual, Jul 1\u201327) from CCPC P&L by Class + Transaction List by Vendor.",
+  "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) · Square item-level sales Jul 1–21 (v2) + Jul 22, plus Jul 23–26 QuickBooks Sync + Jul 27 Square — coffee-store sales, 2,636 lines (Jul 24–27 all-Coffee, no split) · Coffee P&L expense actuals by category (Jan–Jun) | July coffee-shop expenses (QBO accrual, Jul 1–27) from CCPC P&L by Class + Transaction List by Vendor.",
   "overall": {
     "denominator": 783074.13,
     "realized": 338136.57,
-    "realizedPct": 43.2,
+    "realizedPct": 52.6,
     "months": [
       {
         "key": "Jan",
@@ -103,7 +103,7 @@
       "Event Room+Monthly Leasing": 328838.07,
       "Wellness": 120000
     },
-    "cutoff_note": "Jan\u2013Jun are booked actuals (AOP Class view, all four revenue streams). Jul\u2013Dec are AOP forward budget. The annual target ($783,074) is the four-stream AOP plan; realized is booked Jan\u2013Jun.",
+    "cutoff_note": "Jan–Jun are booked actuals (AOP Class view, all four revenue streams). Jul–Dec are AOP forward budget. The annual target ($783,074) is the four-stream AOP plan; realized is booked Jan–Jun.",
     "pace": {
       "realizedThrough": "2026-06-30",
       "remaining": 444937.56,
@@ -116,24 +116,24 @@
       "currentRunRateMonthly": 56356.1,
       "upliftMonthly": 17800.16,
       "upliftPct": 31.6,
-      "basis": "Realized is booked Jan\u2013Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul\u2013Dec) to reach the $783,074 four-stream AOP target."
+      "basis": "Realized is booked Jan–Jun (through Jun 30). Catch-up is the average needed across the remaining 6 months (Jul–Dec) to reach the $783,074 four-stream AOP target."
     },
     "julyCallout": {
-      "label": "Jul 1\u2013Aug 12 (coffee store)",
-      "total": 34785.13,
-      "coffee": 30851.63,
+      "label": "Jul 1–Aug 16 (coffee store)",
+      "total": 36767.229999999996,
+      "coffee": 32833.73,
       "food": 3799.5,
       "apparel": 127.0,
       "alcohol": 7.0,
-      "note": "Shown for visibility only \u2014 it is NOT included in the 43.2% headline above, which is Jan\u2013Jun booked actuals across all four revenue streams. July actuals for Wellness, Monthly Leasing and Event Room aren't in yet, so folding one stream's partial month into the four-stream pace would understate true progress."
+      "note": "Shown for visibility only — it is NOT included in the 43.2% headline above, which is Jan–Jun booked actuals across all four revenue streams. July actuals for Wellness, Monthly Leasing and Event Room aren't in yet, so folding one stream's partial month into the four-stream pace would understate true progress."
     },
     "streams": [
       {
         "name": "Coffee",
         "janJul": 169008.82,
-        "august": 9869.8,
-        "ytd": 178878.62,
-        "augustNote": "Square gross, Aug 1\u201312"
+        "august": 11851.9,
+        "ytd": 180860.72,
+        "augustNote": "Square gross, Aug 1–16"
       },
       {
         "name": "Event Room",
@@ -154,7 +154,7 @@
         "janJul": 116333.24,
         "august": 0.0,
         "ytd": 116333.24,
-        "augustNote": "Jan\u2013Jul property/operations"
+        "augustNote": "Jan–Jul property/operations"
       },
       {
         "name": "Wellness",
@@ -178,13 +178,13 @@
         "augustNote": "CCYS In Kind"
       }
     ],
-    "ytdRealized": 517007.94,
-    "fourStreamYtd": 400674.7,
+    "ytdRealized": 518990.04,
+    "fourStreamYtd": 402656.8,
     "fourStreamDenominator": 783074.13,
     "operationsYtd": 116333.24,
     "operationsRunRate": 203166.0,
     "fiveStreamDenominator": 986240.13,
-    "remaining": 469232.19
+    "remaining": 467250.09
   },
   "coffee": {
     "daily": [
@@ -445,16 +445,40 @@
         "dow": "Wed",
         "revenue": 884.5,
         "goal": 1200
+      },
+      {
+        "date": "2026-08-13",
+        "dow": "Thu",
+        "revenue": 0.0,
+        "goal": 1200
+      },
+      {
+        "date": "2026-08-14",
+        "dow": "Fri",
+        "revenue": 981.15,
+        "goal": 1200
+      },
+      {
+        "date": "2026-08-15",
+        "dow": "Sat",
+        "revenue": 477.5,
+        "goal": 600
+      },
+      {
+        "date": "2026-08-16",
+        "dow": "Sun",
+        "revenue": 523.45,
+        "goal": 450
       }
     ],
     "byCategory": {
-      "Coffee": 30851.63,
+      "Coffee": 32833.73,
       "Food": 3799.5,
       "Apparel": 127.0,
       "Alcohol": 7.0
     },
-    "mtdRealized": 34785.13,
-    "mtdBudget": 43500,
+    "mtdRealized": 36767.229999999996,
+    "mtdBudget": 46950,
     "weeklyGoal": 7050,
     "dailyGoal": {
       "weekday": 1200,
@@ -462,14 +486,14 @@
       "sun": 450
     },
     "currentWeek": {
-      "label": "Aug 10\u201316 (partial)",
-      "realized": 3239.25,
-      "goalToDate": 3600,
+      "label": "Aug 10–16 (complete)",
+      "realized": 5221.35,
+      "goalToDate": 7050,
       "fullGoal": 7050,
-      "progressPct": 90.0
+      "progressPct": 74.1
     },
     "lastWeek": {
-      "label": "Aug 3\u20139 (complete)",
+      "label": "Aug 3–9 (complete)",
       "realized": 5544.35,
       "goal": 7050,
       "progressPct": 78.6
@@ -511,11 +535,11 @@
         "Alcohol": 1
       }
     },
-    "windowNote": "Refreshed to the Jul 1\u2013Aug 12 window: Jul 1\u201321 from the Square item-level import (v2), plus Jul 22\u2013Aug 12 daily receipts. Note: Jul 24\u2013Aug 12 receipts arrived without a category split, so all revenue for those days is booked as Coffee.",
+    "windowNote": "Refreshed to the Jul 1–Aug 16 window: Jul 1–21 from the Square item-level import (v2), plus Jul 22–Aug 16 daily receipts. Note: Jul 24–Aug 16 receipts arrived without a category split, so all revenue for those days is booked as Coffee.",
     "generated": null,
-    "windowLabel": "Jul 1\u2013Aug 12",
-    "mixHint": "Jul 1\u2013Aug 12 sales by category (Square item-level import v2 through Jul 21 + daily receipts through Aug 12). Note: Receipts for Jul 24 \u2013 Aug 12 arrived without a category split, so all revenue for those days is assigned to Coffee.",
-    "categoryNote": "Note: Item-level category breakdown available for Jul 1\u201321 only. Receipts for Jul 24 \u2013 Aug 12 had no category split, so $8,103.58 across those 20 days was assigned to Coffee."
+    "windowLabel": "Jul 1–Aug 16",
+    "mixHint": "Jul 1–Aug 16 sales by category (Square item-level import v2 through Jul 21 + daily receipts through Aug 16). Note: Receipts for Jul 24 – Aug 16 arrived without a category split, so all revenue for those days is assigned to Coffee.",
+    "categoryNote": "Note: Item-level category breakdown available for Jul 1–21 only. Receipts for Jul 24 – Aug 16 had no category split, so $10,085.68 across those 24 days was assigned to Coffee."
   },
   "events": {
     "months": [
@@ -546,12 +570,12 @@
       {
         "key": "May",
         "label": "May",
-        "revenue": 2175,
+        "revenue": 2175.0,
         "forecast": false
       },
       {
         "key": "Jun",
-        "revenue": 2910,
+        "revenue": 2910.0,
         "forecast": false
       },
       {
@@ -594,11 +618,11 @@
     "realizedJanJun": 20302.32,
     "runRateMonthly": 3383.72,
     "projectedAnnual": 40604.64,
-    "note": "Event Room actuals Jan\u2013Jun are from the AOP Class view. The AOP budgets Event Room together with Monthly Leasing, so Jul\u2013Dec here is a clearly-labeled run-rate projection (Jan\u2013Jun average), not a separate AOP budget line.",
+    "note": "Event Room actuals Jan–Jun are from the AOP Class view. The AOP budgets Event Room together with Monthly Leasing, so Jul–Dec here is a clearly-labeled run-rate projection (Jan–Jun average), not a separate AOP budget line.",
     "progress": {
       "realized": 20302.32,
       "projectedAnnual": 40604.64,
-      "basisNote": "Event Room has no standalone AOP budget (it\u2019s bundled with Monthly Leasing), so this target is a Jan\u2013Jun run-rate projection \u2014 not an independent budget. It sits near 50% at mid-year by construction and tracks whether bookings hold their own run-rate, not pace against a plan."
+      "basisNote": "Event Room has no standalone AOP budget (it’s bundled with Monthly Leasing), so this target is a Jan–Jun run-rate projection — not an independent budget. It sits near 50% at mid-year by construction and tracks whether bookings hold their own run-rate, not pace against a plan."
     },
     "seasonality": {
       "streamLabel": "Event Room",
@@ -652,7 +676,7 @@
     }
   },
   "expenses": {
-    "basis": "Coffee P&L (AOP reforecast), monthly actuals Jan\u2013Jun 2026, grouped by expense category. Vendor-level and weekly granularity are not in the source file; this upgrades to by-vendor/by-week when a QuickBooks bills/purchases export is supplied.",
+    "basis": "Coffee P&L (AOP reforecast), monthly actuals Jan–Jun 2026, grouped by expense category. Vendor-level and weekly granularity are not in the source file; this upgrades to by-vendor/by-week when a QuickBooks bills/purchases export is supplied.",
     "categories": [
       {
         "key": "materials",
@@ -809,11 +833,11 @@
       "janJunBudget": 124401.38,
       "annualBudget": 262622.66,
       "varianceFavorable": 4712.92,
-      "basis": "AOP ReForecast Final by Class (6-30). Jan\u2013May budget was reforecast to equal actuals, so the favorable Jan\u2013Jun variance is driven by June. Full-year expense budget = COGS $246,819.53 + Opex $15,803.13."
+      "basis": "AOP ReForecast Final by Class (6-30). Jan–May budget was reforecast to equal actuals, so the favorable Jan–Jun variance is driven by June. Full-year expense budget = COGS $246,819.53 + Opex $15,803.13."
     },
     "july": {
-      "window": "Jul 1\u201327, 2026",
-      "basis": "QBO accrual \u2014 CCPC \u201cProfit & Loss by Class\u201d (Coffee class), cross-checked line-by-line to the \u201cTransaction List by Vendor.\u201d Live QuickBooks accrual data; a different basis from the AOP-budget Jan\u2013Jun trend, so it is shown as its own panel rather than blended into that series.",
+      "window": "Jul 1–27, 2026",
+      "basis": "QBO accrual — CCPC “Profit & Loss by Class” (Coffee class), cross-checked line-by-line to the “Transaction List by Vendor.” Live QuickBooks accrual data; a different basis from the AOP-budget Jan–Jun trend, so it is shown as its own panel rather than blended into that series.",
       "income": 21759.83,
       "totalExpense": 13564.82,
       "netIncome": 8195.01,
@@ -887,7 +911,7 @@
           "note": ""
         }
       ],
-      "note": "Only Material (COGS) is vendor-itemized \u2014 Direct Labor is payroll and Admin is a single computer/maintenance line, neither vendor-level. Vendor rows sum exactly to Material $7,670.07; the three category lines sum to the $13,564.82 total. Coffee product income for the same window was $21,759.83 (Net Income $8,195.01)."
+      "note": "Only Material (COGS) is vendor-itemized — Direct Labor is payroll and Admin is a single computer/maintenance line, neither vendor-level. Vendor rows sum exactly to Material $7,670.07; the three category lines sum to the $13,564.82 total. Coffee product income for the same window was $21,759.83 (Net Income $8,195.01)."
     },
     "pctTarget": 30
   },
@@ -1073,17 +1097,17 @@
     ]
   },
   "augustYtd": {
-    "throughLabel": "Aug 12, 2026",
+    "throughLabel": "Aug 16, 2026",
     "denominator": 986240.13,
     "janJulAllStream": 507138.14,
-    "augustCoffeeOnly": 9869.8,
-    "augustBooked": 9869.8,
-    "realized": 517007.94,
-    "realizedPct": 52.4,
-    "remaining": 469232.19,
-    "fourStreamYtd": 400674.7,
+    "augustCoffeeOnly": 11851.9,
+    "augustBooked": 11851.9,
+    "realized": 518990.04,
+    "realizedPct": 52.6,
+    "remaining": 467250.09,
+    "fourStreamYtd": 402656.8,
     "fourStreamDenominator": 783074.13,
-    "fourStreamPct": 51.2,
+    "fourStreamPct": 51.4,
     "operationsYtd": 116333.24,
     "operationsRunRate": 203166.0,
     "operationsPct": 57.3,
@@ -1092,9 +1116,9 @@
       {
         "name": "Coffee",
         "janJul": 169008.82,
-        "august": 9869.8,
-        "ytd": 178878.62,
-        "augustNote": "Square gross, Aug 1\u201312"
+        "august": 11851.9,
+        "ytd": 180860.72,
+        "augustNote": "Square gross, Aug 1–16"
       },
       {
         "name": "Event Room",
@@ -1115,7 +1139,7 @@
         "janJul": 116333.24,
         "august": 0.0,
         "ytd": 116333.24,
-        "augustNote": "Jan\u2013Jul property/operations"
+        "augustNote": "Jan–Jul property/operations"
       },
       {
         "name": "Wellness",
@@ -1177,15 +1201,15 @@
       },
       {
         "key": "Aug",
-        "revenue": 9869.8,
+        "revenue": 11851.9,
         "coffeeOnly": true,
         "partial": true
       }
     ],
-    "barNote": "YTD realized ($517,007.94) as a percent of the 5-stream plan ($986,240). The 4-stream sub-total is $400,674.70 (51.2% of $783,074). August data currently includes Coffee Store sales through Aug 12 ($9,869.80); leasing/event/operations for August are pending month-end booking.",
-    "paceSub": "YTD realized through Aug 12 ($517,007.94) represents 52.4% of the five-stream plan. August reflects Coffee Store sales through Aug 12 ($9,869.80); non-coffee streams for August are pending month-end booking.",
-    "caveat": "This YTD counts Operations (a 5th class) toward the five-stream plan. Realized $517,007.94 = Jan\u2013Jul all-stream $507,138.14 + August MTD Coffee $9,869.80. The four-stream sub-total is $400,674.70 / 51.2% of $783,074. August non-coffee streams are pending month-end QBO booking.",
-    "note": "YTD = Jan\u2013Jul all-stream booked actuals ($507,138.14) + August MTD Coffee sales ($9,869.80 through Aug 12). Non-coffee streams for August will be added as month-end QBO reports are finalized."
+    "barNote": "YTD realized ($518,990.04) as a percent of the 5-stream plan ($986,240). The 4-stream sub-total is $402,656.80 (51.4% of $783,074). August data currently includes Coffee Store sales through Aug 16 ($11,851.90); leasing/event/operations for August are pending month-end booking.",
+    "paceSub": "YTD realized through Aug 16 ($518,990.04) represents 52.6% of the five-stream plan. August reflects Coffee Store sales through Aug 16 ($11,851.90); non-coffee streams for August are pending month-end booking.",
+    "caveat": "This YTD counts Operations (a 5th class) toward the five-stream plan. Realized $518,990.04 = Jan–Jul all-stream $507,138.14 + August MTD Coffee $11,851.90. The four-stream sub-total is $402,656.80 / 51.4% of $783,074. August non-coffee streams are pending month-end QBO booking.",
+    "note": "YTD = Jan–Jul all-stream booked actuals ($507,138.14) + August MTD Coffee sales ($11,851.90 through Aug 16). Non-coffee streams for August will be added as month-end QBO reports are finalized."
   },
   "seasonality": {
     "streamLabel": "Event Room",
