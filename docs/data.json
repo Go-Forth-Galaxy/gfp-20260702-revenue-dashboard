@@ -4,7 +4,7 @@
   "overall": {
     "denominator": 783074.13,
     "realized": 338136.57,
-    "realizedPct": 52.6,
+    "realizedPct": 52.7,
     "months": [
       {
         "key": "Jan",
@@ -59,7 +59,7 @@
         "key": "Aug",
         "label": "August",
         "days": 31,
-        "revenue": 70185.42,
+        "revenue": 72430.12,
         "forecast": true
       },
       {
@@ -120,8 +120,8 @@
     },
     "julyCallout": {
       "label": "Jul 1–Aug 16 (coffee store)",
-      "total": 36767.229999999996,
-      "coffee": 32833.73,
+      "total": 39011.93,
+      "coffee": 35078.43,
       "food": 3799.5,
       "apparel": 127.0,
       "alcohol": 7.0,
@@ -131,8 +131,8 @@
       {
         "name": "Coffee",
         "janJul": 169008.82,
-        "august": 11851.9,
-        "ytd": 180860.72,
+        "august": 14096.6,
+        "ytd": 183105.42,
         "augustNote": "Square gross, Aug 1–16"
       },
       {
@@ -178,13 +178,13 @@
         "augustNote": "CCYS In Kind"
       }
     ],
-    "ytdRealized": 518990.04,
-    "fourStreamYtd": 402656.8,
+    "ytdRealized": 521234.74,
+    "fourStreamYtd": 404901.5,
     "fourStreamDenominator": 783074.13,
     "operationsYtd": 116333.24,
     "operationsRunRate": 203166.0,
     "fiveStreamDenominator": 986240.13,
-    "remaining": 467250.09
+    "remaining": 465005.39
   },
   "coffee": {
     "daily": [
@@ -449,7 +449,7 @@
       {
         "date": "2026-08-13",
         "dow": "Thu",
-        "revenue": 0.0,
+        "revenue": 1122.35,
         "goal": 1200
       },
       {
@@ -472,12 +472,12 @@
       }
     ],
     "byCategory": {
-      "Coffee": 32833.73,
+      "Coffee": 35078.43,
       "Food": 3799.5,
       "Apparel": 127.0,
       "Alcohol": 7.0
     },
-    "mtdRealized": 36767.229999999996,
+    "mtdRealized": 39011.93,
     "mtdBudget": 46950,
     "weeklyGoal": 7050,
     "dailyGoal": {
@@ -487,10 +487,10 @@
     },
     "currentWeek": {
       "label": "Aug 10–16 (complete)",
-      "realized": 5221.35,
+      "realized": 7466.05,
       "goalToDate": 7050,
       "fullGoal": 7050,
-      "progressPct": 74.1
+      "progressPct": 105.9
     },
     "lastWeek": {
       "label": "Aug 3–9 (complete)",
@@ -527,9 +527,9 @@
       }
     ],
     "units": {
-      "total": 3694,
+      "total": 3984,
       "byCategory": {
-        "Coffee": 3218,
+        "Coffee": 3508,
         "Food": 471,
         "Apparel": 4,
         "Alcohol": 1
@@ -539,7 +539,7 @@
     "generated": null,
     "windowLabel": "Jul 1–Aug 16",
     "mixHint": "Jul 1–Aug 16 sales by category (Square item-level import v2 through Jul 21 + daily receipts through Aug 16). Note: Receipts for Jul 24 – Aug 16 arrived without a category split, so all revenue for those days is assigned to Coffee.",
-    "categoryNote": "Note: Item-level category breakdown available for Jul 1–21 only. Receipts for Jul 24 – Aug 16 had no category split, so $10,085.68 across those 24 days was assigned to Coffee."
+    "categoryNote": "Note: Item-level category breakdown available for Jul 1–21 only. Receipts for Jul 24 – Aug 16 had no category split, so $11,208.03 across those 24 days was assigned to Coffee."
   },
   "events": {
     "months": [
@@ -1102,12 +1102,12 @@
     "janJulAllStream": 507138.14,
     "augustCoffeeOnly": 11851.9,
     "augustBooked": 11851.9,
-    "realized": 518990.04,
-    "realizedPct": 52.6,
-    "remaining": 467250.09,
-    "fourStreamYtd": 402656.8,
+    "realized": 521234.74,
+    "realizedPct": 52.9,
+    "remaining": 465005.39,
+    "fourStreamYtd": 404901.5,
     "fourStreamDenominator": 783074.13,
-    "fourStreamPct": 51.4,
+    "fourStreamPct": 51.7,
     "operationsYtd": 116333.24,
     "operationsRunRate": 203166.0,
     "operationsPct": 57.3,
@@ -1116,8 +1116,8 @@
       {
         "name": "Coffee",
         "janJul": 169008.82,
-        "august": 11851.9,
-        "ytd": 180860.72,
+        "august": 14096.6,
+        "ytd": 183105.42,
         "augustNote": "Square gross, Aug 1–16"
       },
       {
@@ -1201,15 +1201,15 @@
       },
       {
         "key": "Aug",
-        "revenue": 11851.9,
+        "revenue": 14096.6,
         "coffeeOnly": true,
         "partial": true
       }
     ],
-    "barNote": "YTD realized ($518,990.04) as a percent of the 5-stream plan ($986,240). The 4-stream sub-total is $402,656.80 (51.4% of $783,074). August data currently includes Coffee Store sales through Aug 16 ($11,851.90); leasing/event/operations for August are pending month-end booking.",
-    "paceSub": "YTD realized through Aug 16 ($518,990.04) represents 52.6% of the five-stream plan. August reflects Coffee Store sales through Aug 16 ($11,851.90); non-coffee streams for August are pending month-end booking.",
-    "caveat": "This YTD counts Operations (a 5th class) toward the five-stream plan. Realized $518,990.04 = Jan–Jul all-stream $507,138.14 + August MTD Coffee $11,851.90. The four-stream sub-total is $402,656.80 / 51.4% of $783,074. August non-coffee streams are pending month-end QBO booking.",
-    "note": "YTD = Jan–Jul all-stream booked actuals ($507,138.14) + August MTD Coffee sales ($11,851.90 through Aug 16). Non-coffee streams for August will be added as month-end QBO reports are finalized."
+    "barNote": "YTD realized ($521,234.74) as a percent of the 5-stream plan ($986,240). The 4-stream sub-total is $404,901.50 (51.7% of $783,074). August data currently includes Coffee Store sales through Aug 16 ($14,096.60); leasing/event/operations for August are pending month-end booking.",
+    "paceSub": "YTD realized through Aug 16 ($521,234.74) represents 52.9% of the five-stream plan. August reflects Coffee Store sales through Aug 16 ($14,096.60); non-coffee streams for August are pending month-end booking.",
+    "caveat": "This YTD counts Operations (a 5th class) toward the five-stream plan. Realized $521,234.74 = Jan–Jul all-stream $507,138.14 + August MTD Coffee $14,096.60. The four-stream sub-total is $404,901.50 / 51.7% of $783,074. August non-coffee streams are pending month-end QBO booking.",
+    "note": "YTD = Jan–Jul all-stream booked actuals ($507,138.14) + August MTD Coffee sales ($14,096.60 through Aug 16). Non-coffee streams for August will be added as month-end QBO reports are finalized."
   },
   "seasonality": {
     "streamLabel": "Event Room",
