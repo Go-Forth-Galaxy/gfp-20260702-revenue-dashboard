@@ -1,3 +1,3 @@
 window.GFP_CONFIG = {
-  DATA_URL: "data.json?v=20260817b"
+  DATA_URL: "data.json?v=20260817c"
 };
