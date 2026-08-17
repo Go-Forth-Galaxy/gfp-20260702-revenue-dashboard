@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carolina Core Wellness &mdash; 2026 Revenue Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260817b">
-  <link rel="stylesheet" href="styles.css?v=20260817b">
-  <script src="config.js?v=20260817b"></script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260817c">
+  <link rel="stylesheet" href="styles.css?v=20260817c">
+  <script src="config.js?v=20260817c"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js';"></script>
 </head>
 <body>
@@ -173,7 +173,7 @@
             <div class="chart-wrap" style="height: 280px;">
               <canvas id="cf-daily-chart"></canvas>
             </div>
-            <p class="hint" id="cf-daily-hint">Bars color-coded by AOP daily goal attainment: Green = &ge;Goal, Amber = &ge;70%, Red = &lt;70%.</p>
+            <p class="hint" id="cf-daily-hint">Bars color-coded by AOP daily goal attainment: Green = &ge;Goal, Amber = &ge;70%, Red = &lt;70%. <br>A ⭐ indicates a day with a booked event.</p>
           </div>
 
           <div class="panel">
@@ -287,6 +287,8 @@
           <div class="controls-group">
             <span class="controls-label">Presets:</span>
             <div class="toggle-group">
+              <button type="button" class="toggle-btn" id="ex-preset-mtd">MTD</button>
+              <button type="button" class="toggle-btn" id="ex-preset-ytd">YTD</button>
               <button type="button" class="toggle-btn" id="ex-preset-h1">Jan&ndash;Jun (AOP)</button>
               <button type="button" class="toggle-btn active" id="ex-preset-jul">Through July (QBO)</button>
             </div>
@@ -342,6 +344,6 @@
     Carolina Core Wellness &mdash; 2026 Revenue Dashboard
   </footer>
 
-  <script src="app.js?v=20260817b"></script>
+  <script src="app.js?v=20260817c"></script>
 </body>
 </html>
