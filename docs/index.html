@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carolina Core Wellness &mdash; 2026 Revenue Dashboard</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260813b">
-  <link rel="stylesheet" href="styles.css?v=20260813b">
-  <script src="config.js?v=20260813b"></script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260817a">
+  <link rel="stylesheet" href="styles.css?v=20260817a">
+  <script src="config.js?v=20260817a"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="this.onerror=null;this.src='https://unpkg.com/chart.js@4.4.1/dist/chart.umd.js';"></script>
 </head>
 <body>
@@ -33,7 +33,7 @@
         <button class="tabbtn" data-tab="expenses">Coffeeshop Expenses</button>
       </div>
 
-      <!-- ===================== OVERALL TAB ===================== -->
+      <!-- ==================== OVERALL TAB ==================== -->
       <section class="tabpanel active" id="tab-overall">
 
         <!-- CONTROLS PANEL: DATE RANGE & PRESETS -->
@@ -47,7 +47,7 @@
           <div class="controls-group">
             <span class="controls-label">Presets:</span>
             <div class="toggle-group">
-              <button type="button" class="toggle-btn" id="ov-preset-ytd">YTD (Aug 12)</button>
+              <button type="button" class="toggle-btn" id="ov-preset-ytd">YTD (Aug 16)</button>
               <button type="button" class="toggle-btn" id="ov-preset-h1">H1 (Jan&ndash;Jun)</button>
               <button type="button" class="toggle-btn active" id="ov-preset-fy">Full Year</button>
             </div>
@@ -76,7 +76,7 @@
         <!-- REVENUE BY STREAM TABLE -->
         <div class="panel">
           <h2>2026 Revenue by Stream</h2>
-          <p class="hint">Includes Jan&ndash;Jul all-stream booked revenue + August MTD Coffee sales (through Aug 12).</p>
+          <p class="hint">Includes Jan&ndash;Jul all-stream booked revenue + August MTD Coffee sales (through Aug 16).</p>
           <table id="ov-streams-table">
             <thead>
               <tr>
@@ -133,16 +133,16 @@
 
       </section>
 
-      <!-- ===================== COFFEE TAB ===================== -->
+      <!-- ==================== COFFEE TAB ==================== -->
       <section class="tabpanel" id="tab-coffee">
 
         <!-- CONTROLS PANEL: DATE RANGE & LOOKING BACK/FORWARD TOGGLE -->
         <div class="controls-panel">
           <div class="controls-group">
             <span class="controls-label">Date range:</span>
-            <input type="date" id="cf-date-start" class="controls-select" min="2026-07-01" max="2026-08-12" value="2026-08-01">
+            <input type="date" id="cf-date-start" class="controls-select" min="2026-07-01" max="2026-08-16" value="2026-08-01">
             <span class="controls-label" style="margin:0 4px;">to</span>
-            <input type="date" id="cf-date-end" class="controls-select" min="2026-07-01" max="2026-08-12" value="2026-08-12">
+            <input type="date" id="cf-date-end" class="controls-select" min="2026-07-01" max="2026-08-16" value="2026-08-16">
           </div>
           <div class="controls-group">
             <span class="controls-label">Perspective:</span>
@@ -189,7 +189,7 @@
 
       </section>
 
-      <!-- ===================== EVENTS TAB ===================== -->
+      <!-- ==================== EVENTS TAB ==================== -->
       <section class="tabpanel" id="tab-events">
 
         <!-- CONTROLS PANEL: DATE RANGE & PRESETS -->
@@ -272,7 +272,7 @@
 
       </section>
 
-      <!-- ===================== COFFEESHOP EXPENSES ===================== -->
+      <!-- ==================== COFFEESHOP EXPENSES ==================== -->
       <section class="tabpanel" id="tab-expenses">
 
         <!-- CONTROLS PANEL: DATE RANGE & PRESETS -->
@@ -341,6 +341,6 @@
     Carolina Core Wellness &mdash; 2026 Revenue Dashboard
   </footer>
 
-  <script src="app.js?v=20260813b"></script>
+  <script src="app.js?v=20260817a"></script>
 </body>
 </html>
