@@ -561,7 +561,9 @@
       var ctxDaily = document.getElementById("cf-daily-chart");
       if (ctxDaily) {
         safeDestroyChart("cf-daily-chart");
-        var labels = filteredDaily.map(function (d) { return fmtCoffeeDate(d.date); });
+        var labels = filteredDaily.map(function (d) { 
+          return fmtCoffeeDate(d.date) + (d.hasEvent ? " ⭐" : ""); 
+        });
         var revData = filteredDaily.map(function (d) { return d.revenue; });
         var goalData = filteredDaily.map(function (d) { return d.goal; });
         var bgColors = filteredDaily.map(function (d) {
@@ -1120,6 +1122,8 @@
   function wireExpensesControls() {
     var startInput = document.getElementById("ex-date-start");
     var endInput = document.getElementById("ex-date-end");
+    var presetMtd = document.getElementById("ex-preset-mtd");
+    var presetYtd = document.getElementById("ex-preset-ytd");
     var presetH1 = document.getElementById("ex-preset-h1");
     var presetJul = document.getElementById("ex-preset-jul");
 
@@ -1128,7 +1132,7 @@
       if (endInput) endInput.value = e;
       expensesRangeStart = s;
       expensesRangeEnd = e;
-      [presetH1, presetJul].forEach(function (btn) {
+      [presetMtd, presetYtd, presetH1, presetJul].forEach(function (btn) {
         if (btn) btn.classList.remove("active");
       });
       if (activeBtn) activeBtn.classList.add("active");
@@ -1152,7 +1156,7 @@
         endInput.value = e;
         expensesRangeStart = s;
         expensesRangeEnd = e;
-        [presetH1, presetJul].forEach(function (btn) {
+        [presetMtd, presetYtd, presetH1, presetJul].forEach(function (btn) {
           if (btn) btn.classList.remove("active");
         });
         if (DATA && DATA.expenses) {
@@ -1164,6 +1168,16 @@
       endInput.addEventListener("change", onRangeChange);
     }
 
+    if (presetMtd && !presetMtd.getAttribute("data-wired")) {
+      presetMtd.setAttribute("data-wired", "true");
+      // MTD defaults to August 2026
+      presetMtd.addEventListener("click", function () { setRange("2026-08-01", "2026-08-16", presetMtd); });
+    }
+    if (presetYtd && !presetYtd.getAttribute("data-wired")) {
+      presetYtd.setAttribute("data-wired", "true");
+      // YTD covers Jan 1 to latest available date
+      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-16", presetYtd); });
+    }
     if (presetH1 && !presetH1.getAttribute("data-wired")) {
       presetH1.setAttribute("data-wired", "true");
       presetH1.addEventListener("click", function () { setRange("2026-01-01", "2026-06-30", presetH1); });
@@ -1219,7 +1233,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260817b";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260817c";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
