@@ -301,8 +301,11 @@
 
     var kpis = [];
     if (isFullYear) {
+      // For full year, there isn't a direct 1:1 budgeted target for the exact date (unless we use ytd target).
+      // If o.ytdTarget exists, we can compare realized to it.
+      var isDown = (o.ytdTarget && realized < o.ytdTarget) ? "down" : "";
       kpis = [
-        { label: "YTD Realized (Through Aug 16)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan" },
+        { label: "YTD Realized (Through Aug 16)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan", cls: isDown },
         { label: "Four-Stream Sub-Total", value: money(o.fourStreamYtd || 400675), meta: pct0(o.fourStreamPct || 51.2) + " of $783,074 AOP" },
         { label: "Operations YTD (Run-Rate)", value: money(o.operationsYtd || 116333), meta: "Target " + money(o.operationsRunRate || 203166) + " (" + pct0(o.operationsPct || 57.3) + ")" },
         { label: "Annual Plan (5-Stream)", value: money(totalPlan), meta: "$783,074 AOP + $203,166 Ops" },
@@ -312,12 +315,13 @@
     } else {
       var periodRealized = filteredMonths.reduce(function (sum, m) { return sum + ((m.forecast !== undefined ? m.forecast : m.is_forecast) ? 0 : m.revenue); }, 0);
       var periodPlan = filteredMonths.reduce(function (sum, m) { return sum + m.revenue; }, 0);
-      var periodAvg = periodRealized / filteredMonths.length;
+      var periodAvg = periodRealized / (filteredMonths.length || 1);
+      var targetAvg = periodPlan / (filteredMonths.length || 1);
       kpis = [
-        { label: "Period Realized Actuals", value: money(periodRealized), meta: filteredMonths.length + " month(s) in view" },
+        { label: "Period Realized Actuals", value: money(periodRealized), meta: filteredMonths.length + " month(s) in view", cls: periodRealized < periodPlan ? "down" : "" },
         { label: "Period Target (AOP)", value: money(periodPlan), meta: pct0(periodPlan > 0 ? (periodRealized / periodPlan * 100) : 0) + " attainment" },
         { label: "Period Gap to Plan", value: money(Math.max(0, periodPlan - periodRealized)), meta: "Variance for range" },
-        { label: "Monthly Average", value: money(periodAvg) + " / mo", meta: "Average booked per month" },
+        { label: "Monthly Average", value: money(periodAvg) + " / mo", meta: "Average booked per month", cls: periodAvg < targetAvg ? "down" : "" },
         { label: "Peak Month in Range", value: ext.best ? (ext.best.label || ext.best.name || ext.best.key) + " (" + money(ext.best.revenue) + ")" : "N/A", meta: "Highest booked revenue" },
         { label: "Lowest Month in Range", value: ext.worst ? (ext.worst.label || ext.worst.name || ext.worst.key) + " (" + money(ext.worst.revenue) + ")" : "N/A", meta: "Lowest booked revenue" }
       ];
@@ -538,17 +542,19 @@
     var kpis = [];
     if (perspective === "forward") {
       var reqDailyKpi = remainingDaysInMonth > 0 ? ((fullMonthGoal - realizedInMonth) / remainingDaysInMonth) : 0;
+      var periodDailyGoal = fullMonthGoal / totalDaysInMonth;
       kpis = [
-        { label: "Projected " + monthName + " Total", value: money(projectedMonthEnd), meta: pct0((projectedMonthEnd / fullMonthGoal) * 100) + " of " + money(fullMonthGoal) + " plan" },
+        { label: "Projected " + monthName + " Total", value: money(projectedMonthEnd), meta: pct0((projectedMonthEnd / fullMonthGoal) * 100) + " of " + money(fullMonthGoal) + " plan", cls: projectedMonthEnd < fullMonthGoal ? "down" : "" },
         { label: "Booked in " + monthName, value: money(realizedInMonth), meta: recordedDaysInMonth + " of " + totalDaysInMonth + " days recorded" },
         { label: "Required Daily Pace", value: money(reqDailyKpi) + " / day", meta: "Over remaining " + remainingDaysInMonth + " days" },
-        { label: "Current Daily Pace", value: money(dailyAvgInMonth) + " / day", meta: "Average through " + fmtCoffeeDate(end) }
+        { label: "Current Daily Pace", value: money(dailyAvgInMonth) + " / day", meta: "Average through " + fmtCoffeeDate(end), cls: dailyAvgInMonth < periodDailyGoal ? "down" : "" }
       ];
     } else {
       var dailyAvg = filteredDaily.length > 0 ? (periodRealized / filteredDaily.length) : 0;
+      var dailyTarget = filteredDaily.length > 0 ? (periodGoalToDate / filteredDaily.length) : 0;
       kpis = [
-        { label: "Coffee Realized (" + fmtCoffeeDate(start) + " \u2013 " + fmtCoffeeDate(end) + ")", value: money(periodRealized), meta: filteredDaily.length + " days recorded" },
-        { label: "Daily Average", value: money(dailyAvg) + " / day", meta: "Across selected range" },
+        { label: "Coffee Realized (" + fmtCoffeeDate(start) + " \u2013 " + fmtCoffeeDate(end) + ")", value: money(periodRealized), meta: filteredDaily.length + " days recorded", cls: periodRealized < periodGoalToDate ? "down" : "" },
+        { label: "Daily Average", value: money(dailyAvg) + " / day", meta: "Across selected range", cls: dailyAvg < dailyTarget ? "down" : "" },
         { label: "Best Day in Range", value: bestDay.date ? fmtCoffeeDate(bestDay.date) + " (" + money(bestDay.revenue) + ")" : "N/A", meta: bestDay.dow || "Peak sales day" },
         { label: "Target for Range", value: money(periodGoalToDate), meta: pct0(periodGoalToDate > 0 ? (periodRealized / periodGoalToDate * 100) : 0) + " of schedule" }
       ];
@@ -686,7 +692,7 @@
     if (pHint) pHint.textContent = e.progress ? e.progress.basisNote : "Event Room target is a Jan\u2013Jun run-rate projection ($3,384/mo).";
 
     var kpis = [
-      { label: "Event Room Realized in Period", value: money2(realizedInRange), meta: "Booked actuals (AOP Class view)" },
+      { label: "Event Room Realized in Period", value: money2(realizedInRange), meta: "Booked actuals (AOP Class view)", cls: realizedInRange < totalInRange ? "down" : "" },
       { label: "Monthly Run-Rate", value: money2(e.runRateMonthly || 3383.72), meta: "Jan\u2013Jun baseline average" },
       { label: "Projected Period Total", value: money(totalInRange), meta: filteredMonths.length + " month(s) projected" }
     ];
