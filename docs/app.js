@@ -6,10 +6,10 @@
   var built = {};
 
   var overallRangeStart = "2026-01-01";
-  var overallRangeEnd = "2026-08-16";
+  var overallRangeEnd = "2026-08-17";
 
   var coffeeRangeStart = "2026-08-01";
-  var coffeeRangeEnd = "2026-08-16";
+  var coffeeRangeEnd = "2026-08-17";
   var coffeeSelectedPerspective = "back";
 
   var eventsRangeStart = "2026-01-01";
@@ -207,7 +207,7 @@
     for (var i = 0; i < wraps.length; i++) {
       var w = wraps[i];
       w.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#607282;font-size:13px;background:#f6f8fa;border-radius:8px;padding:12px;text-align:center;">' +
-        'Chart preview offline &mdash; full numerical figures are displayed in tables and summary cards below.</div>';
+        'Chart preview offline \u2014 full numerical figures are displayed in tables and summary cards below.</div>';
     }
   }
 
@@ -246,7 +246,7 @@
       if (barRight) barRight.textContent = "Annual Plan " + money(totalPlan);
       if (barHint) {
         barHint.textContent = "Realized revenue across all 5 streams (" + money(realized) +
-          " YTD through Aug 16) divided by the " + money(totalPlan) +
+          " YTD through Aug 17) divided by the " + money(totalPlan) +
           " plan. Four-stream AOP sub-total: " + money(o.fourStreamYtd || 400675) +
           " (" + pct0(o.fourStreamPct || 51.2) + " of $783,074). Remaining to plan: " + money(remaining) + ".";
       }
@@ -305,7 +305,7 @@
       // If o.ytdTarget exists, we can compare realized to it.
       var isDown = (o.ytdTarget && realized < o.ytdTarget) ? "down" : "";
       kpis = [
-        { label: "YTD Realized (Through Aug 16)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan", cls: isDown },
+        { label: "YTD Realized (Through Aug 17)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan", cls: isDown },
         { label: "Four-Stream Sub-Total", value: money(o.fourStreamYtd || 400675), meta: pct0(o.fourStreamPct || 51.2) + " of $783,074 AOP" },
         { label: "Operations YTD (Run-Rate)", value: money(o.operationsYtd || 116333), meta: "Target " + money(o.operationsRunRate || 203166) + " (" + pct0(o.operationsPct || 57.3) + ")" },
         { label: "Annual Plan (5-Stream)", value: money(totalPlan), meta: "$783,074 AOP + $203,166 Ops" },
@@ -1001,7 +1001,7 @@
 
     if (presetYtd && !presetYtd.getAttribute("data-wired")) {
       presetYtd.setAttribute("data-wired", "true");
-      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-16", presetYtd); });
+      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-17", presetYtd); });
     }
     if (presetYtlm && !presetYtlm.getAttribute("data-wired")) {
       presetYtlm.setAttribute("data-wired", "true");
@@ -1024,11 +1024,11 @@
       startInput.setAttribute("data-wired", "true");
       var onRangeChange = function () {
         var s = startInput.value || "2026-07-01";
-        var e = endInput.value || "2026-08-16";
+        var e = endInput.value || "2026-08-17";
         if (s < "2026-07-01") s = "2026-07-01";
         if (e < "2026-07-01") e = "2026-07-01";
-        if (s > "2026-08-16") s = "2026-08-16";
-        if (e > "2026-08-16") e = "2026-08-16";
+        if (s > "2026-08-17") s = "2026-08-17";
+        if (e > "2026-08-17") e = "2026-08-17";
         if (s > e) e = s;
         startInput.value = s;
         endInput.value = e;
@@ -1177,12 +1177,12 @@
     if (presetMtd && !presetMtd.getAttribute("data-wired")) {
       presetMtd.setAttribute("data-wired", "true");
       // MTD defaults to August 2026
-      presetMtd.addEventListener("click", function () { setRange("2026-08-01", "2026-08-16", presetMtd); });
+      presetMtd.addEventListener("click", function () { setRange("2026-08-01", "2026-08-17", presetMtd); });
     }
     if (presetYtd && !presetYtd.getAttribute("data-wired")) {
       presetYtd.setAttribute("data-wired", "true");
       // YTD covers Jan 1 to latest available date
-      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-16", presetYtd); });
+      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-17", presetYtd); });
     }
     if (presetH1 && !presetH1.getAttribute("data-wired")) {
       presetH1.setAttribute("data-wired", "true");
@@ -1239,7 +1239,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260817c";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260818a";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
