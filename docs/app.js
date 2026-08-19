@@ -357,11 +357,12 @@
 
     var catchGrid = document.getElementById("ov-catchup-grid");
     if (catchGrid) {
+      var p = o.pace || {};
       catchGrid.innerHTML = [
-        { label: "Monthly Average Needed", value: money(74156) + " / mo", meta: "Up from $56,356/mo run-rate (+31.6%)" },
-        { label: "Weekly Pace Needed", value: money(16927) + " / wk", meta: "Across 26.3 remaining weeks" },
-        { label: "Daily Pace Needed", value: money(2418) + " / day", meta: "Across 184 remaining days (Jul\u2013Dec)" },
-        { label: "Required H2 Run-Rate", value: money(444938), meta: "Jul 1 \u2013 Dec 31 total gap to plan" }
+        { label: "Monthly Average Needed", value: money(p.perMonth || 75479) + " / mo", meta: "Up from " + money(p.currentRunRateMonthly || 57954) + "/mo run-rate (+" + (p.upliftPct || 30.2) + "%)" },
+        { label: "Weekly Pace Needed", value: money(p.perWeek || 17265) + " / wk", meta: "Across " + (p.remWeeks ? p.remWeeks.toFixed(1) : "21.9") + " remaining weeks" },
+        { label: "Daily Pace Needed", value: money(p.perDay || 2467) + " / day", meta: "Across " + (p.remDays || 153) + " remaining days (Aug–Dec)" },
+        { label: "Required Aug–Dec Run-Rate", value: money(p.remaining || 377397), meta: "Aug 1 – Dec 31 total gap to plan" }
       ].map(renderKpiCard).join("");
     }
 
@@ -780,12 +781,20 @@
     var sn = e.seasonality || (DATA && DATA.seasonality);
     if (sn) {
       var snKpis = document.getElementById("sn-kpis");
-      if (snKpis) {
+      if (snKpis && sn.months && sn.months.length > 0) {
+        var sMonths = sn.months;
+        var sTotal = sn.total || sMonths.reduce(function (sum, m) { return sum + m.revenue; }, 0);
+        var sAvg = sn.avgMonth || (sTotal / sMonths.length);
+        var sPeak = sMonths.reduce(function (best, m) { return (!best || m.revenue > best.revenue) ? m : best; }, null);
+        var sLow = sMonths.reduce(function (worst, m) { return (!worst || m.revenue < worst.revenue) ? m : worst; }, null);
+        var peakIdx = sAvg > 0 ? ((sPeak.revenue / sAvg) * 100) : 100;
+        var lowIdx = sAvg > 0 ? ((sLow.revenue / sAvg) * 100) : 100;
+
         snKpis.innerHTML = [
-          { label: "Peak Month", value: "April " + money2(4930.10), meta: "Seasonal Index 145.7 (Highest)" },
-          { label: "Low Month", value: "January " + money2(1786.72), meta: "Seasonal Index 52.8 (Lowest)" },
-          { label: "Monthly Baseline Average", value: money2(sn.avgMonth || 3383.72) + " / mo", meta: "100.0 Seasonal Baseline" },
-          { label: "H1 Booked Total", value: money2(sn.total || 20302.32), meta: "Jan\u2013Jun Event Room Actuals" }
+          { label: "Peak Month", value: (sPeak.label || sPeak.name || sPeak.key) + " " + money2(sPeak.revenue), meta: "Seasonal Index " + peakIdx.toFixed(1) + " (Highest)" },
+          { label: "Low Month", value: (sLow.label || sLow.name || sLow.key) + " " + money2(sLow.revenue), meta: "Seasonal Index " + lowIdx.toFixed(1) + " (Lowest)" },
+          { label: "Monthly Baseline Average", value: money2(sAvg) + " / mo", meta: "100.0 Seasonal Baseline" },
+          { label: "Booked Actuals Total", value: money2(sTotal), meta: "Jan–" + (sMonths[sMonths.length - 1].key || "Jul") + " Event Room Actuals" }
         ].map(renderKpiCard).join("");
       }
 
@@ -793,14 +802,14 @@
       if (snTbody && sn.months) {
         var html = "";
         sn.months.forEach(function (m) {
-          var idxVal = (m.revenue / (sn.avgMonth || 3383.72)) * 100;
+          var idxVal = (m.revenue / (sn.avgMonth || 3143.19)) * 100;
           var badgeCls = idxVal >= 130 ? "up" : (idxVal >= 100 ? "amber" : "down");
           var badgeLabel = idxVal >= 130 ? "Peak Month" : (idxVal >= 100 ? "Above Avg" : (idxVal <= 60 ? "Low Month" : "Below Avg"));
 
           html += '<tr>' +
             '<td>' + (m.label || m.name || m.key) + '</td>' +
             '<td class="num">' + money2(m.revenue) + '</td>' +
-            '<td class="num">' + (m.revenue / (sn.total || 20302.32) * 100).toFixed(1) + '%</td>' +
+            '<td class="num">' + (m.revenue / (sn.total || 22002.32) * 100).toFixed(1) + '%</td>' +
             '<td class="num"><strong>' + idxVal.toFixed(1) + '</strong></td>' +
             '<td><span class="badge ' + badgeCls + '">' + badgeLabel + '</span></td>' +
             '</tr>';
@@ -1239,7 +1248,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260819a";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260819b";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
