@@ -1,10 +1,10 @@
 {
-  "generated": "2026-08-20",
+  "generated": "2026-08-21",
   "source": "CCPC reforecast AOP - 6-30.xlsx (Class view actuals + forward budget) · Square item-level sales Jul 1–21 (v2) + Jul 22, plus Jul 23–26 QuickBooks Sync + Jul 27 Square — coffee-store sales, 2,636 lines (Jul 24–27 all-Coffee, no split) · Coffee P&L expense actuals by category (Jan–Jun) | July coffee-shop expenses (QBO accrual, Jul 1–27) from CCPC P&L by Class + Transaction List by Vendor.",
   "overall": {
     "denominator": 783074.13,
     "realized": 340034.52,
-    "realizedPct": 53.0,
+    "realizedPct": 53.2,
     "months": [
       {
         "key": "Jan",
@@ -119,21 +119,21 @@
       "basis": "Realized is booked Jan–Jul (through Jul 31). Catch-up is the average needed across the remaining 5 months (Aug–Dec) to reach the $783,074 four-stream AOP target."
     },
     "julyCallout": {
-      "label": "Aug 1–19 (coffee store)",
-      "total": 15855.8,
-      "coffee": 15855.8,
+      "label": "Aug 1–20 (coffee store)",
+      "total": 17164.6,
+      "coffee": 17164.6,
       "food": 0.0,
       "apparel": 0.0,
       "alcohol": 0.0,
-      "note": "August MTD coffee sales stand at $15,855.80. August non-coffee streams (Leasing, Events, Operations, Wellness) will be booked at month close."
+      "note": "August MTD coffee sales stand at $17,164.60. August non-coffee streams (Leasing, Events, Operations, Wellness) will be booked at month close."
     },
     "streams": [
       {
         "name": "Coffee",
         "janJul": 169008.82,
-        "august": 15855.8,
-        "ytd": 184864.62,
-        "augustNote": "Square gross, Aug 1–19"
+        "august": 17164.6,
+        "ytd": 186173.42,
+        "augustNote": "Square gross, Aug 1–20"
       },
       {
         "name": "Event Room",
@@ -178,14 +178,14 @@
         "augustNote": "CCYS In Kind"
       }
     ],
-    "ytdRealized": 522993.94,
-    "fourStreamYtd": 406660.7,
+    "ytdRealized": 524302.74,
+    "fourStreamYtd": 407969.5,
     "fourStreamDenominator": 783074.13,
     "operationsYtd": 116333.24,
     "operationsRunRate": 203166,
     "fiveStreamDenominator": 986240.13,
-    "remaining": 463246.19,
-    "fourStreamPct": 51.9
+    "remaining": 461937.39,
+    "fourStreamPct": 52.1
   },
   "coffee": {
     "daily": [
@@ -490,16 +490,22 @@
         "dow": "Wed",
         "revenue": 983.6,
         "goal": 1200.0
+      },
+      {
+        "date": "2026-08-20",
+        "dow": "Thu",
+        "revenue": 1308.8,
+        "goal": 1200.0
       }
     ],
     "byCategory": {
-      "Coffee": 36837.63,
+      "Coffee": 38146.43,
       "Food": 3799.5,
-      "Apparel": 127,
-      "Alcohol": 7
+      "Apparel": 127.0,
+      "Alcohol": 7.0
     },
-    "mtdRealized": 40771.13,
-    "mtdBudget": 50550.0,
+    "mtdRealized": 42079.93,
+    "mtdBudget": 51750.0,
     "weeklyGoal": 7050,
     "dailyGoal": {
       "weekday": 1200,
@@ -508,10 +514,10 @@
     },
     "currentWeek": {
       "label": "Aug 17–23 (partial)",
-      "realized": 2881.55,
-      "goalToDate": 3600.0,
+      "realized": 4190.35,
+      "goalToDate": 4800.0,
       "fullGoal": 7050.0,
-      "progressPct": 80.0
+      "progressPct": 87.3
     },
     "lastWeek": {
       "label": "Aug 10–16 (complete)",
@@ -557,11 +563,11 @@
         "Alcohol": 1
       }
     },
-    "windowNote": "Refreshed to the Jul 1–Aug 19 window: Jul 1–21 from the Square item-level import (v2), plus Jul 22–Aug 19 daily receipts. Note: Jul 24–Aug 19 receipts arrived without a category split, so all revenue for those days is booked as Coffee.",
-    "generated": "2026-08-20",
-    "windowLabel": "Jul 1–Aug 19",
-    "mixHint": "Jul 1–Aug 19 sales by category (Square item-level import v2 through Jul 21 + daily receipts through Aug 19). Note: Receipts for Jul 24 – Aug 19 arrived without a category split, so all revenue for those days is assigned to Coffee.",
-    "categoryNote": "Note: Item-level category breakdown available for Jul 1–21 only. Receipts for Jul 24 – Aug 19 had no category split, so $22,247.43 across those 27 days was assigned to Coffee."
+    "windowNote": "Refreshed to the Jul 1–Aug 20 window: Jul 1–21 from the Square item-level import (v2), plus Jul 22–Aug 20 daily receipts. Note: Jul 24–Aug 20 receipts arrived without a category split, so all revenue for those days is booked as Coffee.",
+    "generated": "2026-08-21",
+    "windowLabel": "Jul 1–Aug 20",
+    "mixHint": "Jul 1–Aug 20 sales by category (Square item-level import v2 through Jul 21 + daily receipts through Aug 20). Note: Receipts for Jul 24 – Aug 20 arrived without a category split, so all revenue for those days is assigned to Coffee.",
+    "categoryNote": "Note: Item-level category breakdown available for Jul 1–21 only. Receipts for Jul 24 – Aug 20 had no category split, so $23,556.23 across those 28 days was assigned to Coffee."
   },
   "events": {
     "months": [
