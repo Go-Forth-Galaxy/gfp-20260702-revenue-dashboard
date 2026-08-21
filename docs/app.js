@@ -6,10 +6,10 @@
   var built = {};
 
   var overallRangeStart = "2026-01-01";
-  var overallRangeEnd = "2026-08-19";
+  var overallRangeEnd = "2026-08-20";
 
   var coffeeRangeStart = "2026-08-01";
-  var coffeeRangeEnd = "2026-08-19";
+  var coffeeRangeEnd = "2026-08-20";
   var coffeeSelectedPerspective = "back";
 
   var eventsRangeStart = "2026-01-01";
@@ -246,7 +246,7 @@
       if (barRight) barRight.textContent = "Annual Plan " + money(totalPlan);
       if (barHint) {
         barHint.textContent = "Realized revenue across all 5 streams (" + money(realized) +
-          " YTD through Aug 19) divided by the " + money(totalPlan) +
+          " YTD through Aug 20) divided by the " + money(totalPlan) +
           " plan. Four-stream AOP sub-total: " + money(o.fourStreamYtd || 400675) +
           " (" + pct0(o.fourStreamPct || 51.2) + " of $783,074). Remaining to plan: " + money(remaining) + ".";
       }
@@ -305,7 +305,7 @@
       // If o.ytdTarget exists, we can compare realized to it.
       var isDown = (o.ytdTarget && realized < o.ytdTarget) ? "down" : "";
       kpis = [
-        { label: "YTD Realized (Through Aug 19)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan", cls: isDown },
+        { label: "YTD Realized (Through Aug 20)", value: money(realized), meta: pct0((realized / totalPlan) * 100) + " of 5-stream plan", cls: isDown },
         { label: "Four-Stream Sub-Total", value: money(o.fourStreamYtd || 400675), meta: pct0(o.fourStreamPct || 51.2) + " of $783,074 AOP" },
         { label: "Operations YTD (Run-Rate)", value: money(o.operationsYtd || 116333), meta: "Target " + money(o.operationsRunRate || 203166) + " (" + pct0(o.operationsPct || 57.3) + ")" },
         { label: "Annual Plan (5-Stream)", value: money(totalPlan), meta: "$783,074 AOP + $203,166 Ops" },
@@ -1010,7 +1010,7 @@
 
     if (presetYtd && !presetYtd.getAttribute("data-wired")) {
       presetYtd.setAttribute("data-wired", "true");
-      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-19", presetYtd); });
+      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-20", presetYtd); });
     }
     if (presetYtlm && !presetYtlm.getAttribute("data-wired")) {
       presetYtlm.setAttribute("data-wired", "true");
@@ -1033,11 +1033,11 @@
       startInput.setAttribute("data-wired", "true");
       var onRangeChange = function () {
         var s = startInput.value || "2026-07-01";
-        var e = endInput.value || "2026-08-19";
+        var e = endInput.value || "2026-08-20";
         if (s < "2026-07-01") s = "2026-07-01";
         if (e < "2026-07-01") e = "2026-07-01";
-        if (s > "2026-08-19") s = "2026-08-19";
-        if (e > "2026-08-19") e = "2026-08-19";
+        if (s > "2026-08-20") s = "2026-08-20";
+        if (e > "2026-08-20") e = "2026-08-20";
         if (s > e) e = s;
         startInput.value = s;
         endInput.value = e;
@@ -1186,12 +1186,12 @@
     if (presetMtd && !presetMtd.getAttribute("data-wired")) {
       presetMtd.setAttribute("data-wired", "true");
       // MTD defaults to August 2026
-      presetMtd.addEventListener("click", function () { setRange("2026-08-01", "2026-08-19", presetMtd); });
+      presetMtd.addEventListener("click", function () { setRange("2026-08-01", "2026-08-20", presetMtd); });
     }
     if (presetYtd && !presetYtd.getAttribute("data-wired")) {
       presetYtd.setAttribute("data-wired", "true");
       // YTD covers Jan 1 to latest available date
-      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-19", presetYtd); });
+      presetYtd.addEventListener("click", function () { setRange("2026-01-01", "2026-08-20", presetYtd); });
     }
     if (presetH1 && !presetH1.getAttribute("data-wired")) {
       presetH1.setAttribute("data-wired", "true");
@@ -1248,7 +1248,7 @@
 
   async function loadAndRender() {
     try {
-      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260820a";
+      var dataUrl = (window.CONFIG && window.CONFIG.DATA_URL) || (window.GFP_CONFIG && window.GFP_CONFIG.DATA_URL) || "data.json?v=20260821a";
       var res = await fetch(dataUrl);
       if (!res.ok) throw new Error("HTTP " + res.status + " fetching " + dataUrl);
       var data = await res.json();
